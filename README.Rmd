@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # meta.arrR
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/Allgeier-Lab/meta.arrR/workflows/R-CMD-check/badge.svg)](https://github.com/Allgeier-Lab/meta.arrR/actions)
 <!-- badges: end -->
 
 The goal of meta.arrR is to ...
