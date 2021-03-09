@@ -1,9 +1,12 @@
 {
-  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
+  "@context": [
+    "https://doi.org/10.5063/schema/codemeta-2.0",
+    "http://schema.org"
+  ],
   "@type": "SoftwareSourceCode",
   "identifier": "meta.arrR",
-  "description": "More about what it does (maybe more than one line)\n    Use four spaces when indenting paragraphs within the Description.",
-  "name": "meta.arrR: What the Package Does (Title Case)",
+  "description": "meta.arrR modes a metaecosystems of local artifical reefs using the arrR package <https://github.com/Allgeier-Lab/arrR>.",
+  "name": "meta.arrR: Metaecosystems of Local Artifical Reefs",
   "license": "https://spdx.org/licenses/GPL-3.0",
   "version": "0.1.0",
   "programmingLanguage": {
@@ -15,12 +18,10 @@
   "author": [
     {
       "@type": "Person",
-      "givenName": ["Who", "wrote"],
-      "familyName": "it"
-    },
-    {
-      "@type": "Organization",
-      "name": {}
+      "givenName": "Maximillian H.K.",
+      "familyName": "Hesselbarth",
+      "email": "mhk.hesselbarth@gmail.com",
+      "@id": "https://orcid.org/0000-0003-1125-9918"
     }
   ],
   "contributor": {},
@@ -29,15 +30,60 @@
   "maintainer": [
     {
       "@type": "Person",
-      "givenName": ["The", "package"],
-      "familyName": "maintainer",
-      "email": "yourself@somewhere.net"
+      "givenName": "Maximillian H.K.",
+      "familyName": "Hesselbarth",
+      "email": "mhk.hesselbarth@gmail.com",
+      "@id": "https://orcid.org/0000-0003-1125-9918"
     }
   ],
-  "softwareSuggestions": [],
-  "softwareRequirements": [],
+  "softwareSuggestions": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "knitr",
+      "name": "knitr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=knitr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rmarkdown",
+      "name": "rmarkdown",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "testthat",
+      "name": "testthat",
+      "version": ">= 3.0.0",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=testthat"
+    }
+  ],
+  "softwareRequirements": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "arrR",
+      "name": "arrR"
+    }
+  ],
   "codeRepository": "https://github.com/Allgeier-Lab/meta.arrR",
   "releaseNotes": "https://github.com/Allgeier-Lab/meta.arrR/blob/master/NEWS.md",
-  "fileSize": "42.059KB",
+  "fileSize": "71.691KB",
   "developmentStatus": ["https://www.repostatus.org/#active", "https://lifecycle.r-lib.org/articles/stages.html"]
 }
