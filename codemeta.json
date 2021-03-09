@@ -1,0 +1,43 @@
+{
+  "@context": ["https://doi.org/10.5063/schema/codemeta-2.0", "http://schema.org"],
+  "@type": "SoftwareSourceCode",
+  "identifier": "meta.arrR",
+  "description": "More about what it does (maybe more than one line)\n    Use four spaces when indenting paragraphs within the Description.",
+  "name": "meta.arrR: What the Package Does (Title Case)",
+  "license": "https://spdx.org/licenses/GPL-3.0",
+  "version": "0.1.0",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "R",
+    "url": "https://r-project.org"
+  },
+  "runtimePlatform": "R version 4.0.4 (2021-02-15)",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": ["Who", "wrote"],
+      "familyName": "it"
+    },
+    {
+      "@type": "Organization",
+      "name": {}
+    }
+  ],
+  "contributor": {},
+  "copyrightHolder": {},
+  "funder": {},
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": ["The", "package"],
+      "familyName": "maintainer",
+      "email": "yourself@somewhere.net"
+    }
+  ],
+  "softwareSuggestions": [],
+  "softwareRequirements": [],
+  "codeRepository": "https://github.com/Allgeier-Lab/meta.arrR",
+  "releaseNotes": "https://github.com/Allgeier-Lab/meta.arrR/blob/master/NEWS.md",
+  "fileSize": "42.059KB",
+  "developmentStatus": ["https://www.repostatus.org/#active", "https://lifecycle.r-lib.org/articles/stages.html"]
+}

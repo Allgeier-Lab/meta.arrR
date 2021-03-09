@@ -1,0 +1,34 @@
+title: meta.arrR | Metaecosystems of local ARs
+
+template:
+  params:
+    bootswatch: sandstone
+
+navbar:
+  title: meta.arrR
+  left:
+    - icon: fa-gears
+      text: "Functions"
+      href: reference/index.html
+    - text: "More"
+      icon: fa-graduation-cap
+      menu:
+       - text: "General Background"
+         icon: fa-book
+         href: articles/general-background.html
+      - text: "Get started"
+         icon: fa-book
+         href: articles/get-started.html
+       - text: "Publication Record"
+         icon: fa-file-text-o
+         href: articles/publication_record.html
+  right:
+    - icon: fa-newspaper-o
+      text: "News"
+      href: news/index.html
+    - icon: fa-github fa-lg
+      text: "Github"
+      href: https://github.com/Allgeier-Lab/arrR
+    - icon: fa-user
+      text: "Contact"
+      hreft: https://mhesselbarth.rbind.io

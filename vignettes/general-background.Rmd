@@ -1,0 +1,10 @@
+---
+title: "General Background"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{General Background}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+ADD BACKGROUND INFORMATION
