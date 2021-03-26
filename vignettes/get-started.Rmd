@@ -3,8 +3,10 @@ title: "Get started"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Get started}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -16,4 +18,46 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(meta.arrR)
+
+# get starting values
+starting_values <- meta.arrR::default_starting_values
+
+starting_values$pop_n <- 3
+
+# get paramters
+parameters <- meta.arrR::default_parameters
+
+# create 5 reef cells in center of seafloor
+reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
+                      ncol = 2, byrow = TRUE)
+
+# setup extent and grain
+extent <- c(50, 50)
+
+grain <- 1
+
+input_sys <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matrix, 
+                        starting_values = starting_values, parameters = parameters)
+
+input_sys$fishpop
+
+# set time per iterations
+min_per_i <- 120
+
+# run the model for three years
+years <- 3
+max_i <- (60 * 24 * 365 * years) / min_per_i
+
+# save results only every 15 days
+days <- 15
+save_each <- (24 / (min_per_i / 60)) * days
+
+
+result <- simulate_meta(metasyst = input_sys,
+                        parameters = parameters, reef_attraction = FALSE,
+                        max_i = 10, save_each = 1, min_per_i = min_per_i)
+
+
+plot(result$fishpop[[1]]$y, simulate_meta$fishpop[[1]]$y)
+
 ```
