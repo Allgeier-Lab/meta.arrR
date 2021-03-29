@@ -55,8 +55,8 @@ save_each <- 1 # (24 / (min_per_i / 60)) * days
 max_i %% save_each
 
 nutr_input <- simulate_input_sine(n = 3, timestep = 1:max_i,
-                                  period_mn = 1, period_sd = 0.05, 
-                                  amplitude_mn = 1, amplitude_sd = 0.05, 
+                                  period_mn = 0.005, period_sd = 0.05, 
+                                  amplitude_mn = 0.1, amplitude_sd = 0.05, 
                                   simplify = TRUE)
 
 result <- simulate_meta(metasyst = input_sys, nutr_input = nutr_input,

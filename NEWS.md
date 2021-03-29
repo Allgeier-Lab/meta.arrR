@@ -1,3 +1,6 @@
+# meta.arrR 0.2.0
+* First running framework
+
 # meta.arrR 0.1.0
 
 * Init package
