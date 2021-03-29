@@ -312,7 +312,7 @@ simulate_meta <- function(metasyst,
   # combine result to list
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track,
                  starting_values = metasyst$starting_values, parameters = parameters,
-                 reef_attraction = reef_attraction,
+                 n = metasyst$n, reef_attraction = reef_attraction,
                  max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  save_each = save_each, extent = extent, grain = raster::res(metasyst$seafloor[[1]]),
                  coords_reef = coords_reef)

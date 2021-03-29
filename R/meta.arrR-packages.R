@@ -7,6 +7,4 @@
 #'
 #' @name meta.arrR
 #' @docType package
-#' @useDynLib meta.arrR, .registration = TRUE
-#' @importFrom Rcpp sourceCpp
 "_PACKAGE"

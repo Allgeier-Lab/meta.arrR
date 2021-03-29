@@ -45,19 +45,25 @@ input_sys$fishpop
 min_per_i <- 120
 
 # run the model for three years
-years <- 3
+years <- 1
 max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every 15 days
-days <- 15
-save_each <- (24 / (min_per_i / 60)) * days
+days <- 5
+save_each <- 1 # (24 / (min_per_i / 60)) * days
 
+max_i %% save_each
 
-result <- simulate_meta(metasyst = input_sys,
+nutr_input <- simulate_input_sine(n = 3, timestep = 1:max_i,
+                                  period_mn = 1, period_sd = 0.05, 
+                                  amplitude_mn = 1, amplitude_sd = 0.05, 
+                                  simplify = TRUE)
+
+result <- simulate_meta(metasyst = input_sys, nutr_input = nutr_input,
                         parameters = parameters, reef_attraction = FALSE,
-                        max_i = 10, save_each = 1, min_per_i = min_per_i)
+                        max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 
+result
 
-plot(result$fishpop[[1]]$y, simulate_meta$fishpop[[1]]$y)
-
+plot(result)
 ```

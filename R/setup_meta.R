@@ -39,12 +39,36 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
 
     if (!is.null(reefs)) {
 
-      message("> ...Creating ", nrow(reefs), " artifical reef cells...")
+      if (inherits(x = reefs, what = "list")) {
+
+        if (length(reefs) != n) {
+
+          stop("'reefs' must be matrix or list with reef coordinates.", call. = FALSE)
+
+        }
+
+      } else if (inherits(x = reefs, what = "matrix")) {
+
+        reefs <- rep(x = list(reefs), each = n)
+
+      } else {
+
+        stop("'reefs' must be matrix or list with reef coordinates.", call. = FALSE)
+
+      }
+
+      no_reefs <- paste(c(vapply(reefs, FUN = nrow, FUN.VALUE = numeric(1)),  collapse = ", "))
+
+      message("> ...Creating ", no_reefs, " artifical reef cells...")
+
 
     } else {
 
-        message("> ...No artifical reefs present...")
-      }
+      message("> ...No artifical reefs present...")
+
+      reefs <- rep(x = list(NULL), each = n)
+
+    }
 
     message("> ...Creating ", starting_values$pop_n, " individuals...")
   }
@@ -58,7 +82,7 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
   for (i in 1:n) {
 
     # create seafloor
-    seafloor <- arrR::setup_seafloor(extent = extent, grain = grain, reefs = reefs,
+    seafloor <- arrR::setup_seafloor(extent = extent, grain = grain, reefs = reefs[[i]],
                                      starting_values = starting_values, random = random,
                                      verbose = FALSE, ...)
 
