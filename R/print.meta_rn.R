@@ -46,7 +46,9 @@ print.meta_rn <- function(x, digits = 2, timestep = x$max_i, ...) {
     fish_temp <- subset(i, timestep == timestep_temp)
 
     c(no = length(fish_temp$id),
-      length = round(mean(fish_temp$length), digits = digits))
+      length = round(mean(fish_temp$length), digits = digits),
+      mort = round(mean(fish_temp$died_background + fish_temp$died_consumption),
+                   digits = digits))
 
   })
 
@@ -60,12 +62,13 @@ print.meta_rn <- function(x, digits = 2, timestep = x$max_i, ...) {
              "Fishpop    : ", x$starting_values$pop_n, " indiv (reef_attraction: ", x$reef_attraction, ")\n",
              "\n"))
 
-  cat(paste0("ID\tBelowground\tAboveground\tNutrients\tFish\tLength\n"))
+  cat(paste0("ID\tBelowground\tAboveground\tNutrients\tFish\tLength\tMortality\n"))
 
   lapply(1:x$n, function(i) {
 
     cat(paste0(i, "\t", biomass[[i]][[1]], "\t", biomass[[i]][[2]], "\t",
-               biomass[[i]][[3]], "\t\t", fish[[i]][[1]]), "\t", fish[[i]][[2]], "\n")
+               biomass[[i]][[3]], "\t\t", fish[[i]][[1]], "\t", fish[[i]][[2]], "\t",
+               fish[[i]][[3]], "\n"))
 
   })
 }
