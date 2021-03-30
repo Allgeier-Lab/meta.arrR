@@ -3,6 +3,7 @@
 S3method(plot,meta_rn)
 S3method(print,meta_rn)
 S3method(print,meta_syst)
+export(plot_nutrient_input)
 export(setup_meta)
 export(simulate_input_sine)
 export(simulate_meta)

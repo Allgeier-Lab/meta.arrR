@@ -12,7 +12,7 @@ simulate_input_sine(
   amplitude_mn,
   amplitude_sd,
   phase = 0,
-  simplify = FALSE
+  return_df = FALSE
 )
 }
 \arguments{
@@ -26,7 +26,7 @@ simulate_input_sine(
 
 \item{phase}{Numeric with sine curve parameters.}
 
-\item{simplify}{Logical if only vector should be returned.}
+\item{return_df}{Logical if data.frame is returned.}
 }
 \value{
 vector

@@ -27,6 +27,8 @@ starting_values$pop_n <- 3
 # get paramters
 parameters <- meta.arrR::default_parameters
 
+parameters$nutrients_output <- 0.01
+
 # create 5 reef cells in center of seafloor
 reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
                       ncol = 2, byrow = TRUE)
@@ -43,7 +45,7 @@ input_sys <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matr
 min_per_i <- 120
 
 # run the model for three years
-years <- 1
+years <- 3
 max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every 15 days
@@ -53,9 +55,10 @@ save_each <- (24 / (min_per_i / 60)) * days
 max_i %% save_each
 
 nutr_input <- simulate_input_sine(n = 3, timestep = 1:max_i,
-                                  period_mn = 0.005, period_sd = 0.1, 
-                                  amplitude_mn = 0.1, amplitude_sd = 0.05, 
-                                  simplify = TRUE)
+                                  period_mn = 0.0025, period_sd = 0.1, 
+                                  amplitude_mn = 0.001, amplitude_sd = 0)
+
+plot_nutrient_input(nutr_input)
 
 result <- simulate_meta(metasyst = input_sys, nutr_input = nutr_input,
                         parameters = parameters, reef_attraction = FALSE,
@@ -64,7 +67,7 @@ result <- simulate_meta(metasyst = input_sys, nutr_input = nutr_input,
 plot(result)
 plot(result, summarize = TRUE)
 
-plot(result, what = "fishpop")
-plot(result, summarize = TRUE, what = "fishpop")
+# plot(result, what = "fishpop")
+# plot(result, summarize = TRUE, what = "fishpop")
 
 ```

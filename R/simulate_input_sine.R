@@ -7,7 +7,7 @@
 #' @param period_mn,period_sd Numeric with sine curve parameters.
 #' @param amplitude_mn,amplitude_sd Numeric variability of parameters.
 #' @param phase Numeric with sine curve parameters.
-#' @param simplify Logical if only vector should be returned.
+#' @param return_df Logical if data.frame is returned.
 #'
 #' @details
 #' ADD TEXT
@@ -23,7 +23,7 @@
 #' @export
 simulate_input_sine <- function(n, timestep,
                                 period_mn, period_sd, amplitude_mn, amplitude_sd,
-                                phase = 0, simplify = FALSE) {
+                                phase = 0, return_df = FALSE) {
 
   result_list <- vector(mode = "list", length = n)
 
@@ -38,15 +38,18 @@ simulate_input_sine <- function(n, timestep,
     # amplitude * sin(period * (x + phase)) + vert
     input_temp <- amplitude_temp * sin(period_temp * (timestep + phase)) + vert_temp
 
-    data_temp <- data.frame(id = factor(i), timestep = timestep, input = input_temp)
+    result_list[[i]] <- data.frame(meta = factor(i), timestep = timestep, input = input_temp)
 
-    if (simplify) {
+  }
 
-      data_temp <- data_temp$input
+  if (!return_df) {
 
-    }
+    result_list <- lapply(result_list, function(i) i$input)
 
-    result_list[[i]] <- data_temp
+
+  } else {
+
+    result_list <- do.call(rbind, result_list)
 
   }
 
