@@ -39,8 +39,6 @@ grain <- 1
 input_sys <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matrix, 
                         starting_values = starting_values, parameters = parameters)
 
-input_sys$fishpop
-
 # set time per iterations
 min_per_i <- 120
 
@@ -50,12 +48,12 @@ max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every 15 days
 days <- 5
-save_each <- 1 # (24 / (min_per_i / 60)) * days
+save_each <- (24 / (min_per_i / 60)) * days
 
 max_i %% save_each
 
 nutr_input <- simulate_input_sine(n = 3, timestep = 1:max_i,
-                                  period_mn = 0.005, period_sd = 0.05, 
+                                  period_mn = 0.005, period_sd = 0.1, 
                                   amplitude_mn = 0.1, amplitude_sd = 0.05, 
                                   simplify = TRUE)
 
@@ -63,7 +61,10 @@ result <- simulate_meta(metasyst = input_sys, nutr_input = nutr_input,
                         parameters = parameters, reef_attraction = FALSE,
                         max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 
-result
-
 plot(result)
+plot(result, summarize = TRUE)
+
+plot(result, what = "fishpop")
+plot(result, summarize = TRUE, what = "fishpop")
+
 ```

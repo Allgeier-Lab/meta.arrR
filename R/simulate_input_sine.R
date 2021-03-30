@@ -29,13 +29,9 @@ simulate_input_sine <- function(n, timestep,
 
   for (i in seq_along(result_list)) {
 
-    period_temp <- abs(rnorm(n = 1, mean = period_mn, sd = period_mn * period_sd))
+    period_temp <- abs(stats::rnorm(n = 1, mean = period_mn, sd = period_mn * period_sd))
 
-    # print(paste0("period_temp: ", period_temp))
-
-    amplitude_temp <- rnorm(n = 1, mean = amplitude_mn, sd = amplitude_mn * amplitude_sd)
-
-    # print(paste0("amplitude_temp: ", amplitude_temp))
+    amplitude_temp <- stats::rnorm(n = 1, mean = amplitude_mn, sd = amplitude_mn * amplitude_sd)
 
     vert_temp <- amplitude_temp
 

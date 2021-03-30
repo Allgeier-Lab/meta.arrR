@@ -4,14 +4,30 @@
 \alias{plot.meta_rn}
 \title{plot.meta_rn}
 \usage{
-\method{plot}{meta_rn}(x, what = "seafloor", burn_in = TRUE, limits = NULL, base_size = 10, ...)
+\method{plot}{meta_rn}(
+  x,
+  what = "seafloor",
+  summarize = FALSE,
+  burn_in = TRUE,
+  limits = NULL,
+  base_size = 10,
+  ...
+)
 }
 \arguments{
-\item{x}{meta_rn object.}
+\item{x}{mdl_rn object of simulation run.}
 
-\item{...}{Arguments passed to cat.}
+\item{what}{Character specifying what to plot.}
 
-\item{digits}{Numeric of decimal places (round).}
+\item{summarize}{Logical to specify if whole metaecosystem should be summarized}
+
+\item{burn_in}{If TRUE, line to indicate burn-in time is plotted.}
+
+\item{limits}{Named list with vectors with min and maximum value of values.}
+
+\item{base_size}{Numeric to specify base font size.}
+
+\item{...}{Not used.}
 }
 \description{
 Ploting method for meta_rn object

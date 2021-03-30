@@ -18,6 +18,8 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports:
   arrR,
+  cowplot,
+  ggplot2,
   raster,
   rlang,
 Suggests: 

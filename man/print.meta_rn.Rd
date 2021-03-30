@@ -11,6 +11,8 @@
 
 \item{digits}{Numeric of decimal places (round).}
 
+\item{timestep}{Numeric with timestep to print.}
+
 \item{...}{Arguments passed to cat.}
 }
 \description{

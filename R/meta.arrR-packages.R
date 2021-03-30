@@ -8,3 +8,15 @@
 #' @name meta.arrR
 #' @docType package
 "_PACKAGE"
+
+globalVariables(names = c(
+  "ag_biomass",
+  "bg_biomass",
+  "detritus_pool",
+  "died_background",
+  "died_consumption",
+  "extent",
+  "meta",
+  "nutrients_pool",
+  "timestep",
+  "weight"))

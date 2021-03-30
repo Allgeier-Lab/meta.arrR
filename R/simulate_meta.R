@@ -4,13 +4,13 @@
 #'
 #' @param metasyst Metaecosystem created with \code{\link{setup_meta}}.
 #' @param parameters List with all model parameters.
+#' @param nutr_input List with nutrient input vectors.
 #' @param reef_attraction If TRUE, individuals are attracted to AR.
 #' @param max_i Integer with maximum number of simulation timesteps.
 #' @param min_per_i Integer to specify minutes per i.
 #' @param save_each Numeric how often data should be saved to return.
 #' @param burn_in Numeric with timesteps used to burn in.
 #' @param return_burnin If FALSE all timesteps < burn_in are not returned.
-#' @param extract Character to specify if only seafloor or fishpop should be returned as data.frame
 #' @param verbose If TRUE, progress reports are printed.
 #'
 #' @details
@@ -210,13 +210,13 @@ simulate_meta <- function(metasyst,
                                    min_per_i = min_per_i)
 
         # simulate fishpop growth and including change of seafloor pools
-        arrR::simulate_fishpop_growth(fishpop_values = fishpop_values[[j]],
-                                      fishpop_track = fishpop_track[[j]][[1]],
-                                      pop_n = pop_n_temp,
-                                      seafloor = metasyst$seafloor[[j]]$reef,
-                                      seafloor_values = seafloor_values[[j]],
-                                      parameters = parameters,
-                                      min_per_i = min_per_i)
+        arrR::simulate_growth(fishpop_values = fishpop_values[[j]],
+                              fishpop_track = fishpop_track[[j]][[1]],
+                              pop_n = pop_n_temp,
+                              seafloor = metasyst$seafloor[[j]]$reef,
+                              seafloor_values = seafloor_values[[j]],
+                              parameters = parameters,
+                              min_per_i = min_per_i)
 
         # simulate mortality
         arrR::simulate_mortality(fishpop_values = fishpop_values[[j]],
@@ -238,6 +238,9 @@ simulate_meta <- function(metasyst,
       arrR::simulate_output(seafloor_values = seafloor_values[[j]],
                             parameters = parameters)
 
+
+      # simulate_movement_meta(fishpop_values = fishpop_values, j)
+
       # update tracking list
       if (i %% save_each == 0) {
 
@@ -246,14 +249,14 @@ simulate_meta <- function(metasyst,
         fishpop_track[[j]][[i / save_each + 1]] <- rlang::duplicate(fishpop_values[[j]])
 
       }
+    }
 
-      # print progress
-      if (verbose) {
+    # print progress
+    if (verbose) {
 
-        message("\r> ...Progress: ", floor(i / max_i * 100), "% of total iterations... \t\t\t",
-                appendLF = FALSE)
+      message("\r> ...Progress: ", floor(i / max_i * 100), "% of total iterations... \t\t\t",
+              appendLF = FALSE)
 
-      }
     }
   }
 

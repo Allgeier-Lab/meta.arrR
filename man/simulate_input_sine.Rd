@@ -11,7 +11,8 @@ simulate_input_sine(
   period_sd,
   amplitude_mn,
   amplitude_sd,
-  phase = 0
+  phase = 0,
+  simplify = FALSE
 )
 }
 \arguments{
@@ -21,9 +22,11 @@ simulate_input_sine(
 
 \item{period_mn, period_sd}{Numeric with sine curve parameters.}
 
-\item{amplitude_mn, amplitude_sd}{Numeric with sine curve parameters.}
+\item{amplitude_mn, amplitude_sd}{Numeric variability of parameters.}
 
 \item{phase}{Numeric with sine curve parameters.}
+
+\item{simplify}{Logical if only vector should be returned.}
 }
 \value{
 vector

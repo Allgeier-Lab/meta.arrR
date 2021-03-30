@@ -3,6 +3,7 @@
 #' @description Printing method for meta_rn object
 #'
 #' @param x meta_rn object.
+#' @param timestep Numeric with timestep to print.
 #' @param digits Numeric of decimal places (round).
 #' @param ... Arguments passed to cat.
 #'

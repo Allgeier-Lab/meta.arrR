@@ -22,6 +22,8 @@ simulate_meta(
 
 \item{parameters}{List with all model parameters.}
 
+\item{nutr_input}{List with nutrient input vectors.}
+
 \item{reef_attraction}{If TRUE, individuals are attracted to AR.}
 
 \item{max_i}{Integer with maximum number of simulation timesteps.}
@@ -35,8 +37,6 @@ simulate_meta(
 \item{return_burnin}{If FALSE all timesteps < burn_in are not returned.}
 
 \item{verbose}{If TRUE, progress reports are printed.}
-
-\item{extract}{Character to specify if only seafloor or fishpop should be returned as data.frame}
 }
 \value{
 mdl_rn
