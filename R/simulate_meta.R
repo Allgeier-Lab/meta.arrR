@@ -227,6 +227,8 @@ simulate_meta <- function(metasyst,
                                  parameters = parameters,
                                  min_per_i = min_per_i)
 
+        # simulate_movement_meta(fishpop_values = fishpop_values, j)
+
       }
 
       # diffuse values between neighbors
@@ -237,9 +239,6 @@ simulate_meta <- function(metasyst,
       # remove nutrients from cells
       arrR::simulate_output(seafloor_values = seafloor_values[[j]],
                             parameters = parameters)
-
-
-      # simulate_movement_meta(fishpop_values = fishpop_values, j)
 
       # update tracking list
       if (i %% save_each == 0) {

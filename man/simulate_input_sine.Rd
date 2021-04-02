@@ -35,7 +35,9 @@ vector
 Initiate fish population.
 }
 \details{
-ADD TEXT
+Simulating nutrient input based on sine curve. The mean of the period and amplitude
+can are multiplied by the \code{*_sd} parameter and used as standard deviation of a
+normal distribution to add variability.
 }
 \examples{
 # Add example code
