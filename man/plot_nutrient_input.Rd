@@ -4,7 +4,7 @@
 \alias{plot_nutrient_input}
 \title{plot_nutrient_input}
 \usage{
-plot_nutrient_input(x, base_size = 10, limits = NULL, ...)
+plot_nutrient_input(x, base_size = 10, ...)
 }
 \arguments{
 \item{x}{ntr_inpt object.}

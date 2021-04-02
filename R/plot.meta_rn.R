@@ -4,8 +4,6 @@
 #'
 #' @param x mdl_rn object of simulation run.
 #' @param what Character specifying what to plot.
-#' @param summarize Logical to specify if whole metaecosystem should be summarized
-#' @param limits Named list with vectors with min and maximum value of values.
 #' @param burn_in If TRUE, line to indicate burn-in time is plotted.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
@@ -20,253 +18,144 @@
 #' @rdname plot.meta_rn
 #'
 #' @export
-plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, burn_in = TRUE,
-                         limits = NULL, base_size = 10, ...) {
+plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, ...) {
+
+  if (!what %in% c("seafloor", "fishpop")) {
+
+    stop("Please select either what = 'seafloor' or what = 'fishpop'",
+         call. = FALSE)
+  }
+
   # set color for burn in threshold
   col_burn <- ifelse(test = burn_in, yes = "grey", no = NA)
 
   burn_in_itr <- x$burn_in
 
-  if (!summarize) {
+  # get separated values
+  result_sep <- lapply(1:x$n, function(i)
+    arrR::summarize_mdlrn(list(seafloor = x$seafloor[[i]], fishpop = x$fishpop[[i]],
+                               burn_in = x$burn_in),
+                          summary = "mean"))
 
-    result_sum <- lapply(1:x$n, function(i)
-      arrR::summarize_mdlrn(list(seafloor = x$seafloor[[i]], fishpop = x$fishpop[[i]],
-                                 burn_in = x$burn_in),
-                            summary = "mean"))
+  # get total mean result
+  result_sum <- arrR::summarize_mdlrn(result = list(seafloor = do.call(rbind, x$seafloor),
+                                                    fishpop = do.call(rbind, x$fishpop),
+                                                    burn_in = x$burn_in),
+                                      summary = "mean")
 
-    if (what == "seafloor") {
+  if (what == "seafloor") {
 
-      seafloor_df <- do.call(rbind, lapply(1:x$n, function(i)
-        cbind(meta = i, result_sum[[i]]$seafloor)))
-      # create plot
-      gg_top_left <- ggplot2::ggplot(data = seafloor_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = ag_biomass,
-                                        col = factor(meta))) +
-        ggplot2::scale_y_continuous(limits = limits$ag_biomass) +
-        ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-        ggplot2::labs(x = "Timestep", y = "Dry weight ag biomass [g/cell]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                       legend.position = "bottom")
-      # create plot
-      gg_top_right <- ggplot2::ggplot(data = seafloor_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = bg_biomass,
-                                        col = factor(meta))) +
-        ggplot2::scale_y_continuous(limits = limits$bg_biomass) +
-        ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-        ggplot2::guides(col = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Dry weight bg biomass [g/cell]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
-      # create plot
-      gg_bottom_left <- ggplot2::ggplot(data = seafloor_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = nutrients_pool,
-                                        col = factor(meta))) +
-        ggplot2::scale_y_continuous(limits = limits$nutrients_pool) +
-        ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-        ggplot2::guides(col = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Nutrients pool [g/cell]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+    result_sep <- do.call(rbind, lapply(1:x$n, function(i)
+      cbind(meta = i, result_sep[[i]]$seafloor)))
 
-      # create plot
-      gg_bottom_right <- ggplot2::ggplot(data = seafloor_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = detritus_pool,
-                                        col = factor(meta))) +
-        ggplot2::scale_y_continuous(limits = limits$detritus_pool) +
-        ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-        ggplot2::guides(col = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Detritus pool [g/cell]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+    result_sep <- result_sep[, c("meta", "timestep",
+                                 "ag_biomass", "bg_biomass",
+                                 "nutrients_pool", "detritus_pool")]
 
-    } else if (what == "fishpop") {
+    result_sum <- result_sum$seafloor[, c("timestep",
+                                          "ag_biomass", "bg_biomass",
+                                          "nutrients_pool", "detritus_pool")]
 
-      fishpop_df <- do.call(rbind, lapply(1:x$n, function(i)
-        cbind(meta = i, result_sum[[i]]$fishpop)))
+    y_labels <- c("Dry weight ag biomass [g/cell]", "Dry weight bg biomass [g/cell]",
+                  "Nutrients pool [g/cell]", "Detritus pool [g/cell]")
 
-      gg_top_left <- ggplot2::ggplot(data = fishpop_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = length, col = factor(meta))) +
-        ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-        ggplot2::scale_linetype_manual(values = c(2, 1, 2)) +
-        ggplot2::labs(x = "Timestep", y = "Body length [cm]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                       legend.position = "bottom")
+    # check if limits are !is.null() and rename to top_left,...
 
-      # create plot
-      gg_top_right <- ggplot2::ggplot(data = fishpop_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = weight, col = factor(meta))) +
-        ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-        ggplot2::guides(col = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Body weigth [g]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+  } else if (what == "fishpop") {
 
-      # create plot
-      gg_bottom_left <- ggplot2::ggplot(data = fishpop_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = died_consumption, col = factor(meta))) +
-        ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-        ggplot2::guides(col = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Count mortality consumption [#]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+    result_sep <- do.call(rbind, lapply(1:x$n, function(i)
+      cbind(meta = i, result_sep[[i]]$fishpop)))
 
-      # create plot
-      gg_bottom_right <- ggplot2::ggplot(data = fishpop_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = died_background, col = factor(meta))) +
-        ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-        ggplot2::guides(col = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Count mortality background [#]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+    result_sep <- result_sep[, c("meta", "timestep",
+                                 "length", "weight",
+                                 "died_consumption", "died_background")]
 
-    } else {
+    result_sum <- result_sum$fishpop[, c("timestep",
+                                         "length", "weight",
+                                         "died_consumption", "died_background")]
 
-      stop("Please select either what = 'seafloor' or what = 'fishpop'",
-           call. = FALSE)
+    y_labels <- c("Body length [cm]", "Body weigth [g]",
+                  "Count mortality consumption [#]", "Count mortality background [#]")
 
-    }
+    # check if limits are !is.null() and rename to top_left,...
 
-    legend_top_left <- cowplot::get_legend(gg_top_left)
-
-  } else {
-
-    result_sum <- arrR::summarize_mdlrn(result = list(seafloor = do.call(rbind, x$seafloor),
-                                                      fishpop = do.call(rbind, x$fishpop),
-                                                      burn_in = x$burn_in))
-
-    if (what == "seafloor") {
-
-      seafloor_df <- result_sum$seafloor
-
-      seafloor_df$summary <- factor(seafloor_df$summary, levels = c("min", "mean", "max"))
-
-      gg_top_left <- ggplot2::ggplot(data = seafloor_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = ag_biomass,
-                                        col = summary, linetype = summary)) +
-        ggplot2::scale_y_continuous(limits = limits$ag_biomass) +
-        ggplot2::scale_color_manual(name = "Summary", values = c("grey", "black", "grey")) +
-        ggplot2::scale_linetype_manual(name = "Summary", values = c(2, 1, 2)) +
-        ggplot2::labs(x = "Timestep", y = "Dry weight ag biomass [g/cell]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                       legend.position = "bottom")
-
-      # create plot
-      gg_top_right <- ggplot2::ggplot(data = seafloor_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = bg_biomass,
-                                        col = summary, linetype = summary)) +
-        ggplot2::scale_y_continuous(limits = limits$bg_biomass) +
-        ggplot2::scale_color_manual(name = "Summary", values = c("grey", "black", "grey")) +
-        ggplot2::scale_linetype_manual(name = "Summary", values = c(2, 1, 2)) +
-        ggplot2::guides(col = FALSE, linetype = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Dry weight bg biomass [g/cell]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
-
-      # create plot
-      gg_bottom_left <- ggplot2::ggplot(data = seafloor_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = nutrients_pool,
-                                        col = summary, linetype = summary)) +
-        ggplot2::scale_y_continuous(limits = limits$nutrients_pool) +
-        ggplot2::scale_color_manual(name = "Summary", values = c("grey", "black", "grey")) +
-        ggplot2::scale_linetype_manual(name = "Summary", values = c(2, 1, 2)) +
-        ggplot2::guides(col = FALSE, linetype = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Nutrients pool [g/cell]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                       legend.position = "bottom")
-
-      # create plot
-      gg_bottom_right <- ggplot2::ggplot(data = seafloor_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = detritus_pool,
-                                        col = summary, linetype = summary)) +
-        ggplot2::scale_y_continuous(limits = limits$detritus_pool) +
-        ggplot2::scale_color_manual(name = "Summary", values = c("grey", "black", "grey")) +
-        ggplot2::scale_linetype_manual(name = "Summary", values = c(2, 1, 2)) +
-        ggplot2::guides(col = FALSE, linetype = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Detritus pool [g/cell]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                       legend.position = "bottom")
-
-      legend_top_left <- cowplot::get_legend(gg_top_left)
-
-    } else if (what == "fishpop") {
-
-      fishpop_df <- result_sum$fishpop
-
-      fishpop_df$summary <- factor(fishpop_df$summary, levels = c("min", "mean", "max"))
-
-      gg_top_left <- ggplot2::ggplot(data = fishpop_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = length,
-                                        col = summary, linetype = summary)) +
-        ggplot2::scale_color_manual(name = "Summary", values = c("grey", "black", "grey")) +
-        ggplot2::scale_linetype_manual(name = "Summary", values = c(2, 1, 2)) +
-        ggplot2::labs(x = "Timestep", y = "Body length [cm]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                       legend.position = "bottom")
-
-      # create plot
-      gg_top_right <- ggplot2::ggplot(data = fishpop_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = weight,
-                                        col = summary, linetype = summary)) +
-        ggplot2::scale_color_manual(name = "Summary", values = c("grey", "black", "grey")) +
-        ggplot2::scale_linetype_manual(name = "Summary", values = c(2, 1, 2)) +
-        ggplot2::guides(col = FALSE, linetype = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Body weigth [g]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
-
-      # create plot
-      gg_bottom_left <- ggplot2::ggplot(data = fishpop_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = died_consumption,
-                                        col = summary, linetype = summary)) +
-        ggplot2::scale_color_manual(name = "Summary", values = c("grey", "black", "grey")) +
-        ggplot2::scale_linetype_manual(name = "Summary", values = c(2, 1, 2)) +
-        ggplot2::guides(col = FALSE, linetype = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Count mortality consumption [#]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
-
-      # create plot
-      gg_bottom_right <- ggplot2::ggplot(data = fishpop_df) +
-        ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-        ggplot2::geom_line(ggplot2::aes(x = timestep, y = died_background,
-                                        col = summary, linetype = summary)) +
-        ggplot2::scale_color_manual(name = "Summary", values = c("grey", "black", "grey")) +
-        ggplot2::scale_linetype_manual(name = "Summary", values = c(2, 1, 2)) +
-        ggplot2::guides(col = FALSE, linetype = FALSE) +
-        ggplot2::labs(x = "Timestep", y = "Count mortality background [#]") +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
-
-      legend_top_left <- cowplot::get_legend(gg_top_left)
-
-    } else {
-
-      stop("Please select either what = 'seafloor' or what = 'fishpop'",
-           call. = FALSE)
-
-    }
   }
+
+  names(result_sep) <- c("meta", "timestep",
+                         "top_left", "top_right",
+                         "bottom_left", "bottom_right")
+
+
+
+  names(result_sum) <- c("timestep",
+                         "top_left", "top_right",
+                         "bottom_left", "bottom_right")
+
+  # create plot
+  gg_top_left <- ggplot2::ggplot(data = result_sep) +
+    ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
+    ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_left, col = factor(meta),
+                                    linetype = "Local")) +
+    ggplot2::geom_line(data = result_sum,
+                       ggplot2::aes(x = timestep, y = top_left, linetype = "Regional"),
+                       col = "black") +
+    # ggplot2::scale_y_continuous(limits = limits$ag_biomass) +
+    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+    ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+    ggplot2::labs(x = "Timestep", y = y_labels[1]) +
+    ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
+                   legend.position = "bottom")
+
+  # create plot
+  gg_top_right <- ggplot2::ggplot(data = result_sep) +
+    ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
+    ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_right, col = factor(meta),
+                                    linetype = "Local")) +
+    ggplot2::geom_line(data = result_sum,
+                       ggplot2::aes(x = timestep, y = top_right, linetype = "Regional"),
+                       col = "black") +
+    # ggplot2::scale_y_continuous(limits = limits$bg_biomass) +
+    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+    ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+    ggplot2::guides(col = FALSE, linetype = FALSE) +
+    ggplot2::labs(x = "Timestep", y = y_labels[2]) +
+    ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+
+# create plot
+  gg_bottom_left <- ggplot2::ggplot(data = result_sep) +
+    ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
+    ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_left, col = factor(meta),
+                                    linetype = "Local")) +
+    ggplot2::geom_line(data = result_sum,
+                       ggplot2::aes(x = timestep, y = bottom_left, linetype = "Regional"),
+                       col = "black") +
+    # ggplot2::scale_y_continuous(limits = limits$nutrients_pool) +
+    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+    ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+    ggplot2::guides(col = FALSE, linetype = FALSE) +
+    ggplot2::labs(x = "Timestep", y = y_labels[3]) +
+    ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+
+  # create plot
+  gg_bottom_right <- ggplot2::ggplot(data = result_sep) +
+    ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
+    ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_right, col = factor(meta),
+                                    linetype = "Local")) +
+    ggplot2::geom_line(data = result_sum,
+                       ggplot2::aes(x = timestep, y = bottom_right, linetype = "Regional"),
+                       col = "black") +
+    # ggplot2::scale_y_continuous(limits = limits$detritus_pool) +
+    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+    ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+    ggplot2::guides(col = FALSE, linetype = FALSE) +
+    ggplot2::labs(x = "Timestep", y = y_labels[4]) +
+    ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+
+  legend_top_left <- cowplot::get_legend(gg_top_left)
 
   # create title
   plot_title <- paste0("Total time : ", x$max_i, " iterations (",
