@@ -7,15 +7,17 @@
 rcpp_matrix_to_list(x, n)
 }
 \arguments{
-\item{x}{List}
+\item{x}{Matrix with fish population.}
+
+\item{n}{Integer with number of metaecosystems.}
 }
 \value{
-matrix
+list
 }
 \description{
-Rcpp list to matrix
+Rcpp matrix to list
 }
 \details{
-Convert a list to a list
+Converts a matrix with fishpopulation to a list split by metaecosystem.
 }
 \keyword{export}

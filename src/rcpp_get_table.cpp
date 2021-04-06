@@ -4,7 +4,8 @@
 //'
 //' @description Rcpp get table
 //'
-//' @param x List
+//' @param x Vector with values.
+//' @param n Integer with maximum number of classes.
 //'
 //' @details
 //' Returns table with value count
@@ -36,7 +37,7 @@ Rcpp::IntegerVector rcpp_get_table(Rcpp::NumericVector x, int n) {
 
 
 /*** R
-rcpp_get_table(x = c(1, 1, 2, 1, 1), n = metasyst$n)
-rcpp_get_table(x = c(1, 1, 2, 3), n = metasyst$n)
-rcpp_get_table(x = 2, n = metasyst$n)
+rcpp_get_table(x = c(1, 1, 2, 1, 1), n = 3)
+rcpp_get_table(x = c(1, 1, 2, 3), n = 3)
+rcpp_get_table(x = 2, n = 4)
 */

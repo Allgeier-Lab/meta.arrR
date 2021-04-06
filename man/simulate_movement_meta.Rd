@@ -4,10 +4,18 @@
 \alias{simulate_movement_meta}
 \title{simulate_movement_meta}
 \usage{
-simulate_movement_meta(fishpop_values)
+simulate_movement_meta(fishpop_values, n, pop_n, parameters, extent)
 }
 \arguments{
 \item{fishpop_values}{List with fishpop matrices.}
+
+\item{n}{Numeric with number of metaecosystems.}
+
+\item{pop_n}{Numeric with initial number of fish individuals.}
+
+\item{parameters}{List with all model parameters.}
+
+\item{extent}{Spatial extent of the seafloor raster.}
 }
 \value{
 vector

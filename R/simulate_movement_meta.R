@@ -3,6 +3,10 @@
 #' @description Initiate fish population.
 #'
 #' @param fishpop_values List with fishpop matrices.
+#' @param n Numeric with number of metaecosystems.
+#' @param pop_n Numeric with initial number of fish individuals.
+#' @param parameters List with all model parameters.
+#' @param extent Spatial extent of the seafloor raster.
 #'
 #' @details
 #' ADD TEXT
@@ -16,12 +20,15 @@
 #' @rdname simulate_movement_meta
 #'
 #' @export
-simulate_movement_meta <- function(fishpop_values) {
+simulate_movement_meta <- function(fishpop_values, n, pop_n, parameters, extent) {
 
+  # # extent must be vector for rcpp
+  # extent <- as.vector(extent, mode = "numeric")
 
-  # combine to one matrix
-  # loop through matrix and change meta id
-  # split again
+  fishpop_values <- rcpp_move_meta(fishpop_values = fishpop_values,
+                                   n = n, pop_n = pop_n,
+                                   prob_move = parameters$pop_prob_move,
+                                   extent = as.vector(extent, mode = "numeric"))
 
-
+  return(fishpop_values)
 }

@@ -5,7 +5,8 @@
 #'
 #' @description Rcpp get table
 #'
-#' @param x List
+#' @param x Vector with values.
+#' @param n Integer with maximum number of classes.
 #'
 #' @details
 #' Returns table with value count
@@ -20,33 +21,17 @@ rcpp_get_table <- function(x, n) {
     .Call(`_meta_arrR_rcpp_get_table`, x, n)
 }
 
-#' rcpp_get_unique_values
-#'
-#' @description Rcpp get unique values
-#'
-#' @param x vector
-#'
-#' @details
-#' Returns unique values from a vector
-#'
-#' @return matrix
-#'
-#' @aliases rcpp_get_unique_values
-#' @rdname rcpp_get_unique_values
-#'
-#' @keywords export
-rcpp_get_unique_values <- function(x) {
-    .Call(`_meta_arrR_rcpp_get_unique_values`, x)
-}
-
 #' rcpp_list_to_matrix
 #'
 #' @description Rcpp list to matrix
 #'
-#' @param x List
+#' @param x List with individuals within metaecosystems.
+#' @param n Integer with number of metaecosystems.
+#' @param pop_n Integer with number of indiviuals.
 #'
 #' @details
-#' Convert a list to a list
+#' Converts list with individuals within metaecosystems to one matrix. Adds coloumn
+#' with metasystem id
 #'
 #' @return matrix
 #'
@@ -60,12 +45,13 @@ rcpp_list_to_matrix <- function(x, n, pop_n) {
 
 #' rcpp_matrix_to_list
 #'
-#' @description Rcpp list to matrix
+#' @description Rcpp matrix to list
 #'
-#' @param x List
+#' @param x Matrix with fish population.
+#' @param n Integer with number of metaecosystems.
 #'
 #' @details
-#' Convert a matrix to a list
+#' Converts a matrix with fishpopulation to a list split by metaecosystem.
 #'
 #' @return list
 #'
@@ -81,18 +67,23 @@ rcpp_matrix_to_list <- function(x, n) {
 #'
 #' @description Rcpp list to matrix
 #'
-#' @param x List
+#' @param fishpop_values List with fish population.
+#' @param n Integer with number of metaecosystems.
+#' @param pop_n Integer with number of individuals.
+#' @param prob_move Double with probability to move betwenn metaecosystems.
+#' @param extent Spatial extent of the seafloor raster.
 #'
 #' @details
-#' Convert a list to a list
+#' Simulate movement across local metaecosystem. Individuals move to a new local
+#' metaecosystem with a certain probability each timestep.
 #'
-#' @return matrix
+#' @return void
 #'
 #' @aliases rcpp_move_meta
 #' @rdname rcpp_move_meta
 #'
 #' @keywords export
-rcpp_move_meta <- function(fishpop_values, n, pop_n, prob_move) {
-    invisible(.Call(`_meta_arrR_rcpp_move_meta`, fishpop_values, n, pop_n, prob_move))
+rcpp_move_meta <- function(fishpop_values, n, pop_n, prob_move, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop_values, n, pop_n, prob_move, extent)
 }
 

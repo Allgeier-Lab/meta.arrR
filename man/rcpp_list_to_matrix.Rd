@@ -7,7 +7,11 @@
 rcpp_list_to_matrix(x, n, pop_n)
 }
 \arguments{
-\item{x}{List}
+\item{x}{List with individuals within metaecosystems.}
+
+\item{n}{Integer with number of metaecosystems.}
+
+\item{pop_n}{Integer with number of indiviuals.}
 }
 \value{
 matrix
@@ -16,6 +20,7 @@ matrix
 Rcpp list to matrix
 }
 \details{
-Convert a list to a list
+Converts list with individuals within metaecosystems to one matrix. Adds coloumn
+with metasystem id
 }
 \keyword{export}

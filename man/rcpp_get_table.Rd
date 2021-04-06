@@ -7,7 +7,9 @@
 rcpp_get_table(x, n)
 }
 \arguments{
-\item{x}{List}
+\item{x}{Vector with values.}
+
+\item{n}{Integer with maximum number of classes.}
 }
 \value{
 vector

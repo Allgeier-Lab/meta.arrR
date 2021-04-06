@@ -4,18 +4,27 @@
 \alias{rcpp_move_meta}
 \title{rcpp_move_meta}
 \usage{
-rcpp_move_meta(fishpop_values, n, pop_n, prob_move)
+rcpp_move_meta(fishpop_values, n, pop_n, prob_move, extent)
 }
 \arguments{
-\item{x}{List}
+\item{fishpop_values}{List with fish population.}
+
+\item{n}{Integer with number of metaecosystems.}
+
+\item{pop_n}{Integer with number of individuals.}
+
+\item{prob_move}{Double with probability to move betwenn metaecosystems.}
+
+\item{extent}{Spatial extent of the seafloor raster.}
 }
 \value{
-matrix
+void
 }
 \description{
 Rcpp list to matrix
 }
 \details{
-Convert a list to a list
+Simulate movement across local metaecosystem. Individuals move to a new local
+metaecosystem with a certain probability each timestep.
 }
 \keyword{export}

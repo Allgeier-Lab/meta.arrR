@@ -29,6 +29,8 @@ parameters <- meta.arrR::default_parameters
 
 parameters$nutrients_output <- 0.0
 
+parameters$pop_prob_move <- 0.25
+
 # create 5 reef cells in center of seafloor
 reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
                       ncol = 2, byrow = TRUE)
@@ -66,6 +68,7 @@ result <- simulate_meta(metasyst = input_sys, nutr_input = nutr_input,
 
 plot(result, what = "seafloor")
 
+plot_local_abund(result)
 
 # library(ggplot2)
 # library(patchwork)

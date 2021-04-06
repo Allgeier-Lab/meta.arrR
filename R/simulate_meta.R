@@ -172,10 +172,21 @@ simulate_meta <- function(metasyst,
   # simulate until max_i is reached
   for (i in 1:max_i) {
 
+    if (parameters$pop_prob_move > 0 && metasyst$starting_values$pop_n > 0) {
+
+      fishpop_values <- simulate_movement_meta(fishpop_values = fishpop_values,
+                                               n = metasyst$n,
+                                               pop_n = metasyst$starting_values$pop_n,
+                                               parameters = parameters,
+                                               extent = extent)
+
+    }
+
     for (j in 1:metasyst$n) {
 
       # get temp_n
-      pop_n_temp <- nrow(fishpop_values[[j]])
+      pop_n_temp <- ifelse(test = all(is.na(fishpop_values[[j]][1, ])),
+                           yes = 0, no = nrow(fishpop_values[[j]]))
 
       # simulate nutrient input
       arrR::simulate_input(seafloor_values = seafloor_values[[j]],
@@ -192,11 +203,11 @@ simulate_meta <- function(metasyst,
       arrR::simulate_mineralization(seafloor_values = seafloor_values[[j]],
                                     parameters = parameters)
 
-      if (i > burn_in & metasyst$starting_values$pop_n != 0) {
+      if (i > burn_in & pop_n_temp != 0) {
 
         # simulate fish movement
         arrR::simulate_movement(fishpop_values = fishpop_values[[j]],
-                                pop_n = pop_n_temp, # !!!
+                                pop_n = pop_n_temp,
                                 seafloor_values = seafloor_values[[j]],
                                 extent = extent,
                                 dimensions = dimensions,
@@ -226,9 +237,6 @@ simulate_meta <- function(metasyst,
                                  seafloor_values = seafloor_values[[j]],
                                  parameters = parameters,
                                  min_per_i = min_per_i)
-
-        # simulate_movement_meta(fishpop_values = fishpop_values, j)
-
       }
 
       # diffuse values between neighbors
@@ -273,34 +281,38 @@ simulate_meta <- function(metasyst,
 
     seafloor_track[[i]] <- data.frame(do.call(what = "rbind", args = seafloor_track[[i]]))
 
-    # MH: Add timestep here?
-    fishpop_track[[i]] <- data.frame(do.call(what = "rbind", args = fishpop_track[[i]]))
-
     # add timestep to  seafloor/fishpop counter
     seafloor_track[[i]]$timestep <- rep(x = seq(from = 0, to = max_i, by = save_each),
                                         each = raster::ncell(metasyst$seafloor[[i]]))
-
-    # fishpop is present
-    if (metasyst$starting_values$pop_n > 0) {
-
-      # MH How to get pop_n for each timestep? Aggregate by unique id ?
-      fishpop_track[[i]]$timestep <- rep(x = seq(from = 0, to = max_i, by = save_each),
-                                         each = metasyst$starting_values$pop_n)
-
-      # no fish are present
-    } else {
-
-      fishpop_track[[i]]$timestep <- numeric(0)
-
-    }
 
     # add burn_in col
     seafloor_track[[i]]$burn_in <- ifelse(test = seafloor_track[[i]]$timestep < burn_in,
                                           yes = "yes", no = "no")
 
-    fishpop_track[[i]]$burn_in <- ifelse(test = fishpop_track[[i]]$timestep < burn_in,
-                                         yes = "yes", no = "no")
+    # fishpop is present
+    if (metasyst$starting_values$pop_n > 0) {
 
+      timestep_temp <-  rep(x = seq(from = 0, to = max_i, by = save_each),
+                            times = vapply(X = fishpop_track[[i]], FUN = nrow, FUN.VALUE = numeric(1)))
+
+      # MH: Add timestep here?
+      fishpop_track[[i]] <- data.frame(do.call(what = "rbind", args = fishpop_track[[i]]))
+
+      # MH How to get pop_n for each timestep? Aggregate by unique id ?
+      fishpop_track[[i]]$timestep <- timestep_temp
+
+
+      fishpop_track[[i]]$burn_in <- ifelse(test = fishpop_track[[i]]$timestep < burn_in,
+                                           yes = "yes", no = "no")
+
+
+    } else {
+
+      fishpop_track[[i]]$timestep <- numeric(0)
+
+      fishpop_track[[i]]$burn_in <- character(0)
+
+    }
     # remove all burn_in values
     if (!return_burnin) {
 

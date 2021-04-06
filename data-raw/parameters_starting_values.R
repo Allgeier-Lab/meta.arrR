@@ -31,6 +31,7 @@ default_parameters <- list(
   pop_visibility = 1,
   pop_mean_move =  8,
   pop_var_move = 5,
+  pop_prob_move = 0,
 
   pop_a = 0.0121,
   pop_b = 3.161,
