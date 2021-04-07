@@ -37,6 +37,9 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n, double pr
     // get random number between 0 and 1
     double prob_temp = runif(1, 0.0, 1.0)(0);
 
+    // MH: This should change with stationary
+    // prob_move
+
     // move if probability is below random number
     if (prob_temp < prob_move) {
 

@@ -24,7 +24,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
   Rcpp::List result(n);
 
   // get table count of individuals within each metaecosystem
-  Rcpp::IntegerVector id_table = rcpp_get_table(x(_, 13), n);
+  Rcpp::IntegerVector id_table = rcpp_get_table(x(_, 14), n);
 
   // IntegerVector nrow_temp = ifelse(id_table == 0, 1, id_table);
 
@@ -41,7 +41,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
     if (nrow_temp == 0) nrow_temp = 1;
 
     // create temp matrix with nrow according to table count
-    Rcpp::NumericMatrix fishpop_temp(nrow_temp, 13);
+    Rcpp::NumericMatrix fishpop_temp(nrow_temp, 14);
 
     // individiuals present in current metaecosys
     if (id_table(i) > 0) {
@@ -50,7 +50,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
       for (int j = 0; j < x.nrow(); j++) {
 
       // get current metaecosystem id
-      int id_temp = x(j, 13);
+      int id_temp = x(j, 14);
 
       // check if current id is current metaecosystem
       if (id_temp == i + 1) {
@@ -59,7 +59,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
         Rcpp::NumericVector row_temp = x(j, _);
 
         // remove metaecosystem id
-        row_temp.erase(13);
+        row_temp.erase(14);
 
         // write into matrix
 
@@ -74,7 +74,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
     } else {
 
       // get currrent row
-      Rcpp::NumericVector row_temp(13, NA_REAL);
+      Rcpp::NumericVector row_temp(14, NA_REAL);
 
       // write into matrix
       fishpop_temp(k, _) = row_temp;
@@ -85,7 +85,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
     colnames(fishpop_temp) = CharacterVector::create("id", "age", "x", "y", "heading",
              "length", "weight", "reserves", "reserves_max",
              "activity", "respiration",
-             "died_consumption", "died_background");
+             "died_consumption", "died_background", "stationary");
 
     // return result
     result[i] = fishpop_temp;
@@ -96,10 +96,13 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
 }
 
 /*** R
+fishpop_values <- lapply(metasyst$fishpop, function(i)
+  as.matrix(raster::as.data.frame(i, xy = TRUE)))
+
 mat <- rcpp_list_to_matrix(x = fishpop_values, n = metasyst$n,
                            pop_n = metasyst$starting_values$pop_n)
 
-mat[1:3, 14] <- 3
+mat[1:2, 15] <- 3
 
 lst <- rcpp_matrix_to_list(x = mat, n = metasyst$n)
 */

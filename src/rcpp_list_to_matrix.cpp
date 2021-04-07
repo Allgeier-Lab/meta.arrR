@@ -22,7 +22,7 @@
 Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List x, int n, int pop_n) {
 
   // creating final matrix with local systems times pop_n rows and additional col for id
-  Rcpp::NumericMatrix result(n * pop_n, 14);
+  Rcpp::NumericMatrix result(n * pop_n, 15);
 
   // counter to fill rows
   int k = 0;
@@ -45,7 +45,7 @@ Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List x, int n, int pop_n) {
       Rcpp::NumericVector row_temp = input_temp(j, _);
 
       // add meta id
-      row_temp.insert(13, i + 1);
+      row_temp.insert(14, i + 1);
 
       // write into current row
       result(k, _) = row_temp;
@@ -60,6 +60,9 @@ Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List x, int n, int pop_n) {
 }
 
 /*** R
+fishpop_values <- lapply(metasyst$fishpop, function(i)
+  as.matrix(raster::as.data.frame(i, xy = TRUE)))
+
 rcpp_list_to_matrix(x = fishpop_values, n = metasyst$n,
                     pop_n = metasyst$starting_values$pop_n)
 

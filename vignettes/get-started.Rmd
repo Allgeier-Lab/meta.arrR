@@ -40,7 +40,7 @@ extent <- c(50, 50)
 
 grain <- 1
 
-input_sys <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matrix, 
+metasyst <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matrix, 
                         starting_values = starting_values, parameters = parameters)
 
 # set time per iterations
@@ -48,11 +48,11 @@ min_per_i <- 120
 
 # run the model for three years
 years <- 1
-max_i <- 100 #  (60 * 24 * 365 * years) / min_per_i
+max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every 15 days
 days <- 5
-save_each <- 1 # (24 / (min_per_i / 60)) * days
+save_each <- (24 / (min_per_i / 60)) * days
 
 max_i %% save_each
 
@@ -62,7 +62,7 @@ nutr_input <- simulate_input_sine(n = 3, timestep = 1:max_i,
 
 plot_nutrient_input(nutr_input)
 
-result <- simulate_meta(metasyst = input_sys, nutr_input = nutr_input,
+result <- simulate_meta(metasyst = metasyst, nutr_input = nutr_input,
                         parameters = parameters, reef_attraction = TRUE,
                         max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 

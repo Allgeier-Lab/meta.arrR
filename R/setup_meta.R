@@ -57,7 +57,7 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
 
       }
 
-      no_reefs <- paste(c(vapply(reefs, FUN = nrow, FUN.VALUE = numeric(1)),  collapse = ", "))
+      no_reefs <- paste(c(vapply(reefs, FUN = nrow, FUN.VALUE = numeric(1))), collapse = ", ")
 
       message("> ...Creating ", no_reefs, " artifical reef cells...")
 
@@ -99,6 +99,8 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
 
     # create unique id; first number identifies metaecosyst
     fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
+
+    fishpop$stationary <- 0
 
     # save in final list
     fishpop_list[[i]] <- fishpop
