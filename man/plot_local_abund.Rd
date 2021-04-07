@@ -14,10 +14,10 @@ plot_local_abund(x, base_size = 10, ...)
 \item{...}{Not used.}
 }
 \description{
-Ploting method for meta_rn object
+Plotting method for meta_rn object
 }
 \details{
-Ploting method for nutrient iinput created with \code{\link{simulate_input_sine}}.
+Plotting method for nutrient input created with \code{\link{simulate_input_sine}}.
 }
 \examples{
 # Add example code

@@ -1,13 +1,13 @@
 #' plot_local_abund
 #'
-#' @description Ploting method for meta_rn object
+#' @description Plotting method for meta_rn object
 #'
 #' @param x ntr_inpt object.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
 #' @details
-#' Ploting method for nutrient iinput created with \code{\link{simulate_input_sine}}.
+#' Plotting method for nutrient input created with \code{\link{simulate_input_sine}}.
 #'
 #' @examples
 #' # Add example code
@@ -20,7 +20,8 @@ plot_local_abund <- function(x, base_size = 10, ...) {
 
   abundance <- get_abundance(result = x)
 
-  abundance_sum <- stats::aggregate(abundance ~ timestep, data = abundance,
+  abundance_sum <- stats::aggregate(x = abundance$abundance,
+                                    by = list(timestep = abundance$timestep),
                                     FUN = mean)
 
   gg_input <- ggplot2::ggplot(data = abundance) +
@@ -29,7 +30,7 @@ plot_local_abund <- function(x, base_size = 10, ...) {
     ggplot2::geom_line(ggplot2::aes(x = timestep, y = abundance, col = factor(meta),
                                     linetype = "Local")) +
     ggplot2::geom_line(data = abundance_sum,
-                       ggplot2::aes(x = timestep, y = abundance, linetype = "Regional"),
+                       ggplot2::aes(x = timestep, y = x, linetype = "Regional"),
                        col = "black") +
     ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
     ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +

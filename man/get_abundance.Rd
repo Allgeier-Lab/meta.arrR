@@ -4,7 +4,7 @@
 \alias{get_abundance}
 \title{get_abundance}
 \usage{
-get_abundance(resulti)
+get_abundance(result)
 }
 \arguments{
 \item{result}{meta_rn object of simulation run.}

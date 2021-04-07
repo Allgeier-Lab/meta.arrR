@@ -48,11 +48,11 @@ min_per_i <- 120
 
 # run the model for three years
 years <- 1
-max_i <- (60 * 24 * 365 * years) / min_per_i
+max_i <- 100 #  (60 * 24 * 365 * years) / min_per_i
 
 # save results only every 15 days
 days <- 5
-save_each <- (24 / (min_per_i / 60)) * days
+save_each <- 1 # (24 / (min_per_i / 60)) * days
 
 max_i %% save_each
 
