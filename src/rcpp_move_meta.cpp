@@ -8,7 +8,7 @@
 //' @param fishpop_values List with fish population.
 //' @param n Integer with number of metaecosystems.
 //' @param pop_n Integer with number of individuals.
-//' @param prob_move Double with probability to move betwenn metaecosystems.
+//' @param fishpop_stationary Matrix with stationary value for each individual.
 //' @param extent Spatial extent of the seafloor raster.
 //'
 //' @details
@@ -22,7 +22,8 @@
 //'
 //' @keywords export
 // [[Rcpp::export]]
-Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n, double prob_move,
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n,
+                          Rcpp::NumericMatrix fishpop_stationary,
                           Rcpp::NumericVector extent) {
 
   // convert list to matrix
@@ -31,29 +32,39 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n, double pr
   // get unique metasyst id
   Rcpp::IntegerVector id_meta = Rcpp::seq(1, n);
 
+  // MH: Use map to store stationarity parameter
+
   // loop through all individuuals
   for (int i = 0; i < fishpop_mat.nrow(); i ++) {
+
+    // get position of current fish id
+    auto it_temp = std::find(fishpop_stationary(_, 0).begin(),
+                        fishpop_stationary(_, 0).end(),
+                        fishpop_mat(i, 0));
+
+    int index_temp = it_temp - fishpop_stationary(_, 0).begin();
+
+    // prob_move
+    double prob_move = fishpop_mat(i, 13) / fishpop_stationary(index_temp, 1);
 
     // get random number between 0 and 1
     double prob_temp = runif(1, 0.0, 1.0)(0);
 
-    // MH: This should change with stationary
-    // prob_move
 
     // move if probability is below random number
     if (prob_temp < prob_move) {
 
       // get current id
-      int id_temp = fishpop_mat(i, 13);
+      int id_meta_temp = fishpop_mat(i, 14);
 
       // get all id not currently in
-      Rcpp::IntegerVector id_new = id_meta[id_meta != id_temp];
+      Rcpp::IntegerVector id_new = id_meta[id_meta != id_meta_temp];
 
       // sample new random id
       int id_random = Rcpp::sample(id_new, 1)(0);
 
       // update meta id
-      fishpop_mat(i, 13) = id_random;
+      fishpop_mat(i, 14) = id_random;
 
       // random x coord
       fishpop_mat(i, 2) = Rcpp::runif(1, extent(0), extent(1))(0);
@@ -61,10 +72,14 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n, double pr
       // random y coord
       fishpop_mat(i, 3) = Rcpp::runif(1, extent(2), extent(3))(0);
 
+      // set stationary to zero
+      fishpop_mat(i, 13) = 0;
+
 
     } else {
 
-      continue;
+      // set stationary to zero
+      fishpop_mat(i, 13) += 1;
 
     }
   }
@@ -75,7 +90,9 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n, double pr
 }
 
 /*** R
-rcpp_move_meta(fishpop_values = fishpop_values, n = metasyst$n,
-               pop_n = metasyst$starting_values$pop_n, prob_move = 0.25)
+rcpp_move_meta(fishpop_values = fishpop_values,
+               n = n, pop_n = pop_n,
+               fishpop_stationary = fishpop_stationary,
+               extent = as.vector(extent, mode = "numeric")
 
 */

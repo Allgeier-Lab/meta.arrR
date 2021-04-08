@@ -70,7 +70,7 @@ rcpp_matrix_to_list <- function(x, n) {
 #' @param fishpop_values List with fish population.
 #' @param n Integer with number of metaecosystems.
 #' @param pop_n Integer with number of individuals.
-#' @param prob_move Double with probability to move betwenn metaecosystems.
+#' @param fishpop_stationary Matrix with stationary value for each individual.
 #' @param extent Spatial extent of the seafloor raster.
 #'
 #' @details
@@ -83,7 +83,7 @@ rcpp_matrix_to_list <- function(x, n) {
 #' @rdname rcpp_move_meta
 #'
 #' @keywords export
-rcpp_move_meta <- function(fishpop_values, n, pop_n, prob_move, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop_values, n, pop_n, prob_move, extent)
+rcpp_move_meta <- function(fishpop_values, n, pop_n, fishpop_stationary, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop_values, n, pop_n, fishpop_stationary, extent)
 }
 

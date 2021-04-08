@@ -24,12 +24,10 @@ starting_values <- meta.arrR::default_starting_values
 
 starting_values$pop_n <- 3
 
-# get paramters
+# get parameters
 parameters <- meta.arrR::default_parameters
 
-parameters$nutrients_output <- 0.0
-
-parameters$pop_prob_move <- 0.25
+parameters$pop_mean_stationary <- 10
 
 # create 5 reef cells in center of seafloor
 reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
@@ -46,13 +44,13 @@ metasyst <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matri
 # set time per iterations
 min_per_i <- 120
 
-# run the model for three years
+# run the model for n years
 years <- 1
-max_i <- (60 * 24 * 365 * years) / min_per_i
+max_i <- 100 # (60 * 24 * 365 * years) / min_per_i
 
-# save results only every 15 days
+# save results only every m days
 days <- 5
-save_each <- (24 / (min_per_i / 60)) * days
+save_each <- 1 # (24 / (min_per_i / 60)) * days
 
 max_i %% save_each
 
@@ -60,15 +58,17 @@ nutr_input <- simulate_input_sine(n = 3, timestep = 1:max_i,
                                   period_mn = 0.0025, period_sd = 0.2, 
                                   amplitude_mn = 0.001, amplitude_sd = 0)
 
-plot_nutrient_input(nutr_input)
+# plot_nutrient_input(nutr_input)
 
-result <- simulate_meta(metasyst = metasyst, nutr_input = nutr_input,
+result <- simulate_meta(metasyst = metasyst, nutr_input = NULL,
                         parameters = parameters, reef_attraction = TRUE,
                         max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 
 plot(result, what = "seafloor")
 
 plot_local_abund(result)
+
+get_abundance(result)
 
 # library(ggplot2)
 # library(patchwork)

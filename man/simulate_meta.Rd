@@ -48,6 +48,7 @@ Core function to run model.
 Wrapper function to run model. Executes the following sub-processes (i) simulate_seagrass
 (ii) distribute_detritus (iii) simulate_movement (iv) simulate_movement (v) simulate_respiration
 (vi) simulate_growth (vii) simulate_mortality and (viii) simulate_diffusion.
+ If pop_mean_stationary = 0, individuals never move across local ecosystems.
 }
 \examples{
 # Add example code

@@ -100,6 +100,7 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
     # create unique id; first number identifies metaecosyst
     fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
 
+    # create col to count movement acroos ecosystems
     fishpop$stationary <- 0
 
     # save in final list

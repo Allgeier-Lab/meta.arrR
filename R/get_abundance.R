@@ -25,24 +25,37 @@ get_abundance <- function(result) {
 
   }
 
+  # loop through all metaecosystem and combine to data.frame
   abundance <- do.call(rbind, lapply(X = seq_along(result$fishpop), function(i) {
 
+    # get only needed cols
     fishpop_temp <- subset(result$fishpop[[i]], select = c("id", "timestep"))
 
+    # count number of rows per timestep
     abundance_temp <- stats::aggregate(x = fishpop_temp$id,
                                        by = list(timestep = fishpop_temp$timestep),
                                        FUN = length)
 
+    # check which IDs are NA (no individual present)
     abundance_na <- fishpop_temp$timestep[is.na(fishpop_temp$id)]
 
+    # replace all NA rows with 0 abundance
     abundance_temp$x[abundance_temp$timestep %in% abundance_na] <- 0
 
+    # replace names
     names(abundance_temp) <- c("timestep", "abundance")
 
+    # save meta id
     abundance_temp$meta <- i
 
     return(abundance_temp)
   }))
+
+  # order by timestep and meta
+  abundance <- abundance[order(abundance$timestep, abundance$meta), ]
+
+  # remove row numbers because stupid
+  rownames(abundance) <- NULL
 
   return(abundance)
 }

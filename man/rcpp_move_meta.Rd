@@ -4,7 +4,7 @@
 \alias{rcpp_move_meta}
 \title{rcpp_move_meta}
 \usage{
-rcpp_move_meta(fishpop_values, n, pop_n, prob_move, extent)
+rcpp_move_meta(fishpop_values, n, pop_n, fishpop_stationary, extent)
 }
 \arguments{
 \item{fishpop_values}{List with fish population.}
@@ -13,7 +13,7 @@ rcpp_move_meta(fishpop_values, n, pop_n, prob_move, extent)
 
 \item{pop_n}{Integer with number of individuals.}
 
-\item{prob_move}{Double with probability to move betwenn metaecosystems.}
+\item{fishpop_stationary}{Matrix with stationary value for each individual.}
 
 \item{extent}{Spatial extent of the seafloor raster.}
 }

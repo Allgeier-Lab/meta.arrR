@@ -17,6 +17,7 @@
 #' Wrapper function to run model. Executes the following sub-processes (i) simulate_seagrass
 #' (ii) distribute_detritus (iii) simulate_movement (iv) simulate_movement (v) simulate_respiration
 #' (vi) simulate_growth (vii) simulate_mortality and (viii) simulate_diffusion.
+#'  If pop_mean_stationary = 0, individuals never move across local ecosystems.
 #'
 #' @return mdl_rn
 #'
@@ -86,22 +87,21 @@ simulate_meta <- function(metasyst,
   seafloor_values <- lapply(metasyst$seafloor, function(i)
     as.matrix(raster::as.data.frame(i, xy = TRUE)))
 
+  # MH: add check if fishpop is NULL
+
   # convert seafloor to matrix
   fishpop_values <- lapply(metasyst$fishpop, function(i)
     as.matrix(raster::as.data.frame(i, xy = TRUE)))
 
-  # check if fishpop is NULL
-  if (is.null(fishpop_values)) {
+  # create look-up table for stationary value
+  fishpop_stationary <- do.call(rbind, lapply(metasyst$fishpop, function(i) {
 
-    fishpop_values <- rep(x = list(data.frame(id = numeric(), age = numeric(),
-                                              x = numeric(), y = numeric(), heading = numeric(),
-                                              length = numeric(), weight = numeric(),
-                                              reserves = numeric(), reserves_max = numeric(),
-                                              activity = numeric(), respiration = numeric(),
-                                              died_consumption = numeric(), died_background = numeric())),
-                          times = metasyst$n)
+    value_temp <- ifelse(test = parameters$pop_mean_stationary == 0, yes = 0,
+                         no = arrR::rlognorm(n = metasyst$starting_values$pop_n,
+                                             mean = parameters$pop_mean_stationary,
+                                             sd = parameters$pop_var_stationary))
 
-  }
+    cbind(id = i$id, value = value_temp)}))
 
   # create nutrient input if not present
   if (is.null(nutr_input)) {
@@ -172,12 +172,14 @@ simulate_meta <- function(metasyst,
   # simulate until max_i is reached
   for (i in 1:max_i) {
 
-    if (parameters$pop_prob_move > 0 && metasyst$starting_values$pop_n > 0) {
+    # check if fishpop is present
+    if (parameters$pop_mean_stationary > 0 && metasyst$starting_values$pop_n > 0) {
 
       fishpop_values <- simulate_movement_meta(fishpop_values = fishpop_values,
                                                n = metasyst$n,
                                                pop_n = metasyst$starting_values$pop_n,
                                                parameters = parameters,
+                                               fishpop_stationary = fishpop_stationary,
                                                extent = extent)
 
     }
@@ -292,19 +294,27 @@ simulate_meta <- function(metasyst,
     # fishpop is present
     if (metasyst$starting_values$pop_n > 0) {
 
+      # repeat each timestep accoding to number of rows (individuals) each track
       timestep_temp <-  rep(x = seq(from = 0, to = max_i, by = save_each),
                             times = vapply(X = fishpop_track[[i]], FUN = nrow, FUN.VALUE = numeric(1)))
 
-      # MH: Add timestep here?
+      # combine list to data.frame
       fishpop_track[[i]] <- data.frame(do.call(what = "rbind", args = fishpop_track[[i]]))
 
-      # MH How to get pop_n for each timestep? Aggregate by unique id ?
+      # add timestep values
       fishpop_track[[i]]$timestep <- timestep_temp
 
-
+      # add burn in col
       fishpop_track[[i]]$burn_in <- ifelse(test = fishpop_track[[i]]$timestep < burn_in,
                                            yes = "yes", no = "no")
 
+
+      # individuals did not move across ecosystems
+      if (parameters$pop_mean_stationary == 0) {
+
+        fishpop_track[[i]]$stationary <- fishpop_track[[i]]$timestep
+
+      }
 
     } else {
 
@@ -326,6 +336,7 @@ simulate_meta <- function(metasyst,
   # combine result to list
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track,
                  starting_values = metasyst$starting_values, parameters = parameters,
+                 fishpop_stationary = fishpop_stationary,
                  n = metasyst$n, reef_attraction = reef_attraction,
                  max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  save_each = save_each, extent = extent, grain = raster::res(metasyst$seafloor[[1]]),

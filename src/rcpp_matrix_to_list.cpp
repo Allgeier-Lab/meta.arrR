@@ -26,8 +26,6 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
   // get table count of individuals within each metaecosystem
   Rcpp::IntegerVector id_table = rcpp_get_table(x(_, 14), n);
 
-  // IntegerVector nrow_temp = ifelse(id_table == 0, 1, id_table);
-
   // loop through all meta ecosystems
   for (int i = 0; i < id_table.length(); i++) {
 
@@ -62,7 +60,6 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
         row_temp.erase(14);
 
         // write into matrix
-
         fishpop_temp(k, _) = row_temp;
 
         // increase row counter
