@@ -89,11 +89,6 @@ simulate_meta <- function(metasyst,
   fishpop_values <- lapply(metasyst$fishpop, function(i)
     as.matrix(raster::as.data.frame(i, xy = TRUE)))
 
-  # create look-up table for stationary value
-  fishpop_stationary <- create_rstationary(fishpop_values = fishpop_values,
-                                           mean = parameters$pop_mean_stationary,
-                                           sd = parameters$pop_var_stationary)
-
   # create lists to store results for each timestep
   seafloor_track <- vector(mode = "list", length = metasyst$n)
 
@@ -163,7 +158,7 @@ simulate_meta <- function(metasyst,
                                                n = metasyst$n,
                                                pop_n = metasyst$starting_values$pop_n,
                                                parameters = parameters,
-                                               fishpop_stationary = fishpop_stationary,
+                                               fishpop_stationary = metasyst$fishpop_stationary,
                                                extent = extent)
 
     }
@@ -320,7 +315,7 @@ simulate_meta <- function(metasyst,
   # combine result to list
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track,
                  starting_values = metasyst$starting_values, parameters = parameters,
-                 fishpop_stationary = fishpop_stationary,
+                 fishpop_stationary = metasyst$fishpop_stationary,
                  n = metasyst$n, reef_attraction = reef_attraction,
                  max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  save_each = save_each, extent = extent, grain = raster::res(metasyst$seafloor[[1]]),

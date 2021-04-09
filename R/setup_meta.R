@@ -108,8 +108,14 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
 
   }
 
+  # create look-up table for stationary value
+  fishpop_stationary <- create_rstationary(fishpop_values = fishpop_list,
+                                           mean = parameters$pop_mean_stationary,
+                                           sd = parameters$pop_var_stationary)
+
   # combine everything to one list
   result_list <- list(seafloor = seafloor_list, fishpop = fishpop_list,
+                      fishpop_stationary = fishpop_stationary,
                       starting_values = starting_values, parameters = parameters,
                       n = n, extent = extent, grain = grain, reefs = reefs)
 
