@@ -40,16 +40,7 @@ simulate_meta <- function(metasyst,
 
   }
 
-  # # check parameters
-  # param_warnings <- tryCatch(arrR::check_parameters(parameters = parameters, verbose = FALSE),
-  #                            warning = function(wrn) wrn)
-  #
-  # # stop with error
-  # if (length(param_warnings$message) > 0) {
-  #
-  #   stop(param_warnings$message, call. = FALSE)
-  #
-  # }
+  # MH: Check parameters?
 
   # check if max_i can be divided by provided save_each without reminder
   if (max_i %% save_each != 0) {
@@ -65,6 +56,13 @@ simulate_meta <- function(metasyst,
 
   }
 
+  # check if burn_in is smaller than max_i or zero
+  if (burn_in >= max_i | burn_in < 0) {
+
+    warning("'burn_in' larger than or equal to 'max_i' or 'burn_in' < 0.", call. = FALSE)
+
+  }
+
   # check if nutr_input has value for each iteration
   if (!is.null(nutr_input)) {
 
@@ -75,11 +73,11 @@ simulate_meta <- function(metasyst,
       stop("'nutr_input' must have input amount for each iteration.", call. = FALSE)
 
     }
-  }
 
-  if (burn_in >= max_i | burn_in < 0) {
+  # create nutrient input if not present
+  } else {
 
-    warning("'burn_in' larger than or equal to 'max_i' or 'burn_in' < 0.", call. = FALSE)
+    nutr_input <- rep(list(rep(x = 0, times = max_i)), times = metasyst$n)
 
   }
 
@@ -87,28 +85,14 @@ simulate_meta <- function(metasyst,
   seafloor_values <- lapply(metasyst$seafloor, function(i)
     as.matrix(raster::as.data.frame(i, xy = TRUE)))
 
-  # MH: add check if fishpop is NULL
-
   # convert seafloor to matrix
   fishpop_values <- lapply(metasyst$fishpop, function(i)
     as.matrix(raster::as.data.frame(i, xy = TRUE)))
 
   # create look-up table for stationary value
-  fishpop_stationary <- do.call(rbind, lapply(metasyst$fishpop, function(i) {
-
-    value_temp <- ifelse(test = parameters$pop_mean_stationary == 0, yes = 0,
-                         no = arrR::rlognorm(n = metasyst$starting_values$pop_n,
-                                             mean = parameters$pop_mean_stationary,
-                                             sd = parameters$pop_var_stationary))
-
-    cbind(id = i$id, value = value_temp)}))
-
-  # create nutrient input if not present
-  if (is.null(nutr_input)) {
-
-    nutr_input <- rep(list(rep(x = 0, times = max_i)), times = metasyst$n)
-
-  }
+  fishpop_stationary <- create_rstationary(fishpop_values = fishpop_values,
+                                           mean = parameters$pop_mean_stationary,
+                                           sd = parameters$pop_var_stationary)
 
   # create lists to store results for each timestep
   seafloor_track <- vector(mode = "list", length = metasyst$n)
