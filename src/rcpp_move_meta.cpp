@@ -32,24 +32,23 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n,
   // get unique metasyst id
   Rcpp::IntegerVector id_meta = Rcpp::seq(1, n);
 
-  // MH: Use map to store stationarity parameter
+  // get stationary values
+  Rcpp::NumericVector stationary_vals = fishpop_stationary(_, 1);
 
   // loop through all individuuals
-  for (int i = 0; i < fishpop_mat.nrow(); i ++) {
+  for (int i = 0; i < fishpop_mat.nrow(); i++) {
 
-    // get position of current fish id
-    auto it_temp = std::find(fishpop_stationary(_, 0).begin(),
-                        fishpop_stationary(_, 0).end(),
-                        fishpop_mat(i, 0));
+    // get id of current individual
+    Rcpp::LogicalVector id_fish_temp = fishpop_stationary(_, 0) == fishpop_mat(i, 0);
 
-    int index_temp = it_temp - fishpop_stationary(_, 0).begin();
+    // get stationary value
+    double stationary_vals_temp = as<double>(stationary_vals[id_fish_temp]);
 
     // prob_move
-    double prob_move = fishpop_mat(i, 13) / fishpop_stationary(index_temp, 1);
+    double prob_move = fishpop_mat(i, 13) / stationary_vals_temp;
 
     // get random number between 0 and 1
     double prob_temp = runif(1, 0.0, 1.0)(0);
-
 
     // move if probability is below random number
     if (prob_temp < prob_move) {
@@ -78,7 +77,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n,
 
     } else {
 
-      // set stationary to zero
+      // increase stationary by one
       fishpop_mat(i, 13) += 1;
 
     }
@@ -93,6 +92,5 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n,
 rcpp_move_meta(fishpop_values = fishpop_values,
                n = n, pop_n = pop_n,
                fishpop_stationary = fishpop_stationary,
-               extent = as.vector(extent, mode = "numeric")
-
+               extent = as.vector(extent, mode = "numeric"))
 */
