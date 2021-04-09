@@ -3,6 +3,7 @@
 S3method(plot,meta_rn)
 S3method(print,meta_rn)
 S3method(print,meta_syst)
+export(create_rstationary)
 export(get_abundance)
 export(plot_local_abund)
 export(plot_nutrient_input)
