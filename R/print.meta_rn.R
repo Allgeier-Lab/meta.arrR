@@ -28,7 +28,7 @@ print.meta_rn <- function(x, digits = 2, timestep = x$max_i, ...) {
 
     c(bg = round(sum(seafloor_temp$bg_biomass, na.rm = TRUE), digits = digits),
       ag = round(sum(seafloor_temp$ag_biomass, na.rm = TRUE), digits = digits),
-      nutr = round(sum(seafloor_temp$nutrients_pool)), digits = digits)
+      nutr = round(sum(seafloor_temp$nutrients_pool), digits = digits))
 
   })
 
