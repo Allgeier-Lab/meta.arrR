@@ -6,7 +6,6 @@
 \usage{
 simulate_movement_meta(
   fishpop_values,
-  n,
   pop_n,
   parameters,
   fishpop_stationary,
@@ -15,8 +14,6 @@ simulate_movement_meta(
 }
 \arguments{
 \item{fishpop_values}{List with fishpop matrices.}
-
-\item{n}{Numeric with number of metaecosystems.}
 
 \item{pop_n}{Numeric with initial number of fish individuals.}
 

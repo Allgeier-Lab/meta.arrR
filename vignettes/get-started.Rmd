@@ -19,6 +19,10 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(meta.arrR)
 
+```
+
+```{r}
+
 # get starting values
 starting_values <- meta.arrR::default_starting_values
 
@@ -62,26 +66,34 @@ metasyst <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matri
 # 
 # plot_nutrient_input(nutr_input)
 
+```
+
+```{r run}
+
 result <- simulate_meta(metasyst = metasyst, nutr_input = NULL,
                         parameters = parameters, reef_attraction = TRUE,
                         max_i = max_i, save_each = save_each, min_per_i = min_per_i, 
                         verbose = TRUE)
 
+```
+
+```{r stuff}
+
 # plot(result, what = "seafloor")
 
-plot_local_abund(result)
+# plot_local_abund(result)
 
 # get_abundance(result)
 
-dplyr::bind_rows(result$fishpop) %>% 
-  dplyr::filter(timestep != 0) %>% 
-  dplyr::mutate(stat_class = dplyr::case_when(stationary == 0 ~ "moved", 
-                                              TRUE ~ "stayed")) %>%
-  dplyr::group_by(id, stat_class) %>% 
-  dplyr::summarise(n = dplyr::n()) %>% 
-  dplyr::filter(!is.na(id)) %>% 
-  dplyr::left_join(data.frame(result$fishpop_stationary), by = "id") %>% 
-  dplyr::arrange(-n)
+# dplyr::bind_rows(result$fishpop) %>% 
+#   dplyr::filter(timestep != 0) %>% 
+#   dplyr::mutate(stat_class = dplyr::case_when(stationary == 0 ~ "moved", 
+#                                               TRUE ~ "stayed")) %>%
+#   dplyr::group_by(id, stat_class) %>% 
+#   dplyr::summarise(n = dplyr::n()) %>% 
+#   dplyr::filter(!is.na(id)) %>% 
+#   dplyr::left_join(data.frame(result$fishpop_stationary), by = "id") %>% 
+#   dplyr::arrange(-n)
 
 # library(ggplot2)
 # library(patchwork)

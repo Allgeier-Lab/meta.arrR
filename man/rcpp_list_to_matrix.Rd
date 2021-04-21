@@ -4,12 +4,10 @@
 \alias{rcpp_list_to_matrix}
 \title{rcpp_list_to_matrix}
 \usage{
-rcpp_list_to_matrix(x, n, pop_n)
+rcpp_list_to_matrix(x, pop_n)
 }
 \arguments{
 \item{x}{List with individuals within metaecosystems.}
-
-\item{n}{Integer with number of metaecosystems.}
 
 \item{pop_n}{Integer with number of indiviuals.}
 }
