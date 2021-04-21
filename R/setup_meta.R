@@ -70,7 +70,7 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
 
     }
 
-    message("> ...Creating ", starting_values$pop_n, " individuals...")
+    message("> ...Creating ", paste(starting_values$pop_n, collapse = ", "), " individuals...")
   }
 
   # init list for objects
@@ -78,30 +78,49 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
 
   fishpop_list <- vector(mode = "list", length = n)
 
+  # create pop_n vector if length = 1
+  if (length(starting_values$pop_n) == 1) {
+
+    starting_values$pop_n <- rep(x = starting_values$pop_n, times = n)
+
+  }
+
   # loop through all metaecosystems
   for (i in 1:n) {
 
+    starting_values_temp <- starting_values
+
+    starting_values_temp$pop_n <- starting_values$pop_n[[i]]
+
     # create seafloor
     seafloor <- arrR::setup_seafloor(extent = extent, grain = grain, reefs = reefs[[i]],
-                                     starting_values = starting_values, random = random,
+                                     starting_values = starting_values_temp, random = random,
                                      verbose = FALSE, ...)
 
     # save in final list
     seafloor_list[[i]] <- seafloor
 
     # create fishpop
-    fishpop <- arrR::setup_fishpop(seafloor = seafloor, starting_values = starting_values,
+    fishpop <- arrR::setup_fishpop(seafloor = seafloor, starting_values = starting_values_temp,
                                    parameters = parameters, use_log = use_log,
                                    verbose = FALSE)
 
     # get number of digits of pop_n to create unique id
-    no_digits <- floor(log10(starting_values$pop_n)) + 1
+    no_digits <- floor(log10(starting_values_temp$pop_n)) + 1
 
     # create unique id; first number identifies metaecosyst
     fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
 
-    # create col to count movement acroos ecosystems
-    fishpop$stationary <- 0
+    # add stationary col
+    if (nrow(fishpop) == 0) {
+
+      fishpop <- cbind(fishpop, stationary = numeric(0))
+
+    } else {
+
+      fishpop$stationary <- 0
+
+    }
 
     # save in final list
     fishpop_list[[i]] <- fishpop
@@ -116,8 +135,8 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
   # combine everything to one list
   result_list <- list(seafloor = seafloor_list, fishpop = fishpop_list,
                       fishpop_stationary = fishpop_stationary,
-                      starting_values = starting_values, parameters = parameters,
-                      n = n, extent = extent, grain = grain, reefs = reefs)
+                      n = n, extent = extent, grain = grain, reefs = reefs,
+                      starting_values = starting_values, parameters = parameters)
 
   # specifiy class of list
   class(result_list) <- "meta_syst"

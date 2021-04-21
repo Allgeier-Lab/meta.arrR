@@ -18,13 +18,14 @@
 #' @export
 print.meta_syst <- function(x, digits = 3, ...) {
 
-
   no_reefs <- paste(c(vapply(x$reefs, FUN = nrow, FUN.VALUE = numeric(1))),  collapse = ", ")
+
+  no_fish <- paste(c(vapply(x$fishpop, FUN = nrow, FUN.VALUE = numeric(1))),  collapse = ", ")
 
   # print result
   cat(paste0("Metaecosystems    : ", x$n, "\n",
              "Local extent      : (", extent[1], ", ", extent[2], ")\n",
              "Local AR cells    : ", no_reefs, "\n",
-             "Local individuals : ", x$starting_values$pop_n, "\n"))
+             "Local individuals : ", no_fish, "\n"))
 
 }

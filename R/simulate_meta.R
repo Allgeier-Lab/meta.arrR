@@ -77,7 +77,7 @@ simulate_meta <- function(metasyst,
   # create nutrient input if not present
   } else {
 
-    nutr_input <- rep(list(rep(x = 0, times = max_i)), times = metasyst$n)
+    nutr_input <- vector(mode = "list", length = metasyst$n)
 
   }
 
@@ -152,7 +152,7 @@ simulate_meta <- function(metasyst,
   for (i in 1:max_i) {
 
     # check if fishpop is present
-    if (parameters$pop_mean_stationary > 0 && metasyst$starting_values$pop_n > 0) {
+    if (parameters$pop_mean_stationary > 0 && any(metasyst$starting_values$pop_n > 0)) {
 
       fishpop_values <- simulate_movement_meta(fishpop_values = fishpop_values,
                                                n = metasyst$n,
@@ -170,9 +170,12 @@ simulate_meta <- function(metasyst,
                            yes = 0, no = nrow(fishpop_values[[j]]))
 
       # simulate nutrient input
-      arrR::simulate_input(seafloor_values = seafloor_values[[j]],
-                           nutr_input = nutr_input[[j]],
-                           timestep = i)
+      if (!is.null(nutr_input[[j]])) {
+
+        arrR::simulate_input(seafloor_values = seafloor_values[[j]],
+                             nutr_input = nutr_input[[j]],
+                             timestep = i)
+      }
 
       # simulate seagrass growth
       arrR::simulate_seagrass(seafloor_values = seafloor_values[[j]],
@@ -271,11 +274,11 @@ simulate_meta <- function(metasyst,
                                           yes = "yes", no = "no")
 
     # fishpop is present
-    if (metasyst$starting_values$pop_n > 0) {
+    if (any(metasyst$starting_values$pop_n > 0)) {
 
       # repeat each timestep accoding to number of rows (individuals) each track
-      timestep_temp <-  rep(x = seq(from = 0, to = max_i, by = save_each),
-                            times = vapply(X = fishpop_track[[i]], FUN = nrow, FUN.VALUE = numeric(1)))
+      timestep_temp <- rep(x = seq(from = 0, to = max_i, by = save_each),
+                           times = vapply(X = fishpop_track[[i]], FUN = nrow, FUN.VALUE = numeric(1)))
 
       # combine list to data.frame
       fishpop_track[[i]] <- data.frame(do.call(what = "rbind", args = fishpop_track[[i]]))
@@ -314,12 +317,13 @@ simulate_meta <- function(metasyst,
 
   # combine result to list
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track,
-                 starting_values = metasyst$starting_values, parameters = parameters,
                  fishpop_stationary = metasyst$fishpop_stationary,
+                 nutr_input = nutr_input,
                  n = metasyst$n, reef_attraction = reef_attraction,
                  max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  save_each = save_each, extent = extent, grain = raster::res(metasyst$seafloor[[1]]),
-                 coords_reef = coords_reef)
+                 coords_reef = coords_reef,
+                 starting_values = metasyst$starting_values, parameters = parameters)
 
   # set class of result
   class(result) <- "meta_rn"

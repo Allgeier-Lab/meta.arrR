@@ -22,7 +22,7 @@ library(meta.arrR)
 # get starting values
 starting_values <- meta.arrR::default_starting_values
 
-starting_values$pop_n <- 16
+starting_values$pop_n <- c(1, 1, 8)
 
 # get parameters
 parameters <- meta.arrR::default_parameters
@@ -45,34 +45,43 @@ max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every m days
 days <- 5
-save_each <- (24 / (min_per_i / 60)) * days
+save_each <- 1 # (24 / (min_per_i / 60)) * days
 
 max_i %% save_each
 
 parameters$pop_mean_stationary <- max_i / 100
 
-parameters$pop_var_stationary <- parameters$pop_mean_stationary * 0.5
+parameters$pop_var_stationary <- 0 # parameters$pop_mean_stationary * 1
 
 metasyst <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matrix, 
-                        starting_values = starting_values, parameters = parameters)
+                       starting_values = starting_values, parameters = parameters)
 
-nutr_input <- simulate_input_sine(n = 3, timestep = 1:max_i,
-                                  period_mn = 0.005, period_sd = 0, 
-                                  amplitude_mn = 0.001, amplitude_sd = 0)
+# nutr_input <- simulate_input_sine(n = 3, timestep = 1:max_i,
+#                                   period_mn = 0.005, period_sd = 0, 
+#                                   amplitude_mn = 0.001, amplitude_sd = 0)
+# 
+# plot_nutrient_input(nutr_input)
 
-plot_nutrient_input(nutr_input)
-
-metasyst$fishpop_stationary
-
-result <- simulate_meta(metasyst = metasyst, nutr_input = nutr_input,
+result <- simulate_meta(metasyst = metasyst, nutr_input = NULL,
                         parameters = parameters, reef_attraction = TRUE,
-                        max_i = max_i, save_each = save_each, min_per_i = min_per_i)
+                        max_i = max_i, save_each = save_each, min_per_i = min_per_i, 
+                        verbose = TRUE)
 
-plot(result, what = "seafloor")
+# plot(result, what = "seafloor")
 
 plot_local_abund(result)
 
-get_abundance(result)
+# get_abundance(result)
+
+dplyr::bind_rows(result$fishpop) %>% 
+  dplyr::filter(timestep != 0) %>% 
+  dplyr::mutate(stat_class = dplyr::case_when(stationary == 0 ~ "moved", 
+                                              TRUE ~ "stayed")) %>%
+  dplyr::group_by(id, stat_class) %>% 
+  dplyr::summarise(n = dplyr::n()) %>% 
+  dplyr::filter(!is.na(id)) %>% 
+  dplyr::left_join(data.frame(result$fishpop_stationary), by = "id") %>% 
+  dplyr::arrange(-n)
 
 # library(ggplot2)
 # library(patchwork)

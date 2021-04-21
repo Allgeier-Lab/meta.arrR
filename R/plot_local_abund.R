@@ -20,7 +20,7 @@ plot_local_abund <- function(x, base_size = 10, ...) {
 
   abundance <- get_abundance(result = x)
 
-  abundance_max <- x$n * x$starting_values$pop_n
+  abundance_max <- sum(x$starting_values$pop_n)
 
   gg_input <- ggplot2::ggplot(data = abundance) +
     ggplot2::geom_hline(yintercept = x$starting_values$pop_n, linetype = 2,
