@@ -5,6 +5,6 @@
 
 using namespace Rcpp;
 
-Rcpp::NumericMatrix rcpp_list_to_matrix(List x, int n, int pop_n);
+Rcpp::NumericMatrix rcpp_list_to_matrix(List x, int pop_n);
 
 //#endif // RCPP_LIST_TO_MATRIX

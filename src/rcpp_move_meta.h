@@ -6,6 +6,6 @@
 
 using namespace Rcpp;
 
-Rcpp::List rcpp_move_meta(List x, int n, int pop_n);
+Rcpp::List rcpp_move_meta(List x, int pop_n);
 
 //#endif // RCPP_MOVE_META

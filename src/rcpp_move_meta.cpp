@@ -6,8 +6,7 @@
 //' @description Rcpp list to matrix
 //'
 //' @param fishpop_values List with fish population.
-//' @param n Integer with number of metaecosystems.
-//' @param pop_n Integer with number of individuals.
+//' @param pop_n Integer with total number of individuals.
 //' @param fishpop_stationary Matrix with stationary value for each individual.
 //' @param extent Spatial extent of the seafloor raster.
 //'
@@ -22,15 +21,15 @@
 //'
 //' @keywords export
 // [[Rcpp::export]]
-Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n,
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int pop_n,
                           Rcpp::NumericMatrix fishpop_stationary,
                           Rcpp::NumericVector extent) {
 
   // convert list to matrix
-  Rcpp::NumericMatrix fishpop_mat = rcpp_list_to_matrix(fishpop_values, n, pop_n);
+  Rcpp::NumericMatrix fishpop_mat = rcpp_list_to_matrix(fishpop_values, pop_n);
 
   // get unique metasyst id
-  Rcpp::IntegerVector id_meta = Rcpp::seq(1, n);
+  Rcpp::IntegerVector id_meta = Rcpp::seq(1, fishpop_values.length());
 
   // get stationary values
   Rcpp::NumericVector stationary_vals = fishpop_stationary(_, 1);
@@ -84,13 +83,13 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int n, int pop_n,
   }
 
   // convert matrix to list
-  return rcpp_matrix_to_list(fishpop_mat, n);
+  return rcpp_matrix_to_list(fishpop_mat, fishpop_values.length());
 
 }
 
 /*** R
 rcpp_move_meta(fishpop_values = fishpop_values,
-               n = n, pop_n = pop_n,
+               pop_n = sum(pop_n),
                fishpop_stationary = fishpop_stationary,
                extent = as.vector(extent, mode = "numeric"))
 */

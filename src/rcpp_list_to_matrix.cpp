@@ -5,7 +5,6 @@
 //' @description Rcpp list to matrix
 //'
 //' @param x List with individuals within metaecosystems.
-//' @param n Integer with number of metaecosystems.
 //' @param pop_n Integer with number of indiviuals.
 //'
 //' @details
@@ -19,10 +18,10 @@
 //'
 //' @keywords export
 // [[Rcpp::export]]
-Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List x, int n, int pop_n) {
+Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List x, int pop_n) {
 
   // creating final matrix with local systems times pop_n rows and additional col for id
-  Rcpp::NumericMatrix result(n * pop_n, 15);
+  Rcpp::NumericMatrix result(pop_n, 15);
 
   // counter to fill rows
   int k = 0;
@@ -63,9 +62,7 @@ Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List x, int n, int pop_n) {
 fishpop_values <- lapply(metasyst$fishpop, function(i)
   as.matrix(raster::as.data.frame(i, xy = TRUE)))
 
-rcpp_list_to_matrix(x = fishpop_values, n = metasyst$n,
-                    pop_n = metasyst$starting_values$pop_n)
+rcpp_list_to_matrix(x = fishpop_values, pop_n = sum(metasyst$starting_values$pop_n))
 
-rcpp_list_to_matrix(x = lst, n = metasyst$n,
-                    pop_n = metasyst$starting_values$pop_n)
+rcpp_list_to_matrix(x = lst, pop_n = sum(metasyst$starting_values$pop_n))
 */

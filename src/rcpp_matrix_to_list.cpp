@@ -96,10 +96,10 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n) {
 fishpop_values <- lapply(metasyst$fishpop, function(i)
   as.matrix(raster::as.data.frame(i, xy = TRUE)))
 
-mat <- rcpp_list_to_matrix(x = fishpop_values, n = metasyst$n,
-                           pop_n = metasyst$starting_values$pop_n)
+mat <- rcpp_list_to_matrix(x = fishpop_values,
+                           pop_n = sum(metasyst$starting_values$pop_n))
 
-mat[1:2, 15] <- 3
+mat[1, 15] <- 3
 
 lst <- rcpp_matrix_to_list(x = mat, n = metasyst$n)
 */

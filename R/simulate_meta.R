@@ -155,7 +155,6 @@ simulate_meta <- function(metasyst,
     if (parameters$pop_mean_stationary > 0 && any(metasyst$starting_values$pop_n > 0)) {
 
       fishpop_values <- simulate_movement_meta(fishpop_values = fishpop_values,
-                                               n = metasyst$n,
                                                pop_n = metasyst$starting_values$pop_n,
                                                parameters = parameters,
                                                fishpop_stationary = metasyst$fishpop_stationary,
