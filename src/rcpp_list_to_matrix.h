@@ -1,10 +1,6 @@
 //#ifndef RCPP_LIST_TO_MATRIX
 //#define RCPP_LIST_TO_MATRIX
 
-#include "Rcpp.h"
-
-using namespace Rcpp;
-
-Rcpp::NumericMatrix rcpp_list_to_matrix(List x, int pop_n);
+Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool id);
 
 //#endif // RCPP_LIST_TO_MATRIX

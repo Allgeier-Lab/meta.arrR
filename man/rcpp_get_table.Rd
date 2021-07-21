@@ -18,6 +18,6 @@ vector
 Rcpp get table
 }
 \details{
-Returns table with value count
+Returns table with value count. Only values x > 0 are allowed.
 }
 \keyword{export}

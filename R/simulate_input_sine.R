@@ -27,10 +27,13 @@ simulate_input_sine <- function(n, timestep,
                                 period_mn, period_sd, amplitude_mn, amplitude_sd,
                                 phase = 0, return_df = FALSE) {
 
+  # create empty list
   result_list <- vector(mode = "list", length = n)
 
+  # loop through all metaecosystems
   for (i in seq_along(result_list)) {
 
+    # draw mean period and amplitude
     period_temp <- abs(stats::rnorm(n = 1, mean = period_mn, sd = period_mn * period_sd))
 
     amplitude_temp <- stats::rnorm(n = 1, mean = amplitude_mn, sd = amplitude_mn * amplitude_sd)

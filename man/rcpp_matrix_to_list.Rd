@@ -4,10 +4,10 @@
 \alias{rcpp_matrix_to_list}
 \title{rcpp_matrix_to_list}
 \usage{
-rcpp_matrix_to_list(x, n)
+rcpp_matrix_to_list(fishpop, n)
 }
 \arguments{
-\item{x}{Matrix with fish population.}
+\item{fishpop}{Matrix with fish population.}
 
 \item{n}{Integer with number of metaecosystems.}
 }

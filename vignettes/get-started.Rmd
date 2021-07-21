@@ -53,27 +53,27 @@ save_each <- 1 # (24 / (min_per_i / 60)) * days
 
 max_i %% save_each
 
-parameters$pop_mean_stationary <- max_i / 100
+parameters$move_stationary <- max_i / 100
 
-parameters$pop_var_stationary <- 0 # parameters$pop_mean_stationary * 1
+parameters$move_stationary_var <- 0.1
 
 metasyst <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matrix, 
                        starting_values = starting_values, parameters = parameters)
 
-# nutr_input <- simulate_input_sine(n = 3, timestep = 1:max_i,
-#                                   period_mn = 0.005, period_sd = 0, 
-#                                   amplitude_mn = 0.001, amplitude_sd = 0)
-# 
-# plot_nutrient_input(nutr_input)
+nutr_input <- simulate_input_sine(n = 4, timestep = 1:max_i,
+                                  period_mn = 0.005, period_sd = 0,
+                                  amplitude_mn = 0.001, amplitude_sd = 0)
+
+plot_nutrient_input(nutr_input)
 
 ```
 
 ```{r run}
 
-result <- simulate_meta(metasyst = metasyst, nutr_input = NULL,
-                        parameters = parameters, reef_attraction = TRUE,
-                        max_i = max_i, save_each = save_each, min_per_i = min_per_i, 
-                        verbose = TRUE)
+# result <- simulate_meta(metasyst = metasyst, nutr_input = NULL,
+#                         parameters = parameters, reef_attraction = TRUE,
+#                         max_i = max_i, save_each = save_each, min_per_i = min_per_i, 
+#                         verbose = TRUE)
 
 ```
 

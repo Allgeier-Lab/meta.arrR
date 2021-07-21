@@ -4,16 +4,16 @@
 \alias{rcpp_move_meta}
 \title{rcpp_move_meta}
 \usage{
-rcpp_move_meta(fishpop_values, pop_n, fishpop_stationary, extent)
+rcpp_move_meta(fishpop, pop_n_sum, id_attr, stationary_values, id_meta, extent)
 }
 \arguments{
-\item{fishpop_values}{List with fish population.}
+\item{fishpop}{List with fish population.}
 
-\item{pop_n}{Integer with total number of individuals.}
-
-\item{fishpop_stationary}{Matrix with stationary value for each individual.}
+\item{pop_n_sum}{Integer with total number of individuals.}
 
 \item{extent}{Spatial extent of the seafloor raster.}
+
+\item{fishpop_attributes}{Matrix with stationary value for each individual.}
 }
 \value{
 void

@@ -71,6 +71,7 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
     }
 
     message("> ...Creating ", paste(starting_values$pop_n, collapse = ", "), " individuals...")
+
   }
 
   # init list for objects
@@ -88,6 +89,7 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
   # loop through all metaecosystems
   for (i in 1:n) {
 
+    # create temp starting values because pop_n can differ
     starting_values_temp <- starting_values
 
     starting_values_temp$pop_n <- starting_values$pop_n[[i]]
@@ -108,7 +110,7 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
     # get number of digits of pop_n to create unique id
     no_digits <- floor(log10(starting_values_temp$pop_n)) + 1
 
-    # create unique id; first number identifies metaecosyst
+    # create unique id; first number identifies metaecosystem
     fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
 
     # add stationary col
@@ -128,13 +130,13 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
   }
 
   # create look-up table for stationary value
-  fishpop_stationary <- create_rstationary(fishpop_values = fishpop_list,
-                                           mean = parameters$pop_mean_stationary,
-                                           sd = parameters$pop_var_stationary)
+  # MH: Rename all fishpop_stationary
+  fishpop_attributes <- create_attributes(fishpop = fishpop_list,
+                                          parameters = parameters)
 
   # combine everything to one list
   result_list <- list(seafloor = seafloor_list, fishpop = fishpop_list,
-                      fishpop_stationary = fishpop_stationary,
+                      fishpop_attributes = fishpop_attributes,
                       n = n, extent = extent, grain = grain, reefs = reefs,
                       starting_values = starting_values, parameters = parameters)
 

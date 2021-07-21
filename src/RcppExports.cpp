@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // rcpp_get_table
 Rcpp::IntegerVector rcpp_get_table(Rcpp::NumericVector x, int n);
 RcppExport SEXP _meta_arrR_rcpp_get_table(SEXP xSEXP, SEXP nSEXP) {
@@ -18,49 +23,109 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_list_to_matrix
-Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List x, int pop_n);
-RcppExport SEXP _meta_arrR_rcpp_list_to_matrix(SEXP xSEXP, SEXP pop_nSEXP) {
+Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool id);
+RcppExport SEXP _meta_arrR_rcpp_list_to_matrix(SEXP fishpopSEXP, SEXP pop_n_sumSEXP, SEXP idSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type x(xSEXP);
-    Rcpp::traits::input_parameter< int >::type pop_n(pop_nSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_list_to_matrix(x, pop_n));
+    Rcpp::traits::input_parameter< Rcpp::List >::type fishpop(fishpopSEXP);
+    Rcpp::traits::input_parameter< int >::type pop_n_sum(pop_n_sumSEXP);
+    Rcpp::traits::input_parameter< bool >::type id(idSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_list_to_matrix(fishpop, pop_n_sum, id));
     return rcpp_result_gen;
 END_RCPP
 }
 // rcpp_matrix_to_list
-Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix x, int n);
-RcppExport SEXP _meta_arrR_rcpp_matrix_to_list(SEXP xSEXP, SEXP nSEXP) {
+Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n);
+RcppExport SEXP _meta_arrR_rcpp_matrix_to_list(SEXP fishpopSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type fishpop(fishpopSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_matrix_to_list(x, n));
+    rcpp_result_gen = Rcpp::wrap(rcpp_matrix_to_list(fishpop, n));
     return rcpp_result_gen;
 END_RCPP
 }
 // rcpp_move_meta
-Rcpp::List rcpp_move_meta(Rcpp::List fishpop_values, int pop_n, Rcpp::NumericMatrix fishpop_stationary, Rcpp::NumericVector extent);
-RcppExport SEXP _meta_arrR_rcpp_move_meta(SEXP fishpop_valuesSEXP, SEXP pop_nSEXP, SEXP fishpop_stationarySEXP, SEXP extentSEXP) {
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop, int pop_n_sum, Rcpp::IntegerVector id_attr, Rcpp::NumericVector stationary_values, Rcpp::IntegerVector id_meta, Rcpp::NumericVector extent);
+RcppExport SEXP _meta_arrR_rcpp_move_meta(SEXP fishpopSEXP, SEXP pop_n_sumSEXP, SEXP id_attrSEXP, SEXP stationary_valuesSEXP, SEXP id_metaSEXP, SEXP extentSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::List >::type fishpop_values(fishpop_valuesSEXP);
-    Rcpp::traits::input_parameter< int >::type pop_n(pop_nSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type fishpop_stationary(fishpop_stationarySEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type fishpop(fishpopSEXP);
+    Rcpp::traits::input_parameter< int >::type pop_n_sum(pop_n_sumSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type id_attr(id_attrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type stationary_values(stationary_valuesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type id_meta(id_metaSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type extent(extentSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_move_meta(fishpop_values, pop_n, fishpop_stationary, extent));
+    rcpp_result_gen = Rcpp::wrap(rcpp_move_meta(fishpop, pop_n_sum, id_attr, stationary_values, id_meta, extent));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpp_sim_processes
+void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List seafloor_track, Rcpp::List fishpop_track, Rcpp::List parameters, Rcpp::String movement, double max_dist, int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes, Rcpp::List nutr_input, Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj, Rcpp::NumericVector extent, Rcpp::NumericVector dimensions, int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in, bool verbose);
+RcppExport SEXP _meta_arrR_rcpp_sim_processes(SEXP seafloorSEXP, SEXP fishpopSEXP, SEXP seafloor_trackSEXP, SEXP fishpop_trackSEXP, SEXP parametersSEXP, SEXP movementSEXP, SEXP max_distSEXP, SEXP nSEXP, SEXP pop_nSEXP, SEXP fishpop_attributesSEXP, SEXP nutr_inputSEXP, SEXP coords_reefSEXP, SEXP cell_adjSEXP, SEXP extentSEXP, SEXP dimensionsSEXP, SEXP max_iSEXP, SEXP min_per_iSEXP, SEXP save_eachSEXP, SEXP seagrass_eachSEXP, SEXP burn_inSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type seafloor(seafloorSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type fishpop(fishpopSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type seafloor_track(seafloor_trackSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type fishpop_track(fishpop_trackSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type parameters(parametersSEXP);
+    Rcpp::traits::input_parameter< Rcpp::String >::type movement(movementSEXP);
+    Rcpp::traits::input_parameter< double >::type max_dist(max_distSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type pop_n(pop_nSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type fishpop_attributes(fishpop_attributesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type nutr_input(nutr_inputSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type coords_reef(coords_reefSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type cell_adj(cell_adjSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type extent(extentSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type dimensions(dimensionsSEXP);
+    Rcpp::traits::input_parameter< int >::type max_i(max_iSEXP);
+    Rcpp::traits::input_parameter< int >::type min_per_i(min_per_iSEXP);
+    Rcpp::traits::input_parameter< int >::type save_each(save_eachSEXP);
+    Rcpp::traits::input_parameter< int >::type seagrass_each(seagrass_eachSEXP);
+    Rcpp::traits::input_parameter< int >::type burn_in(burn_inSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_sim_processes(seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose);
+    return R_NilValue;
+END_RCPP
+}
+// rcpp_subset_matrix
+Rcpp::NumericMatrix rcpp_subset_matrix(Rcpp::NumericMatrix fishpop, Rcpp::IntegerVector rows);
+RcppExport SEXP _meta_arrR_rcpp_subset_matrix(SEXP fishpopSEXP, SEXP rowsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type fishpop(fishpopSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type rows(rowsSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_subset_matrix(fishpop, rows));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rcpp_which
+Rcpp::IntegerVector rcpp_which(Rcpp::IntegerVector x, Rcpp::IntegerVector y);
+RcppExport SEXP _meta_arrR_rcpp_which(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_which(x, y));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_meta_arrR_rcpp_get_table", (DL_FUNC) &_meta_arrR_rcpp_get_table, 2},
-    {"_meta_arrR_rcpp_list_to_matrix", (DL_FUNC) &_meta_arrR_rcpp_list_to_matrix, 2},
+    {"_meta_arrR_rcpp_list_to_matrix", (DL_FUNC) &_meta_arrR_rcpp_list_to_matrix, 3},
     {"_meta_arrR_rcpp_matrix_to_list", (DL_FUNC) &_meta_arrR_rcpp_matrix_to_list, 2},
-    {"_meta_arrR_rcpp_move_meta", (DL_FUNC) &_meta_arrR_rcpp_move_meta, 4},
+    {"_meta_arrR_rcpp_move_meta", (DL_FUNC) &_meta_arrR_rcpp_move_meta, 6},
+    {"_meta_arrR_rcpp_sim_processes", (DL_FUNC) &_meta_arrR_rcpp_sim_processes, 21},
+    {"_meta_arrR_rcpp_subset_matrix", (DL_FUNC) &_meta_arrR_rcpp_subset_matrix, 2},
+    {"_meta_arrR_rcpp_which", (DL_FUNC) &_meta_arrR_rcpp_which, 2},
     {NULL, NULL, 0}
 };
 

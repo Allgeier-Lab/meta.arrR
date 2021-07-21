@@ -9,7 +9,7 @@
 #' @param n Integer with maximum number of classes.
 #'
 #' @details
-#' Returns table with value count
+#' Returns table with value count. Only values x > 0 are allowed.
 #'
 #' @return vector
 #'
@@ -25,8 +25,8 @@ rcpp_get_table <- function(x, n) {
 #'
 #' @description Rcpp list to matrix
 #'
-#' @param x List with individuals within metaecosystems.
-#' @param pop_n Integer with number of indiviuals.
+#' @param fishpop List with individuals within metaecosystems.
+#' @param pop_n_sum Integer with number of indiviuals.
 #'
 #' @details
 #' Converts list with individuals within metaecosystems to one matrix. Adds coloumn
@@ -38,15 +38,15 @@ rcpp_get_table <- function(x, n) {
 #' @rdname rcpp_list_to_matrix
 #'
 #' @keywords export
-rcpp_list_to_matrix <- function(x, pop_n) {
-    .Call(`_meta_arrR_rcpp_list_to_matrix`, x, pop_n)
+rcpp_list_to_matrix <- function(fishpop, pop_n_sum, id) {
+    .Call(`_meta_arrR_rcpp_list_to_matrix`, fishpop, pop_n_sum, id)
 }
 
 #' rcpp_matrix_to_list
 #'
 #' @description Rcpp matrix to list
 #'
-#' @param x Matrix with fish population.
+#' @param fishpop Matrix with fish population.
 #' @param n Integer with number of metaecosystems.
 #'
 #' @details
@@ -58,17 +58,17 @@ rcpp_list_to_matrix <- function(x, pop_n) {
 #' @rdname rcpp_matrix_to_list
 #'
 #' @keywords export
-rcpp_matrix_to_list <- function(x, n) {
-    .Call(`_meta_arrR_rcpp_matrix_to_list`, x, n)
+rcpp_matrix_to_list <- function(fishpop, n) {
+    .Call(`_meta_arrR_rcpp_matrix_to_list`, fishpop, n)
 }
 
 #' rcpp_move_meta
 #'
 #' @description Rcpp list to matrix
 #'
-#' @param fishpop_values List with fish population.
-#' @param pop_n Integer with total number of individuals.
-#' @param fishpop_stationary Matrix with stationary value for each individual.
+#' @param fishpop List with fish population.
+#' @param pop_n_sum Integer with total number of individuals.
+#' @param fishpop_attributes Matrix with stationary value for each individual.
 #' @param extent Spatial extent of the seafloor raster.
 #'
 #' @details
@@ -81,7 +81,93 @@ rcpp_matrix_to_list <- function(x, n) {
 #' @rdname rcpp_move_meta
 #'
 #' @keywords export
-rcpp_move_meta <- function(fishpop_values, pop_n, fishpop_stationary, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop_values, pop_n, fishpop_stationary, extent)
+rcpp_move_meta <- function(fishpop, pop_n_sum, id_attr, stationary_values, id_meta, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, pop_n_sum, id_attr, stationary_values, id_meta, extent)
+}
+
+#' rcpp_sim_processes
+#'
+#' @description
+#' Rcpp run simulation of metaecosystems processes.
+#'
+#' @param seafloor,fishpop List with seafloor and fishpop data of metaecosystems.
+#' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
+#' @param parameters List with parameters.
+#' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
+#' @param max_dist Double with maximum movement distance.
+#' @param n Integer with number of metaecosystems.
+#' @param pop_n Vector with number of individuals.
+#' @param fishpop_stationary Matrix with stationary values for each individual
+#' @param pop_reserves_thres List with threshold of pop_reserves_max to drain prior to foraging.
+#' @param nutr_input List with amount of nutrient input each timestep.
+#' @param coords_reef List with ID and coords of reef cells.
+#' @param cell_adj Matrix with cell adjacencies.
+#' @param extent Vector with extent (xmin,xmax,ymin,ymax).
+#' @param dimensions Vector with dimensions (nrow, ncol).
+#' @param max_i Integer with maximum number of simulation timesteps.
+#' @param min_per_i Integer to specify minutes per i.
+#' @param save_each Numeric how often data should be saved to return.
+#' @param seagrass_each Integer how often (each i * x) seagrass dynamics will be simulated.
+#' @param burn_in Numeric with timesteps used to burn in.
+#' @param verbose If TRUE, progress reports are printed.
+#'
+#' @details
+#' The functions is a 'wrapper' around the following sub-processes: (i) nutrient input,
+#' (ii) seagrass growth, (iii) detritus mineralization, (iv) movement of individuals,
+#' (v) respiration of individuals, (vi) growth of individuals, (vii) mortality of individuals,
+#' (viii) diffusion of nutrients/detritus, and ix) nutrient output.
+#'
+#' @references
+#' Add references
+#'
+#' @return void
+#'
+#' @aliases rcpp_sim_processes
+#' @rdname rcpp_sim_processes
+#'
+#' @export
+rcpp_sim_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
+    invisible(.Call(`_meta_arrR_rcpp_sim_processes`, seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
+}
+
+#' rcpp_subset_matrix
+#'
+#' @description Rcpp list to matrix
+#'
+#' @param fishpop List with individuals within metaecosystems.
+#' @param pop_n_sum Integer with number of indiviuals.
+#'
+#' @details
+#' Converts list with individuals within metaecosystems to one matrix. Adds coloumn
+#' with metasystem id
+#'
+#' @return matrix
+#'
+#' @aliases rcpp_subset_matrix
+#' @rdname rcpp_subset_matrix
+#'
+#' @keywords export
+rcpp_subset_matrix <- function(fishpop, rows) {
+    .Call(`_meta_arrR_rcpp_subset_matrix`, fishpop, rows)
+}
+
+#' rcpp_which
+#'
+#' @description Rcpp which
+#'
+#' @param x Vector with values.
+#' @param y Integer with maximum number of classes.
+#'
+#' @details
+#' ADD DETAILS
+#'
+#' @return vector
+#'
+#' @aliases rcpp_which
+#' @rdname rcpp_which
+#'
+#' @keywords export
+rcpp_which <- function(x, y) {
+    .Call(`_meta_arrR_rcpp_which`, x, y)
 }
 

@@ -1,11 +1,14 @@
+#include <Rcpp.h>
 #include "rcpp_list_to_matrix.h"
+
+using namespace Rcpp;
 
 //' rcpp_list_to_matrix
 //'
 //' @description Rcpp list to matrix
 //'
-//' @param x List with individuals within metaecosystems.
-//' @param pop_n Integer with number of indiviuals.
+//' @param fishpop List with individuals within metaecosystems.
+//' @param pop_n_sum Integer with number of indiviuals.
 //'
 //' @details
 //' Converts list with individuals within metaecosystems to one matrix. Adds coloumn
@@ -18,36 +21,57 @@
 //'
 //' @keywords export
 // [[Rcpp::export]]
-Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List x, int pop_n) {
+Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool id) {
+
+  // number of col
+  int n_col = 17;
+
+  // set col names
+  // MH: Set automaticall using colnames(fishpop);
+  Rcpp::CharacterVector col_names = Rcpp::CharacterVector::create("id", "age", "x", "y",
+    "heading", "length", "weight", "activity", "respiration", "reserves", "reserves_max",
+    "behavior", "consumption", "excretion", "died_consumption", "died_background",
+    "stationary");
+
+  // one more col needed for id
+  if (id) {
+
+    n_col = 18;
+
+    col_names.push_back("metasystem");
+
+  }
 
   // creating final matrix with local systems times pop_n rows and additional col for id
-  Rcpp::NumericMatrix result(pop_n, 15);
+  Rcpp::NumericMatrix result(pop_n_sum, n_col);
 
   // counter to fill rows
   int k = 0;
 
   // loop through all list elements
-  for (int i = 0; i < x.length(); i ++) {
+  for (int i = 0; i < fishpop.length(); i ++) {
 
     // get current temp element
-    Rcpp::NumericMatrix input_temp = x[i];
+    Rcpp::NumericMatrix fishpop_temp = fishpop[i];
 
-    // loop through all rowis of temp element
-    for (int j = 0; j < input_temp.nrow(); j++) {
+    // loop through all rows of temp element
+    for (int j = 0; j < fishpop_temp.nrow(); j++) {
 
-      // check if row is empty
-      bool id_temp = all(Rcpp::is_na(input_temp(j, _)));
-
-      if (id_temp) continue;
+      if (all(Rcpp::is_na(fishpop_temp(j, _)))) continue;
 
       // get current row
-      Rcpp::NumericVector row_temp = input_temp(j, _);
+      Rcpp::NumericVector row_temp = fishpop_temp(j, _);
 
-      // add meta id
-      row_temp.insert(14, i + 1);
+      if (id) {
 
-      // write into current row
-      result(k, _) = row_temp;
+        // adding metaecosyst id
+        row_temp.push_back(i + 1);
+
+      }
+
+      // add to result matrix
+      result(k, _) = row_temp; // result(k, _) = fishpop_temp(j, _);
+      // result(k, 17) = i + 1; // this is faster but kind of weird
 
       // increase counter
       k += 1;
@@ -55,14 +79,18 @@ Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List x, int pop_n) {
     }
   }
 
+  // set col names
+  colnames(result) = col_names;
+
   return result;
 }
 
 /*** R
-fishpop_values <- lapply(metasyst$fishpop, function(i)
-  as.matrix(raster::as.data.frame(i, xy = TRUE)))
+fishpop <- lapply(metasyst$fishpop, function(i) as.matrix(i, xy = TRUE))
 
-rcpp_list_to_matrix(x = fishpop_values, pop_n = sum(metasyst$starting_values$pop_n))
+rcpp_list_to_matrix(fishpop = fishpop, pop_n_sum = sum(metasyst$starting_values$pop_n),
+                    id = TRUE)
 
-rcpp_list_to_matrix(x = lst, pop_n = sum(metasyst$starting_values$pop_n))
+rcpp_list_to_matrix(fishpop = fishpop, pop_n_sum = sum(metasyst$starting_values$pop_n),
+                    id = FALSE)
 */

@@ -5,19 +5,42 @@
 #' @param metasyst Metaecosystem created with \code{\link{setup_meta}}.
 #' @param parameters List with all model parameters.
 #' @param nutr_input List with nutrient input vectors.
-#' @param reef_attraction If TRUE, individuals are attracted to AR.
+#' @param movement String specifing movement algorithm. Either 'rand', 'attr' or 'behav'.
 #' @param max_i Integer with maximum number of simulation timesteps.
 #' @param min_per_i Integer to specify minutes per i.
+#' @param seagrass_each Integer how often (each i * x) seagrass dynamics will be simulated.
 #' @param save_each Numeric how often data should be saved to return.
 #' @param burn_in Numeric with timesteps used to burn in.
 #' @param return_burnin If FALSE all timesteps < burn_in are not returned.
 #' @param verbose If TRUE, progress reports are printed.
 #'
 #' @details
-#' Wrapper function to run model. Executes the following sub-processes (i) simulate_seagrass
-#' (ii) distribute_detritus (iii) simulate_movement (iv) simulate_movement (v) simulate_respiration
-#' (vi) simulate_growth (vii) simulate_mortality and (viii) simulate_diffusion.
-#'  If pop_mean_stationary = 0, individuals never move across local ecosystems.
+#' This is the core function of the \code{arrR} model that allows to easily run the
+#' model. Besides running all sub-processes, the function also includes some basic
+#' checks to make sure the model does not crash. However, this does not ensure that
+#' e.g. all parameter values "make sense". The function returns a \code{mdl_rn} object
+#' which stores besides the model run results a lot of information about the model run
+#' specification and many function that can handle the objects exist (e.g. plotting).
+#'
+#' The functions is a 'wrapper' around the following sub-processes: (i) nutrient input,
+#' (ii) seagrass growth, (iii) detritus mineralization, (iv) movement of individuals,
+#' (v) respiration of individuals, (vi) growth of individuals, (vii) mortality of individuals,
+#' (viii) diffusion of nutrients/detritus, and ix) nutrient output.
+#'
+#' The \code{movement} argument allows to either specify random movement of individuals,
+#' attracted movement towards the artificial reef of individuals or a movement behavior based
+#' on their biosenergetics.
+#'
+#' If \code{nutr_input} is \code{NULL}, no nutrient input is simulated. To also simulate no
+#' nutrient output, set the \code{nutrients_output} parameter to zero.
+#'
+#' If \code{save_each > 1}, not all iterations are saved in the final \code{mdl_rn} object,
+#' but only each timestep specified by the object. However, \code{max_i} must be dividable by
+#' \code{save_each} without rest. Similar,  \code{seagrass_each} allows to simulate all
+#' seagrass sub-processes only each specified timestep.
+#'
+#' If \code{burn_in > 0}, all sub-processes related to fish individuals are not simulated
+#' before this timestep is reached.
 #'
 #' @return mdl_rn
 #'
@@ -28,10 +51,12 @@
 #' @rdname simulate_meta
 #'
 #' @export
-simulate_meta <- function(metasyst,
-                          parameters, nutr_input = NULL, reef_attraction,
-                          max_i, min_per_i, save_each = 1, burn_in = 0, return_burnin = TRUE,
+simulate_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
+                          max_i, min_per_i, seagrass_each = 1, save_each = 1,
+                          burn_in = 0, return_burnin = TRUE,
                           verbose = TRUE) {
+
+  # check input and warnings #
 
   # check if metasyst is correct class
   if (!inherits(x = metasyst, what = "meta_syst")) {
@@ -47,6 +72,7 @@ simulate_meta <- function(metasyst,
 
     stop("'max_i' cannot be divided by 'save_each' without rest.",
          call. = FALSE)
+
   }
 
   # check if save_each is whole number
@@ -57,11 +83,44 @@ simulate_meta <- function(metasyst,
   }
 
   # check if burn_in is smaller than max_i or zero
-  if (burn_in >= max_i | burn_in < 0) {
+  if (burn_in >= max_i || burn_in < 0) {
 
     warning("'burn_in' larger than or equal to 'max_i' or 'burn_in' < 0.", call. = FALSE)
 
   }
+
+  # get time at beginning for final print
+  if (verbose) {
+
+    t_start <- Sys.time()
+
+  }
+
+  # setup fishpop #
+
+  # convert seafloor to matrix
+  fishpop <- lapply(metasyst$fishpop, function(i) as.matrix(i, xy = TRUE))
+
+  # calculate maximum movement distance
+  mean_temp <- ifelse(test = movement == "behav",
+                      yes = parameters$move_return, no = parameters$move_mean)
+
+  var_temp <- ifelse(test = movement == "behav",
+                     yes = 1.0, no = parameters$move_var)
+
+  # MH: Set to 1000000
+  max_dist <- vapply(X = 1:3, FUN = function(i) {
+    arrR::rcpp_rlognorm(mean = mean_temp, sd = sqrt(var_temp), min = 0.0, max = Inf)},
+    FUN.VALUE = numeric(1))
+
+  max_dist <- stats::quantile(x = max_dist, probs = 0.95, names = FALSE)
+
+  fishpop_track <- vector(mode = "list", length = metasyst$n)
+
+  fishpop_track <- lapply(seq_along(fishpop_track), function(i)
+    vector(mode = "list", length = (max_i / save_each) + 1))
+
+  # setup nutrient input #
 
   # check if nutr_input has value for each iteration
   if (!is.null(nutr_input)) {
@@ -74,20 +133,41 @@ simulate_meta <- function(metasyst,
 
     }
 
-  # create nutrient input if not present
+    # set nutrient flag to save results later
+    nutr_input_flag <- TRUE
+
+    # create nutrient input if not present
   } else {
 
-    nutr_input <- vector(mode = "list", length = metasyst$n)
+    nutr_input <- lapply(1:metasyst$n, function(i) rep(x = 0.0, times = max_i))
+
+    # set nutrient flag to save results later
+    nutr_input_flag <- FALSE
 
   }
 
-  # convert seafloor to matrix
-  seafloor_values <- lapply(metasyst$seafloor, function(i)
-    as.matrix(raster::as.data.frame(i, xy = TRUE)))
+  # setup seafloor #
 
   # convert seafloor to matrix
-  fishpop_values <- lapply(metasyst$fishpop, function(i)
+  seafloor <- lapply(metasyst$seafloor, function(i)
     as.matrix(raster::as.data.frame(i, xy = TRUE)))
+
+  # get cell id of reef cells (needs matrix input)
+  cells_reef <- lapply(seafloor, function(i) which(i[, 16] == 1))
+
+  # get coordinates of reef cells (needs matrix input)
+  coords_reef <- lapply(seq_along(seafloor),
+                        function(i) cbind(id = cells_reef[[i]],
+                                          seafloor[[i]][cells_reef[[i]], 1:2]))
+
+  # get neighboring cells for each focal cell using torus
+  cell_adj <- arrR::get_neighbors(x = metasyst$seafloor[[1]], direction = 8, cpp = TRUE)
+
+  # get extent of environment
+  extent <- as.vector(raster::extent(x = metasyst$seafloor[[1]]))
+
+  # get dimensions of environment (nrow, ncol)
+  dimensions <- dim(x = metasyst$seafloor[[1]])[1:2]
 
   # create lists to store results for each timestep
   seafloor_track <- vector(mode = "list", length = metasyst$n)
@@ -95,46 +175,17 @@ simulate_meta <- function(metasyst,
   seafloor_track <- lapply(seq_along(seafloor_track), function(i)
     vector(mode = "list", length = (max_i / save_each) + 1))
 
-  fishpop_track <- vector(mode = "list", length = metasyst$n)
-
-  fishpop_track <- lapply(seq_along(fishpop_track), function(i)
-    vector(mode = "list", length = (max_i / save_each) + 1))
-
-  # get extent of environment
-  extent <- raster::extent(metasyst$seafloor[[1]])
-
-  # get dimensions of environment (nrow, ncol)
-  dimensions <- dim(metasyst$seafloor[[1]])[1:2]
-
-  # get cell id of reef cells
-  cells_reef <- lapply(seafloor_values, function(i) which(i[, 16] == 1))
-
-  # get coordinates of reef cells
-  coords_reef <- lapply(seq_along(seafloor_values),
-                        function(i) seafloor_values[[i]][cells_reef[[i]], 1:2])
-
-  # get neighboring cells for each focal cell using torus
-  cell_adj <- lapply(metasyst$seafloor,
-                     function(i) arrR::get_neighbors(x = i, direction = 8, torus = TRUE))
-
-  # save input data in tracking list
-  for (i in 1:metasyst$n) {
-
-   seafloor_track[[i]][[1]] <- rlang::duplicate(seafloor_values[[i]])
-
-   fishpop_track[[i]][[1]] <- rlang::duplicate(fishpop_values[[i]])
-
-  }
+  # print model run characteristics #
 
   # print some basic information about model run
   if (verbose) {
 
     message("> Metaecosystem with ", metasyst$n, " local ecosystems.")
 
-    message("> Seafloors with ", extent, "; ",
+    message("> Seafloors with ", raster::extent(extent), "; ",
             paste(vapply(coords_reef, nrow, FUN.VALUE = numeric(1)), collapse = ", "), " reef cells.")
 
-    message("> Populations with ", metasyst$starting_values$pop_n, " individuals [reef_attraction: ", reef_attraction, "].")
+    message("> Populations with ", paste(metasyst$starting_values$pop_n, collapse = ", "), " individuals [movement: '", movement, "'].")
 
     message("> Simulating ", max_i, " iterations [Burn-in: ", burn_in, " iter.].")
 
@@ -142,113 +193,23 @@ simulate_meta <- function(metasyst,
 
     message("> One iteration equals ", min_per_i, " minutes.")
 
-    message("")
-
     message("> ...Starting simulation...")
 
+    message("")
+
   }
 
-  # simulate until max_i is reached
-  for (i in 1:max_i) {
-
-    # check if fishpop is present
-    if (parameters$pop_mean_stationary > 0 && any(metasyst$starting_values$pop_n > 0)) {
-
-      fishpop_values <- simulate_movement_meta(fishpop_values = fishpop_values,
-                                               pop_n = metasyst$starting_values$pop_n,
-                                               parameters = parameters,
-                                               fishpop_stationary = metasyst$fishpop_stationary,
-                                               extent = extent)
-
-    }
-
-    for (j in 1:metasyst$n) {
-
-      # get temp_n
-      pop_n_temp <- ifelse(test = all(is.na(fishpop_values[[j]][1, ])),
-                           yes = 0, no = nrow(fishpop_values[[j]]))
-
-      # simulate nutrient input
-      if (!is.null(nutr_input[[j]])) {
-
-        arrR::simulate_input(seafloor_values = seafloor_values[[j]],
-                             nutr_input = nutr_input[[j]],
-                             timestep = i)
-      }
-
-      # simulate seagrass growth
-      arrR::simulate_seagrass(seafloor_values = seafloor_values[[j]],
-                              parameters = parameters,
-                              cells_reef = cells_reef[[j]],
-                              min_per_i = min_per_i)
-
-      # redistribute detritus
-      arrR::simulate_mineralization(seafloor_values = seafloor_values[[j]],
-                                    parameters = parameters)
-
-      if (i > burn_in & pop_n_temp != 0) {
-
-        # simulate fish movement
-        arrR::simulate_movement(fishpop_values = fishpop_values[[j]],
-                                pop_n = pop_n_temp,
-                                seafloor_values = seafloor_values[[j]],
-                                extent = extent,
-                                dimensions = dimensions,
-                                parameters = parameters,
-                                reef_attraction = reef_attraction)
-
-        # simulate fish respiration (26°C is mean water temperature in the Bahamas)
-        arrR::simulate_respiration(fishpop_values = fishpop_values[[j]],
-                                   parameters = parameters,
-                                   water_temp = 26,
-                                   min_per_i = min_per_i)
-
-        # simulate fishpop growth and including change of seafloor pools
-        arrR::simulate_growth(fishpop_values = fishpop_values[[j]],
-                              fishpop_track = fishpop_track[[j]][[1]],
-                              pop_n = pop_n_temp,
-                              seafloor = metasyst$seafloor[[j]]$reef,
-                              seafloor_values = seafloor_values[[j]],
-                              parameters = parameters,
-                              min_per_i = min_per_i)
-
-        # simulate mortality
-        arrR::simulate_mortality(fishpop_values = fishpop_values[[j]],
-                                 fishpop_track = fishpop_track[[j]][[1]],
-                                 pop_n = pop_n_temp,
-                                 seafloor = metasyst$seafloor[[j]]$reef,
-                                 seafloor_values = seafloor_values[[j]],
-                                 parameters = parameters,
-                                 min_per_i = min_per_i)
-      }
-
-      # diffuse values between neighbors
-      arrR::simulate_diffusion(seafloor_values = seafloor_values[[j]],
-                               cell_adj = cell_adj[[j]],
-                               parameters = parameters)
-
-      # remove nutrients from cells
-      arrR::simulate_output(seafloor_values = seafloor_values[[j]],
-                            parameters = parameters)
-
-      # update tracking list
-      if (i %% save_each == 0) {
-
-        seafloor_track[[j]][[i / save_each + 1]] <- rlang::duplicate(seafloor_values[[j]])
-
-        fishpop_track[[j]][[i / save_each + 1]] <- rlang::duplicate(fishpop_values[[j]])
-
-      }
-    }
-
-    # print progress
-    if (verbose) {
-
-      message("\r> ...Progress: ", floor(i / max_i * 100), "% of total iterations... \t\t\t",
-              appendLF = FALSE)
-
-    }
-  }
+  # run model
+  rcpp_sim_processes(seafloor = seafloor, fishpop = fishpop,
+                     seafloor_track = seafloor_track, fishpop_track = fishpop_track,
+                     parameters = parameters, movement = movement, max_dist = max_dist,
+                     n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
+                     fishpop_attributes = metasyst$fishpop_attributes,
+                     nutr_input = nutr_input, max_i = max_i, min_per_i = min_per_i,
+                     coords_reef = coords_reef, cell_adj = cell_adj,
+                     extent = extent, dimensions = dimensions,
+                     save_each = save_each, seagrass_each = seagrass_each, burn_in = burn_in,
+                     verbose = verbose)
 
   # new line after last progress message
   if (verbose) {
@@ -289,14 +250,14 @@ simulate_meta <- function(metasyst,
       fishpop_track[[i]]$burn_in <- ifelse(test = fishpop_track[[i]]$timestep < burn_in,
                                            yes = "yes", no = "no")
 
-
       # individuals did not move across ecosystems
-      if (parameters$pop_mean_stationary == 0) {
+      if (parameters$move_stationary == 0) {
 
         fishpop_track[[i]]$stationary <- fishpop_track[[i]]$timestep
 
       }
 
+    # no fish population present
     } else {
 
       fishpop_track[[i]]$timestep <- numeric(0)
@@ -304,6 +265,7 @@ simulate_meta <- function(metasyst,
       fishpop_track[[i]]$burn_in <- character(0)
 
     }
+
     # remove all burn_in values
     if (!return_burnin) {
 
@@ -314,15 +276,20 @@ simulate_meta <- function(metasyst,
     }
   }
 
+  if (!nutr_input_flag) {
+
+    nutr_input <- NA
+
+  }
+
   # combine result to list
-  result <- list(seafloor = seafloor_track, fishpop = fishpop_track,
-                 fishpop_stationary = metasyst$fishpop_stationary,
-                 nutr_input = nutr_input,
-                 n = metasyst$n, reef_attraction = reef_attraction,
-                 max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
-                 save_each = save_each, extent = extent, grain = raster::res(metasyst$seafloor[[1]]),
-                 coords_reef = coords_reef,
-                 starting_values = metasyst$starting_values, parameters = parameters)
+  result <- list(seafloor = seafloor_track, fishpop = fishpop_track, movement = movement,
+                 n = metasyst$n, fishpop_stationary = metasyst$fishpop_stationary,
+                 starting_values = metasyst$starting_values, parameters = parameters,
+                 nutr_input = nutr_input, max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
+                 save_each = save_each, seagrass_each,
+                 extent = raster::extent(extent), grain = raster::res(metasyst$seafloor[[1]]),
+                 coords_reef = coords_reef)
 
   # set class of result
   class(result) <- "meta_rn"
@@ -330,9 +297,12 @@ simulate_meta <- function(metasyst,
   # new line after last progress message
   if (verbose) {
 
+    # get time at end
+    t_diff <- round(Sys.time() - t_start, digits = 1)
+
     message("")
 
-    message("> All done.")
+    message("> All done (Runtime: ", t_diff," ", units(t_diff), ").")
 
   }
 

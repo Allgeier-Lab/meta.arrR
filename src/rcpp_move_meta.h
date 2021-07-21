@@ -1,11 +1,8 @@
 //#ifndef RCPP_MOVE_META
 //#define RCPP_MOVE_META
 
-#include "Rcpp.h"
-#include "rcpp_list_to_matrix.h"
-
-using namespace Rcpp;
-
-Rcpp::List rcpp_move_meta(List x, int pop_n);
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop, int pop_n_sum,
+                          Rcpp::IntegerVector id_attr, Rcpp::NumericVector stationary_values,
+                          Rcpp::IntegerVector id_meta, Rcpp::NumericVector extent);
 
 //#endif // RCPP_MOVE_META

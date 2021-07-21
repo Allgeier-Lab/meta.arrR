@@ -118,7 +118,7 @@ plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, .
     # ggplot2::scale_y_continuous(limits = limits$bg_biomass) +
     ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
     ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
-    ggplot2::guides(col = FALSE, linetype = FALSE) +
+    ggplot2::guides(col = "none", linetype = "none") +
     ggplot2::labs(x = "Timestep", y = y_labels[2]) +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
@@ -134,7 +134,7 @@ plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, .
     # ggplot2::scale_y_continuous(limits = limits$nutrients_pool) +
     ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
     ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
-    ggplot2::guides(col = FALSE, linetype = FALSE) +
+    ggplot2::guides(col = "none", linetype = "none") +
     ggplot2::labs(x = "Timestep", y = y_labels[3]) +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
@@ -150,7 +150,7 @@ plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, .
     # ggplot2::scale_y_continuous(limits = limits$detritus_pool) +
     ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
     ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
-    ggplot2::guides(col = FALSE, linetype = FALSE) +
+    ggplot2::guides(col = "none", linetype = "none") +
     ggplot2::labs(x = "Timestep", y = y_labels[4]) +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))

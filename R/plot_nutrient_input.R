@@ -35,7 +35,7 @@ plot_nutrient_input <- function(x, base_size = 10, ...) {
     ggplot2::geom_line(ggplot2::aes(x = timestep, y = input,
                                     col = factor(meta))) +
     ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-    ggplot2::guides(col = FALSE) +
+    ggplot2::guides(col = "none") +
     ggplot2::labs(x = "Timestep", y = "Nutrient input [g/cell]") +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
