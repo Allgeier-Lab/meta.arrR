@@ -7,12 +7,13 @@ using namespace Rcpp;
 //'
 //' @description Rcpp list to matrix
 //'
-//' @param fishpop List with individuals within metaecosystems.
-//' @param pop_n_sum Integer with number of indiviuals.
+//' @param fishpop List with individuals within local metaecosystems.
+//' @param pop_n_sum Integer with number of individuals.
+//' @param id If TRUE, column with metaecosystem id is added.
 //'
 //' @details
-//' Converts list with individuals within metaecosystems to one matrix. Adds coloumn
-//' with metasystem id
+//' Converts list with individuals within a local metaecosystem to one matrix. If
+//' \code{id = TRUE} a column identifying the metaecosystem is added.
 //'
 //' @return matrix
 //'

@@ -5,14 +5,14 @@ using namespace Rcpp;
 
 //' rcpp_subset_matrix
 //'
-//' @description Rcpp list to matrix
+//' @description
+//' Rcpp subset matrix.
 //'
-//' @param fishpop List with individuals within metaecosystems.
-//' @param pop_n_sum Integer with number of indiviuals.
+//' @param fishpop Matrix with fishpop values.
+//' @param rows Vector with row ids
 //'
 //' @details
-//' Converts list with individuals within metaecosystems to one matrix. Adds coloumn
-//' with metasystem id
+//' Returns matrix with only subset of rows of \code{fishpop} specified by \code{rows}.
 //'
 //' @return matrix
 //'
@@ -29,11 +29,11 @@ Rcpp::NumericMatrix rcpp_subset_matrix(Rcpp::NumericMatrix fishpop, Rcpp::Intege
   // loop through all id
   for (int i = 0; i < rows.length(); i++) {
 
-    int row_temp = rows(i);
+    // stop if row not present
+    if (rows[i] > (fishpop.nrow() - 1)) Rcpp::stop("At least one 'rows' not present.");
 
-    if (row_temp > (fishpop.nrow() - 1)) Rcpp::stop("At least one 'rows' not present.");
-
-    result(i, _) = fishpop(row_temp, _);
+    // save row into submatrix
+    result(i, _) = fishpop(rows[i], _);
 
   }
 

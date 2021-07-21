@@ -3,7 +3,8 @@
 
 #' rcpp_get_table
 #'
-#' @description Rcpp get table
+#' @description
+#' Rcpp get table.
 #'
 #' @param x Vector with values.
 #' @param n Integer with maximum number of classes.
@@ -25,12 +26,13 @@ rcpp_get_table <- function(x, n) {
 #'
 #' @description Rcpp list to matrix
 #'
-#' @param fishpop List with individuals within metaecosystems.
-#' @param pop_n_sum Integer with number of indiviuals.
+#' @param fishpop List with individuals within local metaecosystems.
+#' @param pop_n_sum Integer with number of individuals.
+#' @param id If TRUE, column with metaecosystem id is added.
 #'
 #' @details
-#' Converts list with individuals within metaecosystems to one matrix. Adds coloumn
-#' with metasystem id
+#' Converts list with individuals within a local metaecosystem to one matrix. If
+#' \code{id = TRUE} a column identifying the metaecosystem is added.
 #'
 #' @return matrix
 #'
@@ -44,13 +46,14 @@ rcpp_list_to_matrix <- function(fishpop, pop_n_sum, id) {
 
 #' rcpp_matrix_to_list
 #'
-#' @description Rcpp matrix to list
+#' @description
+#' Rcpp matrix to list.
 #'
 #' @param fishpop Matrix with fish population.
-#' @param n Integer with number of metaecosystems.
+#' @param n Integer with number of total metaecosystems.
 #'
 #' @details
-#' Converts a matrix with fishpopulation to a list split by metaecosystem.
+#' Converts individual matrix to a list split by metaecosystem.
 #'
 #' @return list
 #'
@@ -64,18 +67,23 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 
 #' rcpp_move_meta
 #'
-#' @description Rcpp list to matrix
+#' @description
+#' Rcpp move meta.
 #'
 #' @param fishpop List with fish population.
 #' @param pop_n_sum Integer with total number of individuals.
-#' @param fishpop_attributes Matrix with stationary value for each individual.
+#' @param id_attr Vector with unique id of fishpop attributes matrix.
+#' @param stationary_values Vector with stationary values.
+#' @param id_meta Vector with metaecosystem ids.
 #' @param extent Spatial extent of the seafloor raster.
 #'
 #' @details
 #' Simulate movement across local metaecosystem. Individuals move to a new local
-#' metaecosystem with a certain probability each timestep.
+#' metaecosystem with a certain probability each timestep. The probability increases
+#' depending on the stationary value and how long individuals already stayed on local
+#' metaecosystem. To avoid this movement set \code{parameters$move_stationary = 0}.
 #'
-#' @return void
+#' @return list
 #'
 #' @aliases rcpp_move_meta
 #' @rdname rcpp_move_meta
@@ -97,8 +105,7 @@ rcpp_move_meta <- function(fishpop, pop_n_sum, id_attr, stationary_values, id_me
 #' @param max_dist Double with maximum movement distance.
 #' @param n Integer with number of metaecosystems.
 #' @param pop_n Vector with number of individuals.
-#' @param fishpop_stationary Matrix with stationary values for each individual
-#' @param pop_reserves_thres List with threshold of pop_reserves_max to drain prior to foraging.
+#' @param fishpop_attributes Matrix with stationary and reserves_thres values for each individual
 #' @param nutr_input List with amount of nutrient input each timestep.
 #' @param coords_reef List with ID and coords of reef cells.
 #' @param cell_adj Matrix with cell adjacencies.
@@ -118,7 +125,10 @@ rcpp_move_meta <- function(fishpop, pop_n_sum, id_attr, stationary_values, id_me
 #' (viii) diffusion of nutrients/detritus, and ix) nutrient output.
 #'
 #' @references
-#' Add references
+#' For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
+#' In preparation. Mechanistic support for increased primary production around artificial reefs.
+#'
+#' Add references about meta approach.
 #'
 #' @return void
 #'
@@ -132,14 +142,14 @@ rcpp_sim_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track,
 
 #' rcpp_subset_matrix
 #'
-#' @description Rcpp list to matrix
+#' @description
+#' Rcpp subset matrix.
 #'
-#' @param fishpop List with individuals within metaecosystems.
-#' @param pop_n_sum Integer with number of indiviuals.
+#' @param fishpop Matrix with fishpop values.
+#' @param rows Vector with row ids
 #'
 #' @details
-#' Converts list with individuals within metaecosystems to one matrix. Adds coloumn
-#' with metasystem id
+#' Returns matrix with only subset of rows of \code{fishpop} specified by \code{rows}.
 #'
 #' @return matrix
 #'
@@ -153,13 +163,16 @@ rcpp_subset_matrix <- function(fishpop, rows) {
 
 #' rcpp_which
 #'
-#' @description Rcpp which
+#' @description
+#' Rcpp which.
 #'
 #' @param x Vector with values.
-#' @param y Integer with maximum number of classes.
+#' @param y Vector values to find position.
 #'
 #' @details
-#' ADD DETAILS
+#' Returns index of all elements of \code{y} vector within \code{x} vector.
+#' The index of the first element is 0. If element is not present within  \code{x} vector
+#' \code{NA} is returned.
 #'
 #' @return vector
 #'

@@ -9,15 +9,17 @@ rcpp_which(x, y)
 \arguments{
 \item{x}{Vector with values.}
 
-\item{y}{Integer with maximum number of classes.}
+\item{y}{Vector values to find position.}
 }
 \value{
 vector
 }
 \description{
-Rcpp which
+Rcpp which.
 }
 \details{
-ADD DETAILS
+Returns index of all elements of \code{y} vector within \code{x} vector.
+The index of the first element is 0. If element is not present within  \code{x} vector
+\code{NA} is returned.
 }
 \keyword{export}

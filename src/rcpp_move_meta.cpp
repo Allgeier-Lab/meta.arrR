@@ -8,18 +8,23 @@ using namespace Rcpp;
 
 //' rcpp_move_meta
 //'
-//' @description Rcpp list to matrix
+//' @description
+//' Rcpp move meta.
 //'
 //' @param fishpop List with fish population.
 //' @param pop_n_sum Integer with total number of individuals.
-//' @param fishpop_attributes Matrix with stationary value for each individual.
+//' @param id_attr Vector with unique id of fishpop attributes matrix.
+//' @param stationary_values Vector with stationary values.
+//' @param id_meta Vector with metaecosystem ids.
 //' @param extent Spatial extent of the seafloor raster.
 //'
 //' @details
 //' Simulate movement across local metaecosystem. Individuals move to a new local
-//' metaecosystem with a certain probability each timestep.
+//' metaecosystem with a certain probability each timestep. The probability increases
+//' depending on the stationary value and how long individuals already stayed on local
+//' metaecosystem. To avoid this movement set \code{parameters$move_stationary = 0}.
 //'
-//' @return void
+//' @return list
 //'
 //' @aliases rcpp_move_meta
 //' @rdname rcpp_move_meta
@@ -43,7 +48,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, int pop_n_sum,
     double prob_move = fishpop_mat(i, 16) / as<double>(stationary_values[id_fish_temp]);
 
     // get random number between 0 and 1
-    double prob_random = runif(1, 0.0, 1.0)(0);
+    double prob_random = runif(1, 0.0, 1.0)[0];
 
     // move if probability is below random number
     if (prob_random < prob_move) {
@@ -55,16 +60,16 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, int pop_n_sum,
       Rcpp::IntegerVector id_new = id_meta[id_meta != id_meta_temp];
 
       // sample new random id
-      int id_random = Rcpp::sample(id_new, 1)(0);
+      int id_random = Rcpp::sample(id_new, 1)[0];
 
       // update meta id
       fishpop_mat(i, 17) = id_random;
 
       // random x coord
-      fishpop_mat(i, 2) = Rcpp::runif(1, extent(0), extent(1))(0);
+      fishpop_mat(i, 2) = Rcpp::runif(1, extent[0], extent[1])[0];
 
       // random y coord
-      fishpop_mat(i, 3) = Rcpp::runif(1, extent(2), extent(3))(0);
+      fishpop_mat(i, 3) = Rcpp::runif(1, extent[2], extent[3])[0];
 
       // set stationary to zero
       fishpop_mat(i, 16) = 0;

@@ -11,18 +11,24 @@ rcpp_move_meta(fishpop, pop_n_sum, id_attr, stationary_values, id_meta, extent)
 
 \item{pop_n_sum}{Integer with total number of individuals.}
 
-\item{extent}{Spatial extent of the seafloor raster.}
+\item{id_attr}{Vector with unique id of fishpop attributes matrix.}
 
-\item{fishpop_attributes}{Matrix with stationary value for each individual.}
+\item{stationary_values}{Vector with stationary values.}
+
+\item{id_meta}{Vector with metaecosystem ids.}
+
+\item{extent}{Spatial extent of the seafloor raster.}
 }
 \value{
-void
+list
 }
 \description{
-Rcpp list to matrix
+Rcpp move meta.
 }
 \details{
 Simulate movement across local metaecosystem. Individuals move to a new local
-metaecosystem with a certain probability each timestep.
+metaecosystem with a certain probability each timestep. The probability increases
+depending on the stationary value and how long individuals already stayed on local
+metaecosystem. To avoid this movement set \code{parameters$move_stationary = 0}.
 }
 \keyword{export}

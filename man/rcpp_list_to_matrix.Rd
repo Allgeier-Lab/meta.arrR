@@ -4,12 +4,14 @@
 \alias{rcpp_list_to_matrix}
 \title{rcpp_list_to_matrix}
 \usage{
-rcpp_list_to_matrix(fishpop, pop_n_sum)
+rcpp_list_to_matrix(fishpop, pop_n_sum, id)
 }
 \arguments{
-\item{fishpop}{List with individuals within metaecosystems.}
+\item{fishpop}{List with individuals within local metaecosystems.}
 
-\item{pop_n_sum}{Integer with number of indiviuals.}
+\item{pop_n_sum}{Integer with number of individuals.}
+
+\item{id}{If TRUE, column with metaecosystem id is added.}
 }
 \value{
 matrix
@@ -18,7 +20,7 @@ matrix
 Rcpp list to matrix
 }
 \details{
-Converts list with individuals within metaecosystems to one matrix. Adds coloumn
-with metasystem id
+Converts list with individuals within a local metaecosystem to one matrix. If
+\code{id = TRUE} a column identifying the metaecosystem is added.
 }
 \keyword{export}

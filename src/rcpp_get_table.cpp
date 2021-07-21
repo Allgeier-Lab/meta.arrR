@@ -5,7 +5,8 @@ using namespace Rcpp;
 
 //' rcpp_get_table
 //'
-//' @description Rcpp get table
+//' @description
+//' Rcpp get table.
 //'
 //' @param x Vector with values.
 //' @param n Integer with maximum number of classes.
@@ -28,7 +29,7 @@ Rcpp::IntegerVector rcpp_get_table(Rcpp::NumericVector x, int n) {
   // loop through all possible id
   for (int i = 0; i < x.length(); i++) {
 
-    int value_temp = x(i) - 1;
+    int value_temp = x[i] - 1;
 
     // increase count
     x_table(value_temp) += 1;

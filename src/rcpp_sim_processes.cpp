@@ -24,8 +24,7 @@ using namespace Rcpp;
 //' @param max_dist Double with maximum movement distance.
 //' @param n Integer with number of metaecosystems.
 //' @param pop_n Vector with number of individuals.
-//' @param fishpop_stationary Matrix with stationary values for each individual
-//' @param pop_reserves_thres List with threshold of pop_reserves_max to drain prior to foraging.
+//' @param fishpop_attributes Matrix with stationary and reserves_thres values for each individual
 //' @param nutr_input List with amount of nutrient input each timestep.
 //' @param coords_reef List with ID and coords of reef cells.
 //' @param cell_adj Matrix with cell adjacencies.
@@ -45,7 +44,10 @@ using namespace Rcpp;
 //' (viii) diffusion of nutrients/detritus, and ix) nutrient output.
 //'
 //' @references
-//' Add references
+//' For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
+//' In preparation. Mechanistic support for increased primary production around artificial reefs.
+//'
+//' Add references about meta approach.
 //'
 //' @return void
 //'

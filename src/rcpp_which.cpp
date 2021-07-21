@@ -5,13 +5,16 @@ using namespace Rcpp;
 
 //' rcpp_which
 //'
-//' @description Rcpp which
+//' @description
+//' Rcpp which.
 //'
 //' @param x Vector with values.
-//' @param y Integer with maximum number of classes.
+//' @param y Vector values to find position.
 //'
 //' @details
-//' ADD DETAILS
+//' Returns index of all elements of \code{y} vector within \code{x} vector.
+//' The index of the first element is 0. If element is not present within  \code{x} vector
+//' \code{NA} is returned.
 //'
 //' @return vector
 //'
@@ -26,7 +29,7 @@ Rcpp::IntegerVector rcpp_which(Rcpp::IntegerVector x, Rcpp::IntegerVector y) {
   IntegerVector::iterator itr;
 
   // init position
-  int position = -1;
+  int position;
 
   // init vector to store results of all which elements
   Rcpp::IntegerVector result(y.length(), 0);
@@ -35,7 +38,7 @@ Rcpp::IntegerVector rcpp_which(Rcpp::IntegerVector x, Rcpp::IntegerVector y) {
   for (int i = 0; i < y.length(); i++) {
 
     // find current y element in x
-    itr = std::find(x.begin(), x.end(), y(i));
+    itr = std::find(x.begin(), x.end(), y[i]);
 
     // y was present in x
     if (itr != x.end()) {
@@ -57,9 +60,8 @@ Rcpp::IntegerVector rcpp_which(Rcpp::IntegerVector x, Rcpp::IntegerVector y) {
   }
 
   return result;
-
 }
 
 /*** R
-rcpp_which(x = c(4, 2, 6, 1), y = c(2, 1, 10))
+rcpp_which(x = c(4, 2, 6, 1), y = c(2, 1, 10, 1, 1))
 */

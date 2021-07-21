@@ -43,6 +43,8 @@ rcpp_sim_processes(
 
 \item{pop_n}{Vector with number of individuals.}
 
+\item{fishpop_attributes}{Matrix with stationary and reserves_thres values for each individual}
+
 \item{nutr_input}{List with amount of nutrient input each timestep.}
 
 \item{coords_reef}{List with ID and coords of reef cells.}
@@ -64,10 +66,6 @@ rcpp_sim_processes(
 \item{burn_in}{Numeric with timesteps used to burn in.}
 
 \item{verbose}{If TRUE, progress reports are printed.}
-
-\item{fishpop_stationary}{Matrix with stationary values for each individual}
-
-\item{pop_reserves_thres}{List with threshold of pop_reserves_max to drain prior to foraging.}
 }
 \value{
 void
@@ -82,5 +80,8 @@ The functions is a 'wrapper' around the following sub-processes: (i) nutrient in
 (viii) diffusion of nutrients/detritus, and ix) nutrient output.
 }
 \references{
-Add references
+For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
+In preparation. Mechanistic support for increased primary production around artificial reefs.
+
+Add references about meta approach.
 }
