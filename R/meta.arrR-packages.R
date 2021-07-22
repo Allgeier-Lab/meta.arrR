@@ -20,13 +20,12 @@ globalVariables(names = c(
   "died_background",
   "died_consumption",
   "extent",
+  "input",
+  "measure",
   "meta",
   "nutrients_pool",
-  "input",
+  "timestep",
   "top_left",
   "top_right",
-  "timestep",
+  "value",
   "weight"))
-
-
-

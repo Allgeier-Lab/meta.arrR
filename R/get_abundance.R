@@ -31,19 +31,19 @@ get_abundance <- function(result) {
     # get only needed cols
     fishpop_temp <- subset(result$fishpop[[i]], select = c("id", "timestep"))
 
+    # check which IDs are NA (no individual present)
+    abundance_na <- fishpop_temp$timestep[is.na(fishpop_temp$id)]
+
     # count number of rows per timestep
     abundance_temp <- stats::aggregate(x = fishpop_temp$id,
                                        by = list(timestep = fishpop_temp$timestep),
                                        FUN = length)
 
-    # check which IDs are NA (no individual present)
-    abundance_na <- fishpop_temp$timestep[is.na(fishpop_temp$id)]
-
-    # replace all NA rows with 0 abundance
-    abundance_temp$x[abundance_temp$timestep %in% abundance_na] <- 0
-
     # replace names
     names(abundance_temp) <- c("timestep", "abundance")
+
+    # replace all NA rows with 0 abundance
+    abundance_temp[abundance_temp$timestep %in% abundance_na, "abundance"] <- 0
 
     # save meta id
     abundance_temp$meta <- i

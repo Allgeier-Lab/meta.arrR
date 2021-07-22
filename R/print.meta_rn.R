@@ -45,12 +45,19 @@ print.meta_rn <- function(x, digits = 2, timestep = x$max_i, ...) {
 
     fish_temp <- subset(i, timestep == timestep_temp)
 
-    c(no = length(fish_temp$id),
-      length = round(mean(fish_temp$length), digits = digits),
-      mort = round(mean(fish_temp$died_background + fish_temp$died_consumption),
-                   digits = digits))
+    if (all(is.na(fish_temp[1, -c(18, 19)]))) {
 
+      c(no = 0, length = NA, mort = NA)
+
+    } else {
+
+      c(no = length(fish_temp$id),
+        length = round(mean(fish_temp$length), digits = digits),
+        mort = round(mean(fish_temp$died_background + fish_temp$died_consumption),
+                     digits = digits))
+    }
   })
+
 
   total_time <- round(x$max_i * x$min_per_i / 60 / 24, digits = 2)
 

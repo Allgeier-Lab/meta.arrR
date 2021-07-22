@@ -7,7 +7,7 @@ void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop,
                         int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes,
                         Rcpp::List nutr_input,
                         Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj,
-                        Rcpp::NumericVector extent,Rcpp::NumericVector dimensions,
+                        Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions,
                         int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in,
                         bool verbose);
 

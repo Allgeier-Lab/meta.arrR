@@ -85,8 +85,6 @@ plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, .
                          "top_left", "top_right",
                          "bottom_left", "bottom_right")
 
-
-
   names(result_sum) <- c("timestep",
                          "top_left", "top_right",
                          "bottom_left", "bottom_right")

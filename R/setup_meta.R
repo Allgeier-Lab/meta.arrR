@@ -84,6 +84,15 @@ setup_meta <- function(n, extent, grain, reefs = NULL, starting_values, paramete
 
     starting_values$pop_n <- rep(x = starting_values$pop_n, times = n)
 
+  } else {
+
+    # check if length makes sense
+    if (length(starting_values$pop_n) != n) {
+
+      stop("Length of provided 'pop_n' not allowed.", call. = FALSE)
+
+    }
+
   }
 
   # loop through all metaecosystems

@@ -64,7 +64,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_sim_processes
-void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List seafloor_track, Rcpp::List fishpop_track, Rcpp::List parameters, Rcpp::String movement, double max_dist, int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes, Rcpp::List nutr_input, Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj, Rcpp::NumericVector extent, Rcpp::NumericVector dimensions, int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in, bool verbose);
+void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List seafloor_track, Rcpp::List fishpop_track, Rcpp::List parameters, Rcpp::String movement, double max_dist, int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes, Rcpp::List nutr_input, Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj, Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions, int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in, bool verbose);
 RcppExport SEXP _meta_arrR_rcpp_sim_processes(SEXP seafloorSEXP, SEXP fishpopSEXP, SEXP seafloor_trackSEXP, SEXP fishpop_trackSEXP, SEXP parametersSEXP, SEXP movementSEXP, SEXP max_distSEXP, SEXP nSEXP, SEXP pop_nSEXP, SEXP fishpop_attributesSEXP, SEXP nutr_inputSEXP, SEXP coords_reefSEXP, SEXP cell_adjSEXP, SEXP extentSEXP, SEXP dimensionsSEXP, SEXP max_iSEXP, SEXP min_per_iSEXP, SEXP save_eachSEXP, SEXP seagrass_eachSEXP, SEXP burn_inSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -82,7 +82,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::List >::type coords_reef(coords_reefSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type cell_adj(cell_adjSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type extent(extentSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type dimensions(dimensionsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type dimensions(dimensionsSEXP);
     Rcpp::traits::input_parameter< int >::type max_i(max_iSEXP);
     Rcpp::traits::input_parameter< int >::type min_per_i(min_per_iSEXP);
     Rcpp::traits::input_parameter< int >::type save_each(save_eachSEXP);
