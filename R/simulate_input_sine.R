@@ -3,16 +3,19 @@
 #' @description Initiate fish population.
 #'
 #' @param n Integer with number of metaecosystems to setup.
-#' @param timestep Vector timesteps
-#' @param period_mn,period_sd Numeric with sine curve parameters.
-#' @param amplitude_mn,amplitude_sd Numeric variability of parameters.
+#' @param max_i Integer with maximum number of simulation time steps.
+#' @param freq_mn,freq_sd Numeric number of peak.
+#' @param input_max,input_sd Numeric with maximum input amount.
 #' @param phase Numeric with sine curve parameters.
-#' @param return_df Logical if data.frame is returned.
+#' @param return_df Logical if TRUE data.frame is returned.
 #'
 #' @details
-#' Simulating nutrient input based on sine curve. The mean of the period and amplitude
-#' can are multiplied by the \code{*_sd} parameter and used as standard deviation of a
-#' normal distribution to add variability.
+#' Simulating nutrient input based on sine curve. The \code{freq_mn} argument quantifies
+#' how many complete cycles of the sine function are present for a given \code{max_i},
+#' i.e., how many "peaks" are present. The \code{input_max} argument quantifies the
+#' maximum value of the input "peaks". Both arguments can be multiplied by the \code{*_sd}
+#' argument and used as standard deviation of a normal distribution to add variability across
+#' metaecosystems.
 #'
 #' @return vector
 #'
@@ -23,35 +26,52 @@
 #' @rdname simulate_input_sine
 #'
 #' @export
-simulate_input_sine <- function(n, timestep,
-                                period_mn, period_sd, amplitude_mn, amplitude_sd,
+simulate_input_sine <- function(n, max_i, freq_mn, freq_sd, input_max, input_sd,
                                 phase = 0, return_df = FALSE) {
 
   # create empty list
   result_list <- vector(mode = "list", length = n)
 
+  # create vector from 1 to max_i for nutrient input
+  timestep <- 1:max_i
+
+  # calculate period for number of input peaks (period = 2 * pi / b)
+  freq_mn <- freq_mn / (max_i / (2 * pi))
+
+  # calculate maximum of input peaks, amplitude is "half" of whole sine function
+  input_max <- input_max / 2
+
   # loop through all metaecosystems
   for (i in seq_along(result_list)) {
 
-    # draw mean period and amplitude
-    period_temp <- abs(stats::rnorm(n = 1, mean = period_mn, sd = period_mn * period_sd))
+    # sample mean period and amplitude from random norm dist
+    period_temp <- stats::rnorm(n = 1, mean = freq_mn, sd = freq_mn * freq_sd)
 
-    amplitude_temp <- stats::rnorm(n = 1, mean = amplitude_mn, sd = amplitude_mn * amplitude_sd)
-
-    vert_temp <- amplitude_temp
+    # amplitude must be positive
+    amplitude_temp <- abs(stats::rnorm(n = 1, mean = input_max, sd = input_max * input_sd))
 
     # amplitude * sin(period * (x + phase)) + vert
-    input_temp <- amplitude_temp * sin(period_temp * (timestep + phase)) + vert_temp
+    # adding amplitude_temp again to make sure input >= 0.0
+    input_temp <- amplitude_temp * sin(period_temp * (timestep + phase)) + amplitude_temp
 
+    # check if any is negativ
+    if (any(input_temp < 0)) {
+
+      stop("Negative input value created. Please check arguments.")
+
+    }
+
+    # store results in data.frame
     result_list[[i]] <- data.frame(meta = factor(i), timestep = timestep, input = input_temp)
 
   }
 
+  # extract input value only
   if (!return_df) {
 
     result_list <- lapply(result_list, function(i) i$input)
 
-
+  # row bind to one big data.frame
   } else {
 
     result_list <- do.call(rbind, result_list)
