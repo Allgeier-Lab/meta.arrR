@@ -1,31 +1,33 @@
 #' simulate_meta
 #'
-#' @description Core function to run model.
+#' @description
+#' Simulate metaecosystems.
 #'
-#' @param metasyst Metaecosystem created with \code{\link{setup_meta}}.
+#' @param metasyst \code{meta_syst} object created with \code{setup_meta}.
 #' @param parameters List with all model parameters.
 #' @param nutr_input List with nutrient input vectors.
-#' @param movement String specifing movement algorithm. Either 'rand', 'attr' or 'behav'.
-#' @param max_i Integer with maximum number of simulation timesteps.
+#' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
+#' @param max_i Integer with maximum number of simulation time steps.
 #' @param min_per_i Integer to specify minutes per i.
 #' @param seagrass_each Integer how often (each i * x) seagrass dynamics will be simulated.
 #' @param save_each Numeric how often data should be saved to return.
-#' @param burn_in Numeric with timesteps used to burn in.
-#' @param return_burnin If FALSE all timesteps < burn_in are not returned.
+#' @param burn_in Numeric with time steps used to burn in.
+#' @param return_burnin If FALSE all time steps < burn_in are not returned.
 #' @param verbose If TRUE, progress reports are printed.
 #'
 #' @details
-#' This is the core function of the \code{arrR} model that allows to easily run the
+#' This is the core function of the \code{meta.arrR} model that allows to easily run the
 #' model. Besides running all sub-processes, the function also includes some basic
 #' checks to make sure the model does not crash. However, this does not ensure that
-#' e.g. all parameter values "make sense". The function returns a \code{mdl_rn} object
+#' e.g. all parameter values "make sense". The function returns a \code{meta_rn} object
 #' which stores besides the model run results a lot of information about the model run
 #' specification and many function that can handle the objects exist (e.g. plotting).
 #'
-#' The functions is a 'wrapper' around the following sub-processes: (i) nutrient input,
-#' (ii) seagrass growth, (iii) detritus mineralization, (iv) movement of individuals,
-#' (v) respiration of individuals, (vi) growth of individuals, (vii) mortality of individuals,
-#' (viii) diffusion of nutrients/detritus, and ix) nutrient output.
+#' The functions is a 'wrapper' around the following sub-processes: i) movement across
+#' local metaecosystems (outter loop) (ii) nutrient input, (iii) seagrass growth,
+#' (iv) detritus mineralization, (v) movement of individuals, (vi) respiration of
+#' individuals, (vii) growth of individuals, (viii) mortality of individuals,
+#' (ix) diffusion of nutrients/detritus, and (x) nutrient output (all inner loop).
 #'
 #' The \code{movement} argument allows to either specify random movement of individuals,
 #' attracted movement towards the artificial reef of individuals or a movement behavior based
@@ -34,18 +36,22 @@
 #' If \code{nutr_input} is \code{NULL}, no nutrient input is simulated. To also simulate no
 #' nutrient output, set the \code{nutrients_output} parameter to zero.
 #'
-#' If \code{save_each > 1}, not all iterations are saved in the final \code{mdl_rn} object,
+#' If \code{save_each > 1}, not all iterations are saved in the final \code{meta_rn} object,
 #' but only each timestep specified by the object. However, \code{max_i} must be dividable by
-#' \code{save_each} without rest. Similar,  \code{seagrass_each} allows to simulate all
+#' \code{save_each} without rest. Similar, \code{seagrass_each} allows to simulate all
 #' seagrass sub-processes only each specified timestep.
 #'
 #' If \code{burn_in > 0}, all sub-processes related to fish individuals are not simulated
 #' before this timestep is reached.
 #'
-#' @return mdl_rn
+#' @return meta_rn
 #'
 #' @examples
-#' # Add example code
+#' \dontrun{
+#' result_attr <- simulate_meta(metasyst = metasyst, nutr_input = nutr_input,
+#' parameters = parameters, movement = "attr", max_i = max_i, seagrass_each = seagrass_each,
+#' min_per_i = min_per_i, save_each = save_each, verbose = TRUE)
+#' }
 #'
 #' @aliases simulate_meta
 #' @rdname simulate_meta
@@ -134,15 +140,15 @@ simulate_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "r
     }
 
     # set nutrient flag to save results later
-    nutr_input_flag <- TRUE
+    flag_nutr_input <- TRUE
 
-    # create nutrient input if not present
+  # create nutrient input if not present
   } else {
 
     nutr_input <- lapply(1:metasyst$n, function(i) rep(x = 0.0, times = max_i))
 
     # set nutrient flag to save results later
-    nutr_input_flag <- FALSE
+    flag_nutr_input <- FALSE
 
   }
 
@@ -276,7 +282,7 @@ simulate_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "r
     }
   }
 
-  if (!nutr_input_flag) {
+  if (!flag_nutr_input) {
 
     nutr_input <- NA
 
@@ -284,7 +290,7 @@ simulate_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "r
 
   # combine result to list
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track, movement = movement,
-                 n = metasyst$n, fishpop_stationary = metasyst$fishpop_stationary,
+                 n = metasyst$n, fishpop_attributes = metasyst$fishpop_attributes,
                  starting_values = metasyst$starting_values, parameters = parameters,
                  nutr_input = nutr_input, max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  save_each = save_each, seagrass_each,

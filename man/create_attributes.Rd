@@ -15,10 +15,11 @@ create_attributes(fishpop, parameters)
 matrix
 }
 \description{
-Create attribute values
+Create attribute values.
 }
 \details{
-Creates matrix with id and random stationary value for each individual of fishpopulation.
+Creates matrix with id, stationary, and reserves threshold value for each
+individual of fish population.
 }
 \examples{
 \dontrun{

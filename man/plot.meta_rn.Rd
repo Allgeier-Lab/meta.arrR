@@ -7,7 +7,7 @@
 \method{plot}{meta_rn}(x, what = "seafloor", burn_in = TRUE, base_size = 10, ...)
 }
 \arguments{
-\item{x}{mdl_rn object of simulation run.}
+\item{x}{\code{meta_rn} object simulated with \code{simulate_meta}.}
 
 \item{what}{Character specifying what to plot.}
 
@@ -18,12 +18,15 @@
 \item{...}{Not used.}
 }
 \description{
-Ploting method for meta_rn object
+Plotting method for meta_rn object.
 }
 \details{
-Ploting method for metaecosystem created with \code{\link{setup_meta}}.
+Plotting method for result of metaecosystem model run created
+with \code{simulate_meta}.
 }
 \examples{
-# Add example code
+\dontrun{
+plot(result_attr)
+}
 
 }

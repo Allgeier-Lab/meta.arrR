@@ -9,7 +9,7 @@ using namespace Rcpp;
 //' Rcpp subset matrix.
 //'
 //' @param fishpop Matrix with fishpop values.
-//' @param rows Vector with row ids
+//' @param rows Vector with row ids.
 //'
 //' @details
 //' Returns matrix with only subset of rows of \code{fishpop} specified by \code{rows}.

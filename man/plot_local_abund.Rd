@@ -7,19 +7,23 @@
 plot_local_abund(x, base_size = 10, ...)
 }
 \arguments{
-\item{x}{ntr_inpt object.}
+\item{x}{\code{meta_rn} object simulated with \code{simulate_meta}.}
 
 \item{base_size}{Numeric to specify base font size.}
 
 \item{...}{Not used.}
 }
 \description{
-Plotting method for meta_rn object
+Plot local abundance.
 }
 \details{
-Plotting method for nutrient input created with \code{\link{simulate_input_sine}}.
+The resulting plot describes the number of individuals within each local metaecosystem
+over time steps. Additional, the minimum, maximum and mean of all metaecosystems are
+included.
 }
 \examples{
-# Add example code
+\dontrun{
+plot_local_abund(x = result_attr)
+}
 
 }

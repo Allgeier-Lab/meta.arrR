@@ -3,15 +3,17 @@
 #' @description
 #' Printing method for nutr_input object.
 #'
-#' @param x nutr_input object.
-#' @param digits Numeric of decimal places (round).
-#' @param ... Arguments passed to cat.
+#' @param x \code{nutr_input} object simulated with \code{simulate_nutr_input}.
+#' @param digits Numeric of decimal places (passed on to \code{round}).
+#' @param ... Not used.
 #'
 #' @details
-#' Printing method for nutr_input model run created with \code{simulate_input_sine}.
+#' Printing method for \code{nutr_input} created with \code{simulate_nutr_input}.
 #'
 #' @examples
-#' # Add example code
+#' \dontrun{
+#' print(nutr_input)
+#' }
 #'
 #' @aliases print.nutr_input
 #' @rdname print.nutr_input

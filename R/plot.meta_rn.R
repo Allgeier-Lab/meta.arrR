@@ -1,18 +1,22 @@
 #' plot.meta_rn
 #'
-#' @description Ploting method for meta_rn object
+#' @description
+#' Plotting method for meta_rn object.
 #'
-#' @param x mdl_rn object of simulation run.
+#' @param x \code{meta_rn} object simulated with \code{simulate_meta}.
 #' @param what Character specifying what to plot.
 #' @param burn_in If TRUE, line to indicate burn-in time is plotted.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
 #' @details
-#' Ploting method for metaecosystem created with \code{\link{setup_meta}}.
+#' Plotting method for result of metaecosystem model run created
+#' with \code{simulate_meta}.
 #'
 #' @examples
-#' # Add example code
+#' \dontrun{
+#' plot(result_attr)
+#' }
 #'
 #' @aliases plot.meta_rn
 #' @rdname plot.meta_rn
@@ -29,15 +33,16 @@ plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, .
   # set color for burn in threshold
   col_burn <- ifelse(test = burn_in, yes = "grey", no = NA)
 
+  # get burn_in value for filtering
   burn_in_itr <- x$burn_in
 
-  # get separated values
+  # get separated values for each local metaecosystem
   result_sep <- lapply(1:x$n, function(i)
     arrR::summarize_mdlrn(list(seafloor = x$seafloor[[i]], fishpop = x$fishpop[[i]],
                                burn_in = x$burn_in),
                           summary = "mean"))
 
-  # get total mean result
+  # get total mean value
   result_sum <- arrR::summarize_mdlrn(result = list(seafloor = do.call(rbind, x$seafloor),
                                                     fishpop = do.call(rbind, x$fishpop),
                                                     burn_in = x$burn_in),
@@ -45,42 +50,51 @@ plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, .
 
   if (what == "seafloor") {
 
+    # get only seafloor results
     result_sep <- do.call(rbind, lapply(1:x$n, function(i)
       cbind(meta = i, result_sep[[i]]$seafloor)))
 
+    # order cols of local metaecosystems
     result_sep <- result_sep[, c("meta", "timestep",
                                  "ag_biomass", "bg_biomass",
                                  "nutrients_pool", "detritus_pool")]
 
+    # order cols total values
     result_sum <- result_sum$seafloor[, c("timestep",
                                           "ag_biomass", "bg_biomass",
                                           "nutrients_pool", "detritus_pool")]
 
+    # setup labels
     y_labels <- c("Dry weight ag biomass [g/cell]", "Dry weight bg biomass [g/cell]",
                   "Nutrients pool [g/cell]", "Detritus pool [g/cell]")
 
-    # check if limits are !is.null() and rename to top_left,...
+    # MH: check if limits are !is.null() and rename to top_left,...
 
   } else if (what == "fishpop") {
 
+    # get results of fishpop only
     result_sep <- do.call(rbind, lapply(1:x$n, function(i)
       cbind(meta = i, result_sep[[i]]$fishpop)))
 
+    # order cols of local metaecosystems
     result_sep <- result_sep[, c("meta", "timestep",
                                  "length", "weight",
                                  "died_consumption", "died_background")]
 
+    # order total mean value
     result_sum <- result_sum$fishpop[, c("timestep",
                                          "length", "weight",
                                          "died_consumption", "died_background")]
 
+    # setup labels
     y_labels <- c("Body length [cm]", "Body weigth [g]",
                   "Count mortality consumption [#]", "Count mortality background [#]")
 
-    # check if limits are !is.null() and rename to top_left,...
+    # MH: check if limits are !is.null() and rename to top_left,...
 
   }
 
+  # setup names of list
   names(result_sep) <- c("meta", "timestep",
                          "top_left", "top_right",
                          "bottom_left", "bottom_right")
@@ -159,7 +173,7 @@ plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, .
   plot_title <- paste0("Total time : ", x$max_i, " iterations (",
                        round(x$max_i * x$min_per_i / 60 / 24, 1), " days)",
                        "\nFishpop    : ", x$starting_values$pop_n,
-                       " indiv (Reef attraction: ", x$reef_attraction, ")")
+                       " indiv (Movement: ", x$movement, ")")
 
   # now add the title
   title <- cowplot::ggdraw() +

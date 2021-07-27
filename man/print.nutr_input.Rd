@@ -7,19 +7,21 @@
 \method{print}{nutr_input}(x, digits = NULL, ...)
 }
 \arguments{
-\item{x}{nutr_input object.}
+\item{x}{\code{nutr_input} object simulated with \code{simulate_nutr_input}.}
 
-\item{digits}{Numeric of decimal places (round).}
+\item{digits}{Numeric of decimal places (passed on to \code{round}).}
 
-\item{...}{Arguments passed to cat.}
+\item{...}{Not used.}
 }
 \description{
 Printing method for nutr_input object.
 }
 \details{
-Printing method for nutr_input model run created with \code{simulate_input_sine}.
+Printing method for \code{nutr_input} created with \code{simulate_nutr_input}.
 }
 \examples{
-# Add example code
+\dontrun{
+print(nutr_input)
+}
 
 }

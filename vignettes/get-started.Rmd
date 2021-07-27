@@ -26,10 +26,12 @@ library(meta.arrR)
 # get starting values
 starting_values <- meta.arrR::default_starting_values
 
-starting_values$pop_n <- c(1, 1, 8)
-
 # get parameters
 parameters <- meta.arrR::default_parameters
+
+n <- 5
+
+starting_values$pop_n <- rep(x = 5, n = n)
 
 # create 5 reef cells in center of seafloor
 reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
@@ -53,19 +55,17 @@ save_each <- 1 # (24 / (min_per_i / 60)) * days
 
 max_i %% save_each
 
-parameters$move_stationary <- max_i / 100
+parameters$move_stationary <- max_i / (5 * 4)
 
-parameters$move_stationary_var <- 0.1
-
-metasyst <- setup_meta(n = 3, extent = extent, grain = grain, reefs = reef_matrix, 
+metasyst <- setup_meta(n = n, extent = extent, grain = grain, reefs = reef_matrix, 
                        starting_values = starting_values, parameters = parameters)
 
-nutr_input <- simulate_input_sine(n = 4, timestep = 1:max_i,
-                                  period_mn = 0.005, period_sd = 0,
-                                  amplitude_mn = 0.001, amplitude_sd = 0)
+nutr_input <- simulate_nutr_input(n = n, max_i = max_i,
+                                  freq_mn = 5, freq_sd = 0.1,
+                                  input_max = starting_values$nutrients_pool,
+                                  input_sd = 0.1)
 
-plot_nutrient_input(nutr_input)
-
+plot(nutr_input)
 ```
 
 ```{r run}

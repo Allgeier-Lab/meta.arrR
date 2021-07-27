@@ -1,23 +1,25 @@
 #' plot.nutr_input
 #'
 #' @description
-#' Ploting method for nutr_input object.
+#' Plotting method for nutr_input object.
 #'
-#' @param x mdl_rn object of simulation run.
+#' @param x \code{nutr_input} object simulated with \code{simulate_nutr_input}.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
 #' @details
-#' Ploting method for metaecosystem created with \code{\link{setup_meta}}.
+#' Ploting method for metaecosystem created with \code{setup_meta}.
 #'
 #' @examples
-#' # Add example code
+#' nutr_input <- simulate_nutr_input(n = 3, max_i = 4380, freq_mn = 3, freq_sd = 0.1,
+#' input_max = 0.1, input_sd = 0.25)
+#' plot(nutr_input)
 #'
 #' @aliases plot.nutr_input
 #' @rdname plot.nutr_input
 #'
 #' @export
-plot.nutr_input <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, ...) {
+plot.nutr_input <- function(x, base_size = 10, ...) {
 
   # combine all list elements to one data.frame
   input_df <- do.call(rbind, lapply(seq_along(x), function(i){
@@ -35,7 +37,6 @@ plot.nutr_input <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10
                                     col = factor(meta))) +
     ggplot2::geom_hline(yintercept = 0, color = "lightgrey", linetype = 2) +
     ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-    # ggplot2::guides(col = "none") +
     ggplot2::labs(x = "Timestep", y = "Nutrient input [g/cell]") +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),

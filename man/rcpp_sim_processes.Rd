@@ -74,10 +74,17 @@ void
 Rcpp run simulation of metaecosystems processes.
 }
 \details{
-The functions is a 'wrapper' around the following sub-processes: (i) nutrient input,
-(ii) seagrass growth, (iii) detritus mineralization, (iv) movement of individuals,
-(v) respiration of individuals, (vi) growth of individuals, (vii) mortality of individuals,
-(viii) diffusion of nutrients/detritus, and ix) nutrient output.
+Wrapper function including all sub-processes. The core of the function is a
+nested loop through all i) time steps and ii) all local metaecosystems.
+
+The functions is a 'wrapper' around the following sub-processes: i) movement across
+local metaecosystems (outter loop) (ii) nutrient input, (iii) seagrass growth,
+(iv) detritus mineralization, (v) movement of individuals, (vi) respiration of
+individuals, (vii) growth of individuals, (viii) mortality of individuals,
+(ix) diffusion of nutrients/detritus, and (x) nutrient output (all inner loop).
+
+For a detailed describtion of all sub-processes (with exception of (i)), see the
+\code{arrR} package.
 }
 \references{
 For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.

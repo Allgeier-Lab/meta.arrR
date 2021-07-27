@@ -4,22 +4,24 @@
 \alias{plot.nutr_input}
 \title{plot.nutr_input}
 \usage{
-\method{plot}{nutr_input}(x, what = "seafloor", burn_in = TRUE, base_size = 10, ...)
+\method{plot}{nutr_input}(x, base_size = 10, ...)
 }
 \arguments{
-\item{x}{mdl_rn object of simulation run.}
+\item{x}{\code{nutr_input} object simulated with \code{simulate_nutr_input}.}
 
 \item{base_size}{Numeric to specify base font size.}
 
 \item{...}{Not used.}
 }
 \description{
-Ploting method for nutr_input object.
+Plotting method for nutr_input object.
 }
 \details{
-Ploting method for metaecosystem created with \code{\link{setup_meta}}.
+Ploting method for metaecosystem created with \code{setup_meta}.
 }
 \examples{
-# Add example code
+nutr_input <- simulate_nutr_input(n = 3, max_i = 4380, freq_mn = 3, freq_sd = 0.1,
+input_max = 0.1, input_sd = 0.25)
+plot(nutr_input)
 
 }

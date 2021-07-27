@@ -7,21 +7,24 @@
 \method{print}{meta_rn}(x, digits = 2, timestep = x$max_i, ...)
 }
 \arguments{
-\item{x}{meta_rn object.}
+\item{x}{\code{meta_rn} object simulated with \code{simulate_meta}.}
 
-\item{digits}{Numeric of decimal places (round).}
+\item{digits}{Numeric of decimal places (passed on to \code{round}).}
 
 \item{timestep}{Numeric with timestep to print.}
 
-\item{...}{Arguments passed to cat.}
+\item{...}{Not used.}
 }
 \description{
-Printing method for meta_rn object
+Printing method for meta_rn object.
 }
 \details{
-Printing method for metaecosystem model run created with \code{\link{simulate_meta}}.
+Printing method for metaecosystem model run created with \code{simulate_meta}.
+Returns the mean values for several seafloor and fish population values.
 }
 \examples{
-# Add example code
+\dontrun{
+print(result_attr)
+}
 
 }

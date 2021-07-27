@@ -1,17 +1,21 @@
 #' print.meta_rn
 #'
-#' @description Printing method for meta_rn object
+#' @description
+#' Printing method for meta_rn object.
 #'
-#' @param x meta_rn object.
+#' @param x \code{meta_rn} object simulated with \code{simulate_meta}.
 #' @param timestep Numeric with timestep to print.
-#' @param digits Numeric of decimal places (round).
-#' @param ... Arguments passed to cat.
+#' @param digits Numeric of decimal places (passed on to \code{round}).
+#' @param ... Not used.
 #'
 #' @details
-#' Printing method for metaecosystem model run created with \code{\link{simulate_meta}}.
+#' Printing method for metaecosystem model run created with \code{simulate_meta}.
+#' Returns the mean values for several seafloor and fish population values.
 #'
 #' @examples
-#' # Add example code
+#' \dontrun{
+#' print(result_attr)
+#' }
 #'
 #' @aliases print.meta_rn
 #' @rdname print.meta_rn
@@ -19,36 +23,47 @@
 #' @export
 print.meta_rn <- function(x, digits = 2, timestep = x$max_i, ...) {
 
+  # get timestep to be printed
   timestep_temp <- timestep
 
   # calc biomass values
   biomass <- lapply(x$seafloor, function(i) {
 
+    # get selected timestep
     seafloor_temp <- subset(i, timestep == timestep_temp)
 
-    c(bg = round(sum(seafloor_temp$bg_biomass, na.rm = TRUE), digits = digits),
-      ag = round(sum(seafloor_temp$ag_biomass, na.rm = TRUE), digits = digits),
-      nutr = round(sum(seafloor_temp$nutrients_pool), digits = digits))
+    # calculate total values
+    c(bg = round(mean(seafloor_temp$bg_biomass, na.rm = TRUE), digits = digits),
+      ag = round(mean(seafloor_temp$ag_biomass, na.rm = TRUE), digits = digits),
+      nutr = round(mean(seafloor_temp$nutrients_pool), digits = digits),
+      detr = round(mean(seafloor_temp$detritus_pool), digits = digits))
 
   })
 
+  # get number of rees
   no_reefs <- vapply(x$seafloor, function(i) {
 
+    # only get first timestep because reefs are identical
     seafloor_temp <- subset(i, timestep == 0)
 
+    # get number of rows in which reef = 1
     nrow(seafloor_temp[seafloor_temp$reef == 1, ])}, FUN.VALUE = numeric(1))
 
+  # collapse to charachter string
   no_reefs <- paste(c(no_reefs), collapse = ", ")
 
   # calculate number of fish
   fish <- lapply(x$fishpop, function(i) {
 
+    # get current fishpop
     fish_temp <- subset(i, timestep == timestep_temp)
 
+    # no individual present, set to 0 and NA
     if (all(is.na(fish_temp[1, -c(18, 19)]))) {
 
       c(no = 0, length = NA, mort = NA)
 
+    # calculate number of fish, mean length and mortality
     } else {
 
       c(no = length(fish_temp$id),
@@ -58,23 +73,24 @@ print.meta_rn <- function(x, digits = 2, timestep = x$max_i, ...) {
     }
   })
 
-
+  # calculate total time
   total_time <- round(x$max_i * x$min_per_i / 60 / 24, digits = 2)
 
+  # calculate save_each timesteps
   save_time <- round(x$save_each * x$min_per_i / 60 / 24, digits = 2)
 
   cat(paste0("Total time : ", timestep_temp, " iterations (", total_time, " days) [Burn-in: ", x$burn_in, " iter.]\n",
              "Saved each : ", x$save_each, " iterations (", save_time, " days)\n",
-             "Seafloor   : ", x$extent, "; ", no_reefs, " reef cells\n",
-             "Fishpop    : ", x$starting_values$pop_n, " indiv (reef_attraction: ", x$reef_attraction, ")\n",
-             "\n"))
+             "Seafloor   : ", x$extent, "\n",
+             "ARs        : ", no_reefs, " cells\n\n"))
 
-  cat(paste0("ID\tBelowground\tAboveground\tNutrients\tFish\tLength\tMortality\n"))
+  cat("Local metaecosystems:\n")
+  cat(paste0("ID\tBelowground\tAboveground\tNutrients\tDetritus\tFish\tLength\tMortality\n"))
 
   lapply(1:x$n, function(i) {
 
-    cat(paste0(i, "\t", biomass[[i]][[1]], "\t", biomass[[i]][[2]], "\t",
-               biomass[[i]][[3]], "\t\t", fish[[i]][[1]], "\t", fish[[i]][[2]], "\t",
+    cat(paste0(i, "\t", biomass[[i]][[1]], "\t\t", biomass[[i]][[2]], "\t\t",
+               biomass[[i]][[3]], "\t\t", biomass[[i]][[4]], "\t\t", fish[[i]][[1]], "\t", fish[[i]][[2]], "\t",
                fish[[i]][[3]], "\n"))
 
   })

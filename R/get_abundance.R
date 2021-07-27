@@ -1,16 +1,20 @@
 #' get_abundance
 #'
-#' @description Get abundance of local metaecosystems
+#' @description
+#' Get abundance of local metaecosystems.
 #'
-#' @param result meta_rn object of simulation run.
+#' @param result \code{meta_rn} object simulated with \code{simulate_nutr_input}.
 #'
 #' @details
-#' Get the number of individuals within each local metaecosystem.
+#' Get the number of individuals within each local metaecosystem of model run result
+#' created with \code{simulate_meta}.
 #'
 #' @return data.frame
 #'
 #' @examples
-#' # Add example code
+#' \dontrun{
+#' get_abundance(result = result_attr)
+#' }
 #'
 #' @aliases get_abundance
 #' @rdname get_abundance
@@ -53,6 +57,9 @@ get_abundance <- function(result) {
 
   # order by timestep and meta
   abundance <- abundance[order(abundance$timestep, abundance$meta), ]
+
+  # order cols
+  abundance <- abundance[, c("timestep", "meta", "abundance")]
 
   # remove row numbers because stupid
   rownames(abundance) <- NULL

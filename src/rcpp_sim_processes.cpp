@@ -38,10 +38,17 @@ using namespace Rcpp;
 //' @param verbose If TRUE, progress reports are printed.
 //'
 //' @details
-//' The functions is a 'wrapper' around the following sub-processes: (i) nutrient input,
-//' (ii) seagrass growth, (iii) detritus mineralization, (iv) movement of individuals,
-//' (v) respiration of individuals, (vi) growth of individuals, (vii) mortality of individuals,
-//' (viii) diffusion of nutrients/detritus, and ix) nutrient output.
+//' Wrapper function including all sub-processes. The core of the function is a
+//' nested loop through all i) time steps and ii) all local metaecosystems.
+//'
+//' The functions is a 'wrapper' around the following sub-processes: i) movement across
+//' local metaecosystems (outter loop) (ii) nutrient input, (iii) seagrass growth,
+//' (iv) detritus mineralization, (v) movement of individuals, (vi) respiration of
+//' individuals, (vii) growth of individuals, (viii) mortality of individuals,
+//' (ix) diffusion of nutrients/detritus, and (x) nutrient output (all inner loop).
+//'
+//' For a detailed describtion of all sub-processes (with exception of (i)), see the
+//' \code{arrR} package.
 //'
 //' @references
 //' For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
@@ -82,12 +89,12 @@ void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop,
   }
 
   // flag if diffusion needs to be run
-  bool diffuse_flag = (as<double>(parameters["nutrients_diffusion"]) > 0.0) ||
+  bool flag_diffuse = (as<double>(parameters["nutrients_diffusion"]) > 0.0) ||
     (as<double>(parameters["detritus_diffusion"]) > 0.0) ||
     (as<double>(parameters["detritus_fish_diffusion"])) > 0.0;
 
   // flag if nutrient output needs to be run
-  bool output_flag = as<double>(parameters["nutrients_output"]) > 0.0;
+  bool flag_output = as<double>(parameters["nutrients_output"]) > 0.0;
 
   // init fish population things //
 
@@ -239,7 +246,7 @@ void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop,
       }
 
       // only diffuse if all parameters larger than zero
-      if (diffuse_flag) {
+      if (flag_diffuse) {
 
         // diffuse values between neighbors
         arrR::rcpp_diffuse_values(seafloor[j], cell_adj,
@@ -249,7 +256,7 @@ void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop,
       }
 
       // remove nutrients from cells if output parameter > 0
-      if (output_flag) {
+      if (flag_output) {
 
         arrR::rcpp_nutr_output(seafloor[j], parameters["nutrients_output"]);
 

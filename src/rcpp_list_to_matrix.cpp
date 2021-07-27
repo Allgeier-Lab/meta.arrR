@@ -5,7 +5,8 @@ using namespace Rcpp;
 
 //' rcpp_list_to_matrix
 //'
-//' @description Rcpp list to matrix
+//' @description
+//' Rcpp list to matrix.
 //'
 //' @param fishpop List with individuals within local metaecosystems.
 //' @param pop_n_sum Integer with number of individuals.

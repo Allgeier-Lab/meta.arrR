@@ -1,16 +1,21 @@
 #' plot_local_abund
 #'
-#' @description Plotting method for meta_rn object
+#' @description
+#' Plot local abundance.
 #'
-#' @param x ntr_inpt object.
+#' @param x \code{meta_rn} object simulated with \code{simulate_meta}.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
 #' @details
-#' Plotting method for nutrient input created with \code{\link{simulate_input_sine}}.
+#' The resulting plot describes the number of individuals within each local metaecosystem
+#' over time steps. Additional, the minimum, maximum and mean of all metaecosystems are
+#' included.
 #'
 #' @examples
-#' # Add example code
+#' \dontrun{
+#' plot_local_abund(x = result_attr)
+#' }
 #'
 #' @aliases plot_local_abund
 #' @rdname plot_local_abund
@@ -18,6 +23,7 @@
 #' @export
 plot_local_abund <- function(x, base_size = 10, ...) {
 
+  # get abundance of all metaecosystems
   abundance <- get_abundance(result = x)
 
   # get min and max values

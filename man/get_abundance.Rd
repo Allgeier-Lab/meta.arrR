@@ -7,18 +7,21 @@
 get_abundance(result)
 }
 \arguments{
-\item{result}{meta_rn object of simulation run.}
+\item{result}{\code{meta_rn} object simulated with \code{simulate_nutr_input}.}
 }
 \value{
 data.frame
 }
 \description{
-Get abundance of local metaecosystems
+Get abundance of local metaecosystems.
 }
 \details{
-Get the number of individuals within each local metaecosystem.
+Get the number of individuals within each local metaecosystem of model run result
+created with \code{simulate_meta}.
 }
 \examples{
-# Add example code
+\dontrun{
+get_abundance(result = result_attr)
+}
 
 }

@@ -24,7 +24,8 @@ rcpp_get_table <- function(x, n) {
 
 #' rcpp_list_to_matrix
 #'
-#' @description Rcpp list to matrix
+#' @description
+#' Rcpp list to matrix.
 #'
 #' @param fishpop List with individuals within local metaecosystems.
 #' @param pop_n_sum Integer with number of individuals.
@@ -53,7 +54,7 @@ rcpp_list_to_matrix <- function(fishpop, pop_n_sum, id) {
 #' @param n Integer with number of total metaecosystems.
 #'
 #' @details
-#' Converts individual matrix to a list split by metaecosystem.
+#' Converts individual matrix to a list split by metaecosystems.
 #'
 #' @return list
 #'
@@ -119,10 +120,17 @@ rcpp_move_meta <- function(fishpop, pop_n_sum, id_attr, stationary_values, id_me
 #' @param verbose If TRUE, progress reports are printed.
 #'
 #' @details
-#' The functions is a 'wrapper' around the following sub-processes: (i) nutrient input,
-#' (ii) seagrass growth, (iii) detritus mineralization, (iv) movement of individuals,
-#' (v) respiration of individuals, (vi) growth of individuals, (vii) mortality of individuals,
-#' (viii) diffusion of nutrients/detritus, and ix) nutrient output.
+#' Wrapper function including all sub-processes. The core of the function is a
+#' nested loop through all i) time steps and ii) all local metaecosystems.
+#'
+#' The functions is a 'wrapper' around the following sub-processes: i) movement across
+#' local metaecosystems (outter loop) (ii) nutrient input, (iii) seagrass growth,
+#' (iv) detritus mineralization, (v) movement of individuals, (vi) respiration of
+#' individuals, (vii) growth of individuals, (viii) mortality of individuals,
+#' (ix) diffusion of nutrients/detritus, and (x) nutrient output (all inner loop).
+#'
+#' For a detailed describtion of all sub-processes (with exception of (i)), see the
+#' \code{arrR} package.
 #'
 #' @references
 #' For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
@@ -146,7 +154,7 @@ rcpp_sim_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track,
 #' Rcpp subset matrix.
 #'
 #' @param fishpop Matrix with fishpop values.
-#' @param rows Vector with row ids
+#' @param rows Vector with row ids.
 #'
 #' @details
 #' Returns matrix with only subset of rows of \code{fishpop} specified by \code{rows}.

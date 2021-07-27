@@ -8,19 +8,20 @@
 \method{print}{meta_syst}(x, digits = 3, ...)
 }
 \arguments{
-\item{x}{mdl_rn object.}
+\item{x}{\code{meta_syst} object created with \code{setup_meta}.}
 
-\item{digits}{Numeric of decimal places (round).}
+\item{digits}{Numeric of decimal places (passed on to \code{round}).}
 
-\item{...}{Arguments passed to cat.}
+\item{...}{Not used.}
 }
 \description{
-Printing method for mdl_rn object
+Printing method for meta_syst object.
 }
 \details{
-Printing method for metaecosystem created with \code{\link{setup_meta}}.
+Printing method for metaecosystem created with \code{setup_meta}.
 }
 \examples{
-# Add example code
+nutr_input <- simulate_nutr_input(n = 3, max_i = 4380, freq_mn = 3, freq_sd = 0.1,
+input_max = 0.1, input_sd = 0.25)
 
 }

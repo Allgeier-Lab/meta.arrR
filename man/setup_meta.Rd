@@ -36,19 +36,22 @@ setup_meta(
 
 \item{verbose}{If TRUE, progress reports are printed.}
 
-\item{...}{Additional arguments passed on to \code{\link{raster}}.}
+\item{...}{Additional arguments passed on to \code{raster}.}
 }
 \value{
-meta_sys
+meta_syst
 }
 \description{
-Initiate fish population.
+Setup metaecosystems.
 }
 \details{
-Function to setup the fish population. If no fish shoud be created, set
+Function to setup the fish population. If no fish should be created, set
 \code{starting_values$pop_n = 0}.
 }
 \examples{
-# Add example code
+\dontrun{
+metasyst <- setup_meta(n = n, extent = extent, grain = grain, reefs = reefs,
+starting_values = starting_values, parameters = parameters)
+}
 
 }

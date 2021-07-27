@@ -14,7 +14,7 @@ using namespace Rcpp;
 //' @param n Integer with number of total metaecosystems.
 //'
 //' @details
-//' Converts individual matrix to a list split by metaecosystem.
+//' Converts individual matrix to a list split by metaecosystems.
 //'
 //' @return list
 //'

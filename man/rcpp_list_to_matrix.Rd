@@ -17,7 +17,7 @@ rcpp_list_to_matrix(fishpop, pop_n_sum, id)
 matrix
 }
 \description{
-Rcpp list to matrix
+Rcpp list to matrix.
 }
 \details{
 Converts list with individuals within a local metaecosystem to one matrix. If

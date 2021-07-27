@@ -1,12 +1,14 @@
 #' create_attributes
 #'
-#' @description Create attribute values
+#' @description
+#' Create attribute values.
 #'
 #' @param fishpop List with fish population
 #' @param parameters List with parameters
 #'
 #' @details
-#' Creates matrix with id and random stationary value for each individual of fishpopulation.
+#' Creates matrix with id, stationary, and reserves threshold value for each
+#' individual of fish population.
 #'
 #' @return matrix
 #'
@@ -21,7 +23,7 @@
 #' @export
 create_attributes <- function(fishpop, parameters) {
 
-  # loop through all metaecosyst
+  # loop through all metaecosystems
   result <- do.call(rbind, lapply(fishpop, function(i) {
 
     # get number of individuals
@@ -35,6 +37,7 @@ create_attributes <- function(fishpop, parameters) {
     # if create random number if mean != 0
     } else {
 
+      # draw from rlognorm with Inf maximum
       stationary <- vapply(1:pop_n, function(i)
         arrR::rcpp_rlognorm(mean = parameters$move_stationary,
                             sd = sqrt(parameters$move_stationary_var),
@@ -43,11 +46,11 @@ create_attributes <- function(fishpop, parameters) {
 
     }
 
+    # sample random pop_reserves_thres value
     reserves_thres <- stats::runif(n = pop_n, min = parameters$pop_reserves_thres_lo,
                                    max = parameters$pop_reserves_thres_hi)
 
-
-
+    # combine to one matrix
     cbind(id = i[, 1], stationary = stationary, reserves_thres = reserves_thres)}))
 
   return(result)

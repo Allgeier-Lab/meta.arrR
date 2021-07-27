@@ -9,7 +9,7 @@ rcpp_subset_matrix(fishpop, rows)
 \arguments{
 \item{fishpop}{Matrix with fishpop values.}
 
-\item{rows}{Vector with row ids}
+\item{rows}{Vector with row ids.}
 }
 \value{
 matrix
