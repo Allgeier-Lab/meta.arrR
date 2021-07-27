@@ -212,7 +212,7 @@ void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop,
 
         // calculate new coordinates and activity
         arrR::rcpp_move_wrap(fishpop[j], coords_reef[j], movement, pop_reserves_thres_temp,
-                             parameters["move_mean"], parameters["move_var"], parameters["move_visibility"],
+                             parameters["move_mean"], parameters["move_var"],
                              parameters["move_reef"], parameters["move_border"],
                              parameters["move_return"], max_dist, extent, dimensions);
 
