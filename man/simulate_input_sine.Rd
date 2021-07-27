@@ -4,16 +4,7 @@
 \alias{simulate_input_sine}
 \title{simulate_input_sine}
 \usage{
-simulate_input_sine(
-  n,
-  max_i,
-  freq_mn,
-  freq_sd,
-  input_max,
-  input_sd,
-  phase = 0,
-  return_df = FALSE
-)
+simulate_input_sine(n, max_i, freq_mn, freq_sd, input_max, input_sd, phase = 0)
 }
 \arguments{
 \item{n}{Integer with number of metaecosystems to setup.}
@@ -25,8 +16,6 @@ simulate_input_sine(
 \item{input_max, input_sd}{Numeric with maximum input amount.}
 
 \item{phase}{Numeric with sine curve parameters.}
-
-\item{return_df}{Logical if TRUE data.frame is returned.}
 }
 \value{
 vector

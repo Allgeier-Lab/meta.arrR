@@ -7,7 +7,6 @@
 #' @param freq_mn,freq_sd Numeric number of peak.
 #' @param input_max,input_sd Numeric with maximum input amount.
 #' @param phase Numeric with sine curve parameters.
-#' @param return_df Logical if TRUE data.frame is returned.
 #'
 #' @details
 #' Simulating nutrient input based on sine curve. The \code{freq_mn} argument quantifies
@@ -26,8 +25,7 @@
 #' @rdname simulate_input_sine
 #'
 #' @export
-simulate_input_sine <- function(n, max_i, freq_mn, freq_sd, input_max, input_sd,
-                                phase = 0, return_df = FALSE) {
+simulate_input_sine <- function(n, max_i, freq_mn, freq_sd, input_max, input_sd, phase = 0) {
 
   # create empty list
   result_list <- vector(mode = "list", length = n)
@@ -62,21 +60,12 @@ simulate_input_sine <- function(n, max_i, freq_mn, freq_sd, input_max, input_sd,
     }
 
     # store results in data.frame
-    result_list[[i]] <- data.frame(meta = factor(i), timestep = timestep, input = input_temp)
+    result_list[[i]] <- input_temp
 
   }
 
-  # extract input value only
-  if (!return_df) {
-
-    result_list <- lapply(result_list, function(i) i$input)
-
-  # row bind to one big data.frame
-  } else {
-
-    result_list <- do.call(rbind, result_list)
-
-  }
+  # specify class of list
+  class(result_list) <- "nutr_input"
 
   return(result_list)
 
