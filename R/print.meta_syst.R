@@ -21,7 +21,11 @@
 print.meta_syst <- function(x, digits = 3, ...) {
 
   # get number of reef cells
-  no_reefs <- paste(c(vapply(x$reefs, FUN = nrow, FUN.VALUE = numeric(1))),  collapse = ", ")
+  no_reefs <- paste(c(vapply(x$reefs, FUN = function(i) {
+
+    ifelse(test = is.null(i), yes = 0, no = nrow(i))
+
+  }, FUN.VALUE = numeric(1))),  collapse = ", ")
 
   # get number of individuals
   no_fish <- paste(c(vapply(x$fishpop, FUN = nrow, FUN.VALUE = numeric(1))),  collapse = ", ")
