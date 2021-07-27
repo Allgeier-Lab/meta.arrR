@@ -206,16 +206,16 @@ simulate_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "r
   }
 
   # run model
-  rcpp_sim_processes(seafloor = seafloor, fishpop = fishpop,
-                     seafloor_track = seafloor_track, fishpop_track = fishpop_track,
-                     parameters = parameters, movement = movement, max_dist = max_dist,
-                     n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
-                     fishpop_attributes = metasyst$fishpop_attributes,
-                     nutr_input = nutr_input, max_i = max_i, min_per_i = min_per_i,
-                     coords_reef = coords_reef, cell_adj = cell_adj,
-                     extent = extent, dimensions = dimensions,
-                     save_each = save_each, seagrass_each = seagrass_each, burn_in = burn_in,
-                     verbose = verbose)
+  rcpp_meta_processes(seafloor = seafloor, fishpop = fishpop,
+                      seafloor_track = seafloor_track, fishpop_track = fishpop_track,
+                      parameters = parameters, movement = movement, max_dist = max_dist,
+                      n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
+                      fishpop_attributes = metasyst$fishpop_attributes,
+                      nutr_input = nutr_input, max_i = max_i, min_per_i = min_per_i,
+                      coords_reef = coords_reef, cell_adj = cell_adj,
+                      extent = extent, dimensions = dimensions,
+                      save_each = save_each, seagrass_each = seagrass_each, burn_in = burn_in,
+                      verbose = verbose)
 
   # new line after last progress message
   if (verbose) {

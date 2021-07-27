@@ -4,7 +4,7 @@
 #include <progress.hpp>
 #include <progress_bar.hpp>
 #include <arrR.h>
-#include "rcpp_sim_processes.h"
+#include "rcpp_meta_processes.h"
 #include "rcpp_list_to_matrix.h"
 #include "rcpp_move_meta.h"
 #include "rcpp_which.h"
@@ -12,7 +12,7 @@
 
 using namespace Rcpp;
 
-//' rcpp_sim_processes
+//' rcpp_meta_processes
 //'
 //' @description
 //' Rcpp run simulation of metaecosystems processes.
@@ -58,12 +58,12 @@ using namespace Rcpp;
 //'
 //' @return void
 //'
-//' @aliases rcpp_sim_processes
-//' @rdname rcpp_sim_processes
+//' @aliases rcpp_meta_processes
+//' @rdname rcpp_meta_processes
 //'
 //' @export
 // [[Rcpp::export]]
-void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop,
+void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
                         Rcpp::List seafloor_track, Rcpp::List fishpop_track,
                         Rcpp::List parameters, Rcpp::String movement, double max_dist,
                         int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes,
@@ -279,7 +279,7 @@ void rcpp_sim_processes(Rcpp::List seafloor, Rcpp::List fishpop,
 }
 
 /*** R
-rcpp_sim_processes(seafloor = seafloor, fishpop = fishpop,
+rcpp_meta_processes(seafloor = seafloor, fishpop = fishpop,
                    seafloor_track = seafloor_track, fishpop_track = fishpop_track,
                    parameters = parameters, movement = movement, max_dist = max_dist,
                    n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
