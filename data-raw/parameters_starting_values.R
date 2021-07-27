@@ -1,6 +1,6 @@
 ## code to prepare `DATASET` dataset goes here
 
-default_parameters <- list(
+meta.arrR_parameters <- list(
 
   ag_biomass_max = 193.01,
   ag_biomass_min = 8.87,
@@ -52,13 +52,13 @@ default_parameters <- list(
   resp_temp_max = 40
 )
 
-ag <- default_parameters$ag_biomass_min +
-  (default_parameters$ag_biomass_max - default_parameters$ag_biomass_min) * 0.5
+ag <- meta.arrR_parameters$ag_biomass_min +
+  (meta.arrR_parameters$ag_biomass_max - meta.arrR_parameters$ag_biomass_min) * 0.5
 
-bg <- default_parameters$bg_biomass_min +
-  (default_parameters$bg_biomass_max - default_parameters$bg_biomass_min) * 0.5
+bg <- meta.arrR_parameters$bg_biomass_min +
+  (meta.arrR_parameters$bg_biomass_max - meta.arrR_parameters$bg_biomass_min) * 0.5
 
-default_starting_values <- list(
+meta.arrR_starting_values <- list(
 
   ag_biomass = ag,
   bg_biomass = bg,
@@ -71,4 +71,4 @@ default_starting_values <- list(
   pop_var_size = 10.0
 )
 
-usethis::use_data(default_parameters, default_starting_values, overwrite = TRUE)
+usethis::use_data(meta.arrR_parameters, meta.arrR_starting_values, overwrite = TRUE)

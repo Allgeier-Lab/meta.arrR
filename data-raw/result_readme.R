@@ -3,10 +3,10 @@ library(meta.arrR)
 library(arrR)
 
 # get starting values
-starting_values <- meta.arrR::default_starting_values
+starting_values <- meta.arrR::meta.arrR_starting_values
 
 # get parameters
-parameters <- meta.arrR::default_parameters
+parameters <- meta.arrR::meta.arrR_parameters
 
 parameters$nutrients_output <- 0.1
 
