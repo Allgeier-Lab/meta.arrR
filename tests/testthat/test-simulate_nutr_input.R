@@ -19,7 +19,7 @@ test_that("simulate_nutr_input returns meta_rn", {
 
 test_that("simulate_nutr_input returns input for each n", {
 
-  expect_equal(object = length(nutr), expected = n)
+  expect_length(object = nutr, n = n)
 
 })
 

@@ -36,10 +36,6 @@ test_that("print.meta_rn generates output", {
 
   expect_output(print(result))
 
-})
-
-test_that("print.meta_rn generates output without reef", {
-
-  expect_output(print(result))
+  expect_output(print(result_noreef))
 
 })

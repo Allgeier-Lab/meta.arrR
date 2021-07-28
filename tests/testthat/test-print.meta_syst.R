@@ -25,10 +25,6 @@ test_that("print.meta_syst generates output", {
 
   expect_output(print(metasyst))
 
-})
-
-test_that("print.meta_syst generates output without reef", {
-
   expect_output(print(metasyst_noreef))
 
 })

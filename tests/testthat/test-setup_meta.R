@@ -43,22 +43,30 @@ test_that("setup_meta contains all information", {
 
 test_that("setup_meta returns list with seafloor and fishpop", {
 
-  expect_equal(object = length(metasyst$seafloor), expected = n)
-  expect_equal(object = length(metasyst$fishpop), expected = n)
+  expect_length(object = metasyst$seafloor, n = n)
 
-  expect_equal(object = length(metasyst_noreef$seafloor), expected = n)
-  expect_equal(object = length(metasyst_noreef$fishpop), expected = n)
+  expect_length(object = metasyst$fishpop, n = n)
+
+
+  expect_length(object = metasyst_noreef$seafloor, n = n)
+
+  expect_length(object = metasyst_noreef$fishpop, n = n)
 
 })
 
 test_that("setup_meta returns correct information", {
 
   expect_equal(object = metasyst$n, expected = n)
+
   expect_equal(object = metasyst$grain, expected = grain)
+
   expect_equal(object = metasyst$extent, expected = extent)
 
+
   expect_equal(object = metasyst_noreef$n, expected = n)
+
   expect_equal(object = metasyst_noreef$grain, expected = grain)
+
   expect_equal(object = metasyst_noreef$extent, expected = extent)
 
 })

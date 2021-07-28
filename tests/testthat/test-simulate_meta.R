@@ -45,11 +45,14 @@ test_that("simulate_meta contains all information", {
 
 test_that("simulate_meta returns list with seafloor and fishpop", {
 
-  expect_equal(object = length(result$seafloor), expected = n)
-  expect_equal(object = length(result$fishpop), expected = n)
+  expect_length(object = result$seafloor, n = n)
+
+  expect_length(object = result$fishpop, n = n)
+
 
   expect_equal(object = nrow(result$seafloor[[1]]),
                expected = (max_i / save_each + 1) * prod(extent))
+
   expect_equal(object = nrow(result$fishpop[[3]]),
                expected = (max_i / save_each + 1) * starting_values$pop_n)
 })
@@ -57,9 +60,13 @@ test_that("simulate_meta returns list with seafloor and fishpop", {
 test_that("simulate_meta returns correct information", {
 
   expect_equal(object = result$n, expected = n)
+
   expect_equal(object = result$grain, expected = c(grain, grain))
+
   # expect_equal(object = as.vector(result$extent), expected = extent)
+
   expect_equal(object = result$max_i, expected = max_i)
+
   expect_equal(object = result$save_each, expected = save_each)
 
 })
