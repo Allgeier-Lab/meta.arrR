@@ -55,9 +55,9 @@ nutr_input <- simulate_nutr_input(n = n, max_i = max_i,
                                   freq_mn = 5, freq_sd = 0.1,
                                   input_max = input_max, input_sd = 0.25)
 
-result_readme <- simulate_meta(metasyst = metasyst, nutr_input = nutr_input,
-                               parameters = parameters, movement = "attr",
-                               max_i = max_i, save_each = save_each, min_per_i = min_per_i,
-                               verbose = TRUE)
+result_readme <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
+                          parameters = parameters, movement = "attr",
+                          max_i = max_i, save_each = save_each, min_per_i = min_per_i,
+                          verbose = TRUE)
 
 usethis::use_data(result_readme, internal = TRUE, overwrite = TRUE)

@@ -24,8 +24,8 @@ max_i <- 10
 
 save_each <- 2
 
-result <- simulate_meta(metasyst = metasyst, parameters = parameters,
-                        max_i = max_i, min_per_i = 120, save_each = save_each)
+result <- run_meta(metasyst = metasyst, parameters = parameters,
+                   max_i = max_i, min_per_i = 120, save_each = save_each)
 
 abundance <- get_abundance(result)
 

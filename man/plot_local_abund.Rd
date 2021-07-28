@@ -7,7 +7,7 @@
 plot_local_abund(x, base_size = 10, ...)
 }
 \arguments{
-\item{x}{\code{meta_rn} object simulated with \code{simulate_meta}.}
+\item{x}{\code{meta_rn} object simulated with \code{run_meta}.}
 
 \item{base_size}{Numeric to specify base font size.}
 

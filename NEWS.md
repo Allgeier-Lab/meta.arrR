@@ -1,5 +1,6 @@
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions
+* Reneamed `simulate_meta` to `run_meta`
 
 # meta.arrR 0.2.0
 * First running framework

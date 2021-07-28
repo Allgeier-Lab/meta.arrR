@@ -18,32 +18,40 @@ reefs <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0),
 metasyst <- setup_meta(n = n, extent = extent, grain = grain, reefs = reefs,
                        starting_values = starting_values, parameters = parameters)
 
+# setup metaecosystems
+metasys_noreef <- setup_meta(n = n, extent = extent, grain = grain, reefs = NULL,
+                             starting_values = starting_values, parameters = parameters)
+
 # set max_i and save_each
 max_i <- 10
 
 save_each <- 2
 
-result <- simulate_meta(metasyst = metasyst, parameters = parameters,
-                        max_i = max_i, min_per_i = 120, save_each = save_each)
+result <- run_meta(metasyst = metasyst, parameters = parameters,
+                   max_i = max_i, min_per_i = 120, save_each = save_each)
+
+result_noreef <- run_meta(metasyst = metasys_noreef, parameters = parameters,
+                          movement = "attr",
+                          max_i = max_i, min_per_i = 120, save_each = save_each)
 
 # create vector with names
 present_names <- c("seafloor", "fishpop", "movement", "n", "fishpop_attributes",
                    "starting_values", "parameters", "nutr_input", "max_i" , "min_per_i",
                    "burn_in", "save_each", "seagrass_each", "extent", "grain", "coords_reef")
 
-test_that("simulate_meta returns meta_rn", {
+test_that("run_meta returns meta_rn", {
 
   expect_is(object = result, class = "meta_rn")
 
 })
 
-test_that("simulate_meta contains all information", {
+test_that("run_meta contains all information", {
 
   expect_equal(object = names(result), expected = present_names)
 
 })
 
-test_that("simulate_meta returns list with seafloor and fishpop", {
+test_that("run_meta returns list with seafloor and fishpop", {
 
   expect_length(object = result$seafloor, n = n)
 
@@ -57,7 +65,7 @@ test_that("simulate_meta returns list with seafloor and fishpop", {
                expected = (max_i / save_each + 1) * starting_values$pop_n)
 })
 
-test_that("simulate_meta returns correct information", {
+test_that("run_meta returns correct information", {
 
   expect_equal(object = result$n, expected = n)
 

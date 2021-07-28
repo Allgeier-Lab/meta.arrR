@@ -26,11 +26,11 @@ max_i <- 10
 
 save_each <- 2
 
-result <- simulate_meta(metasyst = metasyst, parameters = parameters,
-                        max_i = max_i, min_per_i = 120, save_each = save_each)
+result <- run_meta(metasyst = metasyst, parameters = parameters,
+                   max_i = max_i, min_per_i = 120, save_each = save_each)
 
-result_noreef <- simulate_meta(metasyst = metasyst_noreef, parameters = parameters,
-                               max_i = max_i, min_per_i = 120, save_each = save_each)
+result_noreef <- run_meta(metasyst = metasyst_noreef, parameters = parameters,
+                          max_i = max_i, min_per_i = 120, save_each = save_each)
 
 test_that("print.meta_rn generates output", {
 

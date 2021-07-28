@@ -70,10 +70,10 @@ plot(nutr_input)
 
 ```{r run}
 
-# result <- simulate_meta(metasyst = metasyst, nutr_input = NULL,
-#                         parameters = parameters, reef_attraction = TRUE,
-#                         max_i = max_i, save_each = save_each, min_per_i = min_per_i, 
-#                         verbose = TRUE)
+# result <- run_meta(metasyst = metasyst, nutr_input = NULL,
+#                    parameters = parameters, reef_attraction = TRUE,
+#                    max_i = max_i, save_each = save_each, min_per_i = min_per_i, 
+#                    verbose = TRUE)
 
 ```
 

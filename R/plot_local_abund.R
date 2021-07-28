@@ -3,7 +3,7 @@
 #' @description
 #' Plot local abundance.
 #'
-#' @param x \code{meta_rn} object simulated with \code{simulate_meta}.
+#' @param x \code{meta_rn} object simulated with \code{run_meta}.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'

@@ -1,7 +1,7 @@
-#' simulate_meta
+#' run_meta
 #'
 #' @description
-#' Simulate metaecosystems.
+#' Run metaecosystems simulation.
 #'
 #' @param metasyst \code{meta_syst} object created with \code{setup_meta}.
 #' @param parameters List with all model parameters.
@@ -48,16 +48,16 @@
 #'
 #' @examples
 #' \dontrun{
-#' result_attr <- simulate_meta(metasyst = metasyst, nutr_input = nutr_input,
+#' result_attr <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
 #' parameters = parameters, movement = "attr", max_i = max_i, seagrass_each = seagrass_each,
 #' min_per_i = min_per_i, save_each = save_each, verbose = TRUE)
 #' }
 #'
-#' @aliases simulate_meta
-#' @rdname simulate_meta
+#' @aliases run_meta
+#' @rdname run_meta
 #'
 #' @export
-simulate_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
+run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
                           max_i, min_per_i, seagrass_each = 1, save_each = 1,
                           burn_in = 0, return_burnin = TRUE,
                           verbose = TRUE) {
@@ -114,11 +114,12 @@ simulate_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "r
   var_temp <- ifelse(test = movement == "behav",
                      yes = 1.0, no = parameters$move_var)
 
-  # MH: Set to 1000000
-  max_dist <- vapply(X = 1:3, FUN = function(i) {
+  # sample from lognorm to get maximum distance
+  max_dist <- vapply(X = 1:1000000, FUN = function(i) {
     arrR::rcpp_rlognorm(mean = mean_temp, sd = sqrt(var_temp), min = 0.0, max = Inf)},
     FUN.VALUE = numeric(1))
 
+  # set maximum distance to 95%
   max_dist <- stats::quantile(x = max_dist, probs = 0.95, names = FALSE)
 
   fishpop_track <- vector(mode = "list", length = metasyst$n)
@@ -180,6 +181,16 @@ simulate_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "r
 
   seafloor_track <- lapply(seq_along(seafloor_track), function(i)
     vector(mode = "list", length = (max_i / save_each) + 1))
+
+  # # MH: Check this!
+  # # check if no reef is present but movement not rand
+  # if (length(cells_reef) == 0 && movement %in% c("attr", "behav")) {
+  #
+  #   movement <- "rand"
+  #
+  #   warning("No reef cells present. Thus 'movement' set to 'rand'.", call. = FALSE)
+  #
+  # }
 
   # print model run characteristics #
 

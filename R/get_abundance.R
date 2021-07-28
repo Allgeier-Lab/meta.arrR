@@ -7,7 +7,7 @@
 #'
 #' @details
 #' Get the number of individuals within each local metaecosystem of model run result
-#' created with \code{simulate_meta}.
+#' created with \code{run_meta}.
 #'
 #' @return data.frame
 #'

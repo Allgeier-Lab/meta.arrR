@@ -3,7 +3,7 @@
 #' @description
 #' Plotting method for meta_rn object.
 #'
-#' @param x \code{meta_rn} object simulated with \code{simulate_meta}.
+#' @param x \code{meta_rn} object simulated with \code{run_meta}.
 #' @param what Character specifying what to plot.
 #' @param burn_in If TRUE, line to indicate burn-in time is plotted.
 #' @param base_size Numeric to specify base font size.
@@ -11,7 +11,7 @@
 #'
 #' @details
 #' Plotting method for result of metaecosystem model run created
-#' with \code{simulate_meta}.
+#' with \code{run_meta}.
 #'
 #' @examples
 #' \dontrun{
