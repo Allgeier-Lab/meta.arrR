@@ -60,20 +60,20 @@ test_that("setup_meta returns correct information", {
   expect_equal(object = metasyst$n, expected = n)
 
   expect_equal(object = metasyst$extent,
-               expected = raster::extent(extent / 2 * c(-1, 1, -1, 1)))
+               expected = raster::extent(dimensions / 2 * c(-1, 1, -1, 1)))
 
   expect_equal(object = metasyst$grain, expected = c(grain, grain))
 
-  expect_equal(object = metasyst$dimensions, expected = extent)
+  expect_equal(object = metasyst$dimensions, expected = dimensions)
 
 
   expect_equal(object = metasyst_noreef$n, expected = n)
 
   expect_equal(object = metasyst_noreef$extent,
-               expected = raster::extent(extent / 2 * c(-1, 1, -1, 1)))
+               expected = raster::extent(dimensions / 2 * c(-1, 1, -1, 1)))
 
   expect_equal(object = metasyst_noreef$grain, expected = c(grain, grain))
 
-  expect_equal(object = metasyst_noreef$dimensions, expected = extent)
+  expect_equal(object = metasyst_noreef$dimensions, expected = dimensions)
 
 })

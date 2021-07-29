@@ -5,6 +5,10 @@
 #'
 #' @param x \code{meta_rn} object simulated with \code{run_meta}.
 #' @param what Character specifying what to plot.
+#' @param summarize Logical if TRUE values over time steps are plotted.
+#' @param fill Character specifying which column to use for plotting.
+#' @param timestep Numeric with time step to plot.
+#' @param limits Vector with minium and maximum value of \code{fill} values.
 #' @param burn_in If TRUE, line to indicate burn-in time is plotted.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
@@ -22,7 +26,8 @@
 #' @rdname plot.meta_rn
 #'
 #' @export
-plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, ...) {
+plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_biomass",
+                         timestep = x$max_i, limits = NULL,  burn_in = TRUE, base_size = 10, ...) {
 
   if (!what %in% c("seafloor", "fishpop")) {
 
@@ -30,165 +35,213 @@ plot.meta_rn <- function(x, what = "seafloor", burn_in = TRUE, base_size = 10, .
          call. = FALSE)
   }
 
-  # set color for burn in threshold
-  col_burn <- ifelse(test = burn_in, yes = "grey", no = NA)
+  if (summarize) {
 
-  # get burn_in value for filtering
-  burn_in_itr <- x$burn_in
+    # set color for burn in threshold
+    col_burn <- ifelse(test = burn_in, yes = "grey", no = NA)
 
-  # get separated values for each local metaecosystem
-  result_sep <- lapply(1:x$n, function(i)
-    arrR::summarize_mdlrn(list(seafloor = x$seafloor[[i]], fishpop = x$fishpop[[i]],
-                               burn_in = x$burn_in),
-                          summary = "mean"))
+    # get burn_in value for filtering
+    burn_in_itr <- x$burn_in
 
-  # get total mean value
-  result_sum <- arrR::summarize_mdlrn(result = list(seafloor = do.call(rbind, x$seafloor),
-                                                    fishpop = do.call(rbind, x$fishpop),
-                                                    burn_in = x$burn_in),
-                                      summary = "mean")
+    # get separated values for each local metaecosystem
+    result_sep <- lapply(1:x$n, function(i)
+      arrR::summarize_mdlrn(list(seafloor = x$seafloor[[i]], fishpop = x$fishpop[[i]],
+                                 burn_in = x$burn_in),
+                            summary = "mean"))
 
-  if (what == "seafloor") {
+    # get total mean value
+    result_sum <- arrR::summarize_mdlrn(result = list(seafloor = do.call(rbind, x$seafloor),
+                                                      fishpop = do.call(rbind, x$fishpop),
+                                                      burn_in = x$burn_in),
+                                        summary = "mean")
 
-    # get only seafloor results
-    result_sep <- do.call(rbind, lapply(1:x$n, function(i)
-      cbind(meta = i, result_sep[[i]]$seafloor)))
+    if (what == "seafloor") {
 
-    # order cols of local metaecosystems
-    result_sep <- result_sep[, c("meta", "timestep",
-                                 "ag_biomass", "bg_biomass",
-                                 "nutrients_pool", "detritus_pool")]
+      # get only seafloor results
+      result_sep <- do.call(rbind, lapply(1:x$n, function(i)
+        cbind(meta = i, result_sep[[i]]$seafloor)))
 
-    # order cols total values
-    result_sum <- result_sum$seafloor[, c("timestep",
-                                          "ag_biomass", "bg_biomass",
-                                          "nutrients_pool", "detritus_pool")]
+      # order cols of local metaecosystems
+      result_sep <- result_sep[, c("meta", "timestep",
+                                   "ag_biomass", "bg_biomass",
+                                   "nutrients_pool", "detritus_pool")]
 
-    # setup labels
-    y_labels <- c("Dry weight ag biomass [g/cell]", "Dry weight bg biomass [g/cell]",
-                  "Nutrients pool [g/cell]", "Detritus pool [g/cell]")
+      # order cols total values
+      result_sum <- result_sum$seafloor[, c("timestep",
+                                            "ag_biomass", "bg_biomass",
+                                            "nutrients_pool", "detritus_pool")]
 
-    # MH: check if limits are !is.null() and rename to top_left,...
+      # setup labels
+      y_labels <- c("Dry weight ag biomass [g/cell]", "Dry weight bg biomass [g/cell]",
+                    "Nutrients pool [g/cell]", "Detritus pool [g/cell]")
 
-  } else if (what == "fishpop") {
+      # MH: check if limits are !is.null() and rename to top_left,...
 
-    # get results of fishpop only
-    result_sep <- do.call(rbind, lapply(1:x$n, function(i)
-      cbind(meta = i, result_sep[[i]]$fishpop)))
+    } else if (what == "fishpop") {
 
-    # order cols of local metaecosystems
-    result_sep <- result_sep[, c("meta", "timestep",
-                                 "length", "weight",
-                                 "died_consumption", "died_background")]
+      # get results of fishpop only
+      result_sep <- do.call(rbind, lapply(1:x$n, function(i)
+        cbind(meta = i, result_sep[[i]]$fishpop)))
 
-    # order total mean value
-    result_sum <- result_sum$fishpop[, c("timestep",
-                                         "length", "weight",
-                                         "died_consumption", "died_background")]
+      # order cols of local metaecosystems
+      result_sep <- result_sep[, c("meta", "timestep",
+                                   "length", "weight",
+                                   "died_consumption", "died_background")]
 
-    # setup labels
-    y_labels <- c("Body length [cm]", "Body weigth [g]",
-                  "Count mortality consumption [#]", "Count mortality background [#]")
+      # order total mean value
+      result_sum <- result_sum$fishpop[, c("timestep",
+                                           "length", "weight",
+                                           "died_consumption", "died_background")]
 
-    # MH: check if limits are !is.null() and rename to top_left,...
+      # setup labels
+      y_labels <- c("Body length [cm]", "Body weigth [g]",
+                    "Count mortality consumption [#]", "Count mortality background [#]")
 
+      # MH: check if limits are !is.null() and rename to top_left,...
+
+    }
+
+    # setup names of list
+    names(result_sep) <- c("meta", "timestep",
+                           "top_left", "top_right",
+                           "bottom_left", "bottom_right")
+
+    names(result_sum) <- c("timestep",
+                           "top_left", "top_right",
+                           "bottom_left", "bottom_right")
+
+    # create plot
+    gg_top_left <- ggplot2::ggplot(data = result_sep) +
+      ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
+      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_left, col = factor(meta),
+                                      linetype = "Local")) +
+      ggplot2::geom_line(data = result_sum,
+                         ggplot2::aes(x = timestep, y = top_left, linetype = "Regional"),
+                         col = "black") +
+      # ggplot2::scale_y_continuous(limits = limits$ag_biomass) +
+      ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+      ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+      ggplot2::labs(x = "Timestep", y = y_labels[1]) +
+      ggplot2::theme_classic(base_size = base_size) +
+      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
+                     legend.position = "bottom")
+
+    # create plot
+    gg_top_right <- ggplot2::ggplot(data = result_sep) +
+      ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
+      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_right, col = factor(meta),
+                                      linetype = "Local")) +
+      ggplot2::geom_line(data = result_sum,
+                         ggplot2::aes(x = timestep, y = top_right, linetype = "Regional"),
+                         col = "black") +
+      # ggplot2::scale_y_continuous(limits = limits$bg_biomass) +
+      ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+      ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+      ggplot2::guides(col = "none", linetype = "none") +
+      ggplot2::labs(x = "Timestep", y = y_labels[2]) +
+      ggplot2::theme_classic(base_size = base_size) +
+      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+
+  # create plot
+    gg_bottom_left <- ggplot2::ggplot(data = result_sep) +
+      ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
+      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_left, col = factor(meta),
+                                      linetype = "Local")) +
+      ggplot2::geom_line(data = result_sum,
+                         ggplot2::aes(x = timestep, y = bottom_left, linetype = "Regional"),
+                         col = "black") +
+      # ggplot2::scale_y_continuous(limits = limits$nutrients_pool) +
+      ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+      ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+      ggplot2::guides(col = "none", linetype = "none") +
+      ggplot2::labs(x = "Timestep", y = y_labels[3]) +
+      ggplot2::theme_classic(base_size = base_size) +
+      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+
+    # create plot
+    gg_bottom_right <- ggplot2::ggplot(data = result_sep) +
+      ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
+      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_right, col = factor(meta),
+                                      linetype = "Local")) +
+      ggplot2::geom_line(data = result_sum,
+                         ggplot2::aes(x = timestep, y = bottom_right, linetype = "Regional"),
+                         col = "black") +
+      # ggplot2::scale_y_continuous(limits = limits$detritus_pool) +
+      ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+      ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+      ggplot2::guides(col = "none", linetype = "none") +
+      ggplot2::labs(x = "Timestep", y = y_labels[4]) +
+      ggplot2::theme_classic(base_size = base_size) +
+      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+
+    legend_top_left <- cowplot::get_legend(gg_top_left)
+
+    # create title
+    plot_title <- paste0("Total time : ", x$max_i, " iterations (",
+                         round(x$max_i * x$min_per_i / 60 / 24, 1), " days)",
+                         "\nFishpop    : ", x$starting_values$pop_n,
+                         " indiv (Movement: ", x$movement, ")")
+
+    # now add the title
+    title <- cowplot::ggdraw() +
+      cowplot::draw_label(label = plot_title, x = 0, hjust = 0, size = base_size) +
+      ggplot2::theme(plot.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 1, "cm"))
+
+    # combine to one grid
+    gg_all <- cowplot::plot_grid(gg_top_left + ggplot2::theme(legend.position = "none"),
+                                 gg_top_right,
+                                 gg_bottom_left,
+                                 gg_bottom_right,
+                                 nrow = 2, ncol = 2)
+
+    # add title
+    gg_all <- cowplot::plot_grid(title, gg_all, legend_top_left, ncol = 1, rel_heights = c(0.1, 1, 0.1))
+
+  } else {
+
+    if (what == "seafloor") {
+
+      # save timestep in different named object to filter
+      i <- timestep
+
+      # check if i can be divided by save_each without reminder
+      if (i %% x$save_each != 0) {
+
+        stop("'timestep' was not saved during model run.",
+             call. = FALSE)
+      }
+
+      # get data.frame with all seafloor values of selected timestep
+      seafloor <- do.call(rbind, lapply(seq_along(x$seafloor), function(j) {
+
+        id <- paste0("Metaecosystem ", j)
+
+        cbind(subset(x$seafloor[[j]], timestep == i, select = c("x", "y", fill)), id)
+
+      }))
+
+      # rename coloumns for plotting
+      names(seafloor) <- c("x", "y", "fill", "id")
+
+      # create ggplot
+      gg_all <- ggplot2::ggplot(data = seafloor) +
+        ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = fill)) +
+        ggplot2::facet_wrap(. ~ id) +
+        ggplot2::scale_fill_gradientn(colours = c("#368AC0", "#F4B5BD", "#EC747F"),
+                                      na.value = "#9B964A", limits = limits,
+                                      name = fill) +
+        ggplot2::coord_equal() +
+        ggplot2::labs(x = "", y = "") +
+        ggplot2::theme_classic(base_size = base_size) +
+        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+
+    } else if (what == "fishpop") {
+
+      stop("Currently, no support for 'summarize = FALSE' and 'what = fishpop'.",
+           call. = FALSE)
+
+    }
   }
-
-  # setup names of list
-  names(result_sep) <- c("meta", "timestep",
-                         "top_left", "top_right",
-                         "bottom_left", "bottom_right")
-
-  names(result_sum) <- c("timestep",
-                         "top_left", "top_right",
-                         "bottom_left", "bottom_right")
-
-  # create plot
-  gg_top_left <- ggplot2::ggplot(data = result_sep) +
-    ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-    ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_left, col = factor(meta),
-                                    linetype = "Local")) +
-    ggplot2::geom_line(data = result_sum,
-                       ggplot2::aes(x = timestep, y = top_left, linetype = "Regional"),
-                       col = "black") +
-    # ggplot2::scale_y_continuous(limits = limits$ag_biomass) +
-    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-    ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
-    ggplot2::labs(x = "Timestep", y = y_labels[1]) +
-    ggplot2::theme_classic(base_size = base_size) +
-    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                   legend.position = "bottom")
-
-  # create plot
-  gg_top_right <- ggplot2::ggplot(data = result_sep) +
-    ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-    ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_right, col = factor(meta),
-                                    linetype = "Local")) +
-    ggplot2::geom_line(data = result_sum,
-                       ggplot2::aes(x = timestep, y = top_right, linetype = "Regional"),
-                       col = "black") +
-    # ggplot2::scale_y_continuous(limits = limits$bg_biomass) +
-    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-    ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
-    ggplot2::guides(col = "none", linetype = "none") +
-    ggplot2::labs(x = "Timestep", y = y_labels[2]) +
-    ggplot2::theme_classic(base_size = base_size) +
-    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
-
-# create plot
-  gg_bottom_left <- ggplot2::ggplot(data = result_sep) +
-    ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-    ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_left, col = factor(meta),
-                                    linetype = "Local")) +
-    ggplot2::geom_line(data = result_sum,
-                       ggplot2::aes(x = timestep, y = bottom_left, linetype = "Regional"),
-                       col = "black") +
-    # ggplot2::scale_y_continuous(limits = limits$nutrients_pool) +
-    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-    ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
-    ggplot2::guides(col = "none", linetype = "none") +
-    ggplot2::labs(x = "Timestep", y = y_labels[3]) +
-    ggplot2::theme_classic(base_size = base_size) +
-    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
-
-  # create plot
-  gg_bottom_right <- ggplot2::ggplot(data = result_sep) +
-    ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-    ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_right, col = factor(meta),
-                                    linetype = "Local")) +
-    ggplot2::geom_line(data = result_sum,
-                       ggplot2::aes(x = timestep, y = bottom_right, linetype = "Regional"),
-                       col = "black") +
-    # ggplot2::scale_y_continuous(limits = limits$detritus_pool) +
-    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-    ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
-    ggplot2::guides(col = "none", linetype = "none") +
-    ggplot2::labs(x = "Timestep", y = y_labels[4]) +
-    ggplot2::theme_classic(base_size = base_size) +
-    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
-
-  legend_top_left <- cowplot::get_legend(gg_top_left)
-
-  # create title
-  plot_title <- paste0("Total time : ", x$max_i, " iterations (",
-                       round(x$max_i * x$min_per_i / 60 / 24, 1), " days)",
-                       "\nFishpop    : ", x$starting_values$pop_n,
-                       " indiv (Movement: ", x$movement, ")")
-
-  # now add the title
-  title <- cowplot::ggdraw() +
-    cowplot::draw_label(label = plot_title, x = 0, hjust = 0, size = base_size) +
-    ggplot2::theme(plot.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 1, "cm"))
-
-  # combine to one grid
-  gg_all <- cowplot::plot_grid(gg_top_left + ggplot2::theme(legend.position = "none"),
-                               gg_top_right,
-                               gg_bottom_left,
-                               gg_bottom_right,
-                               nrow = 2, ncol = 2)
-
-  # add title
-  gg_all <- cowplot::plot_grid(title, gg_all, legend_top_left, ncol = 1, rel_heights = c(0.1, 1, 0.1))
 
   return(gg_all)
 

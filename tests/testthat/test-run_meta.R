@@ -60,7 +60,7 @@ test_that("run_meta returns list with seafloor and fishpop", {
 
 
   expect_equal(object = nrow(result$seafloor[[1]]),
-               expected = (max_i / save_each + 1) * prod(extent))
+               expected = (max_i / save_each + 1) * prod(dimensions))
 
   expect_equal(object = nrow(result$fishpop[[3]]),
                expected = (max_i / save_each + 1) * starting_values$pop_n)

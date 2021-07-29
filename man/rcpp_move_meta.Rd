@@ -4,16 +4,16 @@
 \alias{rcpp_move_meta}
 \title{rcpp_move_meta}
 \usage{
-rcpp_move_meta(fishpop, pop_n_sum, id_attr, stationary_values, id_meta, extent)
+rcpp_move_meta(fishpop, stationary_values, pop_n_sum, id_attr, id_meta, extent)
 }
 \arguments{
 \item{fishpop}{List with fish population.}
 
+\item{stationary_values}{Vector with stationary values.}
+
 \item{pop_n_sum}{Integer with total number of individuals.}
 
 \item{id_attr}{Vector with unique id of fishpop attributes matrix.}
-
-\item{stationary_values}{Vector with stationary values.}
 
 \item{id_meta}{Vector with metaecosystem ids.}
 

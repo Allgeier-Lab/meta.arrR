@@ -20,5 +20,7 @@ globalVariables(names = c(
   "timestep",
   "top_left",
   "top_right",
-  "value"
+  "value",
+  "x",
+  "y"
 ))
