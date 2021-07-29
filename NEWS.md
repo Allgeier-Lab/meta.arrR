@@ -1,6 +1,8 @@
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions
-* Reneamed `simulate_meta` to `run_meta`
+* Renamed `simulate_meta` to `run_meta`
+* Adding plotting method for `summarize = FALSE`
+* Adding `get_global_range`
 
 # meta.arrR 0.2.0
 * First running framework

@@ -3,7 +3,7 @@
 #' @description
 #' Get abundance of local metaecosystems.
 #'
-#' @param result \code{meta_rn} object simulated with \code{simulate_nutr_input}.
+#' @param result \code{meta_rn} object simulated with \code{simulate_meta}.
 #'
 #' @details
 #' Get the number of individuals within each local metaecosystem of model run result
