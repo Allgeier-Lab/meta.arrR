@@ -9,9 +9,9 @@
 #' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param min_per_i Integer to specify minutes per i.
+#' @param burn_in Numeric with time steps used to burn in.
 #' @param seagrass_each Integer how often (each i * x) seagrass dynamics will be simulated.
 #' @param save_each Numeric how often data should be saved to return.
-#' @param burn_in Numeric with time steps used to burn in.
 #' @param return_burnin If FALSE all time steps < burn_in are not returned.
 #' @param verbose If TRUE, progress reports are printed.
 #'
@@ -58,9 +58,8 @@
 #'
 #' @export
 run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
-                          max_i, min_per_i, seagrass_each = 1, save_each = 1,
-                          burn_in = 0, return_burnin = TRUE,
-                          verbose = TRUE) {
+                     max_i, min_per_i, burn_in = 0, seagrass_each = 1, save_each = 1,
+                     return_burnin = TRUE, verbose = TRUE) {
 
   # check input and warnings #
 
@@ -164,17 +163,18 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
   # get coordinates of reef cells (needs matrix input)
   coords_reef <- lapply(seq_along(seafloor),
-                        function(i) cbind(id = cells_reef[[i]],
-                                          seafloor[[i]][cells_reef[[i]], 1:2]))
+                        function(i) matrix(data = c(cells_reef[[i]],
+                                                    seafloor[[i]][cells_reef[[i]], 1:2]),
+                                           ncol = 3))
 
   # get neighboring cells for each focal cell using torus
   cell_adj <- arrR::get_neighbors(x = metasyst$seafloor[[1]], direction = 8, cpp = TRUE)
 
   # get extent of environment
-  extent <- as.vector(raster::extent(x = metasyst$seafloor[[1]]))
+  extent <- as.vector(metasyst$extent)
 
   # get dimensions of environment (nrow, ncol)
-  dimensions <- dim(x = metasyst$seafloor[[1]])[1:2]
+  dimensions <- metasyst$dimensions
 
   # create lists to store results for each timestep
   seafloor_track <- vector(mode = "list", length = metasyst$n)
@@ -182,15 +182,15 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   seafloor_track <- lapply(seq_along(seafloor_track), function(i)
     vector(mode = "list", length = (max_i / save_each) + 1))
 
-  # # MH: Check this!
-  # # check if no reef is present but movement not rand
-  # if (length(cells_reef) == 0 && movement %in% c("attr", "behav")) {
-  #
-  #   movement <- "rand"
-  #
-  #   warning("No reef cells present. Thus 'movement' set to 'rand'.", call. = FALSE)
-  #
-  # }
+  # check if no reef is present but movement not rand
+  if (all(vapply(coords_reef, nrow, FUN.VALUE = numeric(1)) == 0) &&
+      movement %in% c("attr", "behav")) {
+
+    movement <- "rand"
+
+    warning("No reef cells present in any metaecosystem. Thus 'movement' set to 'rand'.", call. = FALSE)
+
+  }
 
   # print model run characteristics #
 
@@ -199,7 +199,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
     message("> Metaecosystem with ", metasyst$n, " local ecosystems.")
 
-    message("> Seafloors with ", raster::extent(extent), "; ",
+    message("> Seafloors with ", dimensions[1], " rows x ", dimensions[2], " cols; ",
             paste(vapply(coords_reef, nrow, FUN.VALUE = numeric(1)), collapse = ", "), " reef cells.")
 
     message("> Populations with ", paste(metasyst$starting_values$pop_n, collapse = ", "), " individuals [movement: '", movement, "'].")
@@ -300,13 +300,13 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   }
 
   # combine result to list
-  result <- list(seafloor = seafloor_track, fishpop = fishpop_track, movement = movement,
-                 n = metasyst$n, fishpop_attributes = metasyst$fishpop_attributes,
+  result <- list(seafloor = seafloor_track, fishpop = fishpop_track, n = metasyst$n,
+                 fishpop_attributes = metasyst$fishpop_attributes, movement = movement,
                  starting_values = metasyst$starting_values, parameters = parameters,
-                 nutr_input = nutr_input, max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
-                 save_each = save_each, seagrass_each = seagrass_each,
+                 nutr_input = nutr_input, coords_reef = coords_reef,
                  extent = raster::extent(extent), grain = raster::res(metasyst$seafloor[[1]]),
-                 coords_reef = coords_reef)
+                 dimensions = dimensions, max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
+                 seagrass_each = seagrass_each, save_each = save_each)
 
   # set class of result
   class(result) <- "meta_rn"

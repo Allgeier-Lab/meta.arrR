@@ -9,14 +9,14 @@ starting_values$pop_n <- c(2, 4, 8)
 n <- 3
 
 # setup extent and grain
-extent <- c(100, 100)
+dimensions <- c(100, 100)
 grain <- 1
 
 # set time per iterations
 min_per_i <- 120
 
 # setup metaecosystems
-metasyst <- setup_meta(n = n, extent = extent, grain = grain, reefs = NULL,
+metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = NULL,
                        starting_values = starting_values, parameters = parameters)
 
 # set max_i and save_each

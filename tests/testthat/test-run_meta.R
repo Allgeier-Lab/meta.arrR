@@ -7,7 +7,7 @@ starting_values <- meta.arrR::meta.arrR_starting_values
 n <- 3
 
 # setup extent and grain
-extent <- c(100, 100)
+dimensions <- c(100, 100)
 grain <- 1
 
 # create 5 reef cells in center of seafloor
@@ -15,11 +15,11 @@ reefs <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0),
                 ncol = 2, byrow = TRUE)
 
 # setup metaecosystems
-metasyst <- setup_meta(n = n, extent = extent, grain = grain, reefs = reefs,
+metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,
                        starting_values = starting_values, parameters = parameters)
 
 # setup metaecosystems
-metasys_noreef <- setup_meta(n = n, extent = extent, grain = grain, reefs = NULL,
+metasys_noreef <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = NULL,
                              starting_values = starting_values, parameters = parameters)
 
 # set max_i and save_each
@@ -35,9 +35,10 @@ result_noreef <- run_meta(metasyst = metasys_noreef, parameters = parameters,
                           max_i = max_i, min_per_i = 120, save_each = save_each)
 
 # create vector with names
-present_names <- c("seafloor", "fishpop", "movement", "n", "fishpop_attributes",
-                   "starting_values", "parameters", "nutr_input", "max_i" , "min_per_i",
-                   "burn_in", "save_each", "seagrass_each", "extent", "grain", "coords_reef")
+present_names <- c("seafloor", "fishpop", "n", "fishpop_attributes", "movement",
+                   "starting_values", "parameters", "nutr_input",
+                   "coords_reef", "extent",  "grain", "dimensions",
+                   "max_i" , "min_per_i", "burn_in", "seagrass_each", "save_each")
 
 test_that("run_meta returns meta_rn", {
 
@@ -69,9 +70,12 @@ test_that("run_meta returns correct information", {
 
   expect_equal(object = result$n, expected = n)
 
+  expect_equal(object = result$extent,
+               expected = raster::extent(metasyst$seafloor[[1]]))
+
   expect_equal(object = result$grain, expected = c(grain, grain))
 
-  # expect_equal(object = as.vector(result$extent), expected = extent)
+  expect_equal(object = result$dimensions, expected = dimensions)
 
   expect_equal(object = result$max_i, expected = max_i)
 

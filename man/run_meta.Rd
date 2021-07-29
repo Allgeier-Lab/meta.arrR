@@ -11,9 +11,9 @@ run_meta(
   movement = "rand",
   max_i,
   min_per_i,
+  burn_in = 0,
   seagrass_each = 1,
   save_each = 1,
-  burn_in = 0,
   return_burnin = TRUE,
   verbose = TRUE
 )
@@ -31,11 +31,11 @@ run_meta(
 
 \item{min_per_i}{Integer to specify minutes per i.}
 
+\item{burn_in}{Numeric with time steps used to burn in.}
+
 \item{seagrass_each}{Integer how often (each i * x) seagrass dynamics will be simulated.}
 
 \item{save_each}{Numeric how often data should be saved to return.}
-
-\item{burn_in}{Numeric with time steps used to burn in.}
 
 \item{return_burnin}{If FALSE all time steps < burn_in are not returned.}
 

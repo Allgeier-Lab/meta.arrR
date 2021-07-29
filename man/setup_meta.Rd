@@ -6,8 +6,8 @@
 \usage{
 setup_meta(
   n,
-  extent,
-  grain,
+  dimensions,
+  grain = c(1, 1),
   reefs = NULL,
   starting_values,
   parameters,
@@ -20,7 +20,7 @@ setup_meta(
 \arguments{
 \item{n}{Integer with number of metaecosystems to setup.}
 
-\item{extent}{Vector with number of rows and columns (spatial extent).}
+\item{dimensions}{Vector with number of rows and columns (spatial dimensions).}
 
 \item{grain}{Vector with size of cells in x- and y-direction (spatial grain).}
 
@@ -50,7 +50,7 @@ Function to setup the fish population. If no fish should be created, set
 }
 \examples{
 \dontrun{
-metasyst <- setup_meta(n = n, extent = extent, grain = grain, reefs = reefs,
+metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,
 starting_values = starting_values, parameters = parameters)
 }
 

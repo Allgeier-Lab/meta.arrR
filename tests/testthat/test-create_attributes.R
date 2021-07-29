@@ -7,17 +7,14 @@ starting_values <- meta.arrR::meta.arrR_starting_values
 n <- 3
 
 # setup extent and grain
-extent <- c(100, 100)
+dimensions <- c(100, 100)
 grain <- 1
 
 # set time per iterations
 min_per_i <- 120
 
-# setup metaecosystems
-metasyst <- setup_meta(n = n, extent = extent, grain = grain, reefs = NULL,
-                       starting_values = starting_values, parameters = parameters)
-
-seafloor <- arrR::setup_seafloor(extent = extent, grain = grain, reefs = NULL,
+# setup seafloor and fishpop
+seafloor <- arrR::setup_seafloor(dimensions = dimensions, grain = grain, reefs = NULL,
                                  starting_values = starting_values)
 
 fishpop <- lapply(1:n, function(i)
@@ -42,3 +39,4 @@ test_that("create_attributes has correct dimeonsions", {
                expected = c("id", "stationary", "reserves_thres"))
 
 })
+

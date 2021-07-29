@@ -23,8 +23,8 @@ reefs <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0),
                 ncol = 2, byrow = TRUE)
 
 # setup extent and grain
-extent <- c(100, 100)
-grain <- 1
+dimensions <- c(100, 100)
+grain <- c(1, 1)
 
 # set time per iterations
 min_per_i <- 120
@@ -46,7 +46,7 @@ starting_values$nutrients_pool <- stable_vals$nutrients_pool
 
 starting_values$detritus_pool <- stable_vals$detritus_pool
 
-metasyst <- setup_meta(n = n, extent = extent, grain = grain, reefs = reefs,
+metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,
                        starting_values = starting_values, parameters = parameters)
 
 input_max <- starting_values$nutrients_pool * 0.1
