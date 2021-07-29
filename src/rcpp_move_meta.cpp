@@ -31,9 +31,9 @@ using namespace Rcpp;
 //'
 //' @keywords export
 // [[Rcpp::export]]
-Rcpp::List rcpp_move_meta(Rcpp::List fishpop, int pop_n_sum,
-                          Rcpp::IntegerVector id_attr, Rcpp::NumericVector stationary_values,
-                          Rcpp::IntegerVector id_meta, Rcpp::NumericVector extent) {
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector stationary_values,
+                          int pop_n_sum, Rcpp::IntegerVector id_attr, Rcpp::IntegerVector id_meta,
+                          Rcpp::NumericVector extent) {
 
   // convert list to matrix
   Rcpp::NumericMatrix fishpop_mat = rcpp_list_to_matrix(fishpop, pop_n_sum, TRUE);

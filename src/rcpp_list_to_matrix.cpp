@@ -51,7 +51,7 @@ Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool 
   int k = 0;
 
   // loop through all list elements
-  for (int i = 0; i < fishpop.length(); i ++) {
+  for (int i = 0; i < fishpop.length(); i++) {
 
     // get current temp element
     Rcpp::NumericMatrix fishpop_temp = fishpop[i];
@@ -66,7 +66,7 @@ Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool 
 
       if (id) {
 
-        // adding metaecosyst id
+        // adding metaecosyst id at last position
         row_temp.push_back(i + 1);
 
       }

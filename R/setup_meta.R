@@ -143,19 +143,23 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
                                    parameters = parameters, use_log = use_log,
                                    verbose = FALSE)
 
-    # get number of digits of pop_n to create unique id
-    no_digits <- floor(log10(starting_values_temp$pop_n)) + 1
-
-    # create unique id; first number identifies metaecosystem
-    fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
-
-    # add stationary col
+    # add NA row if no individuals is present
     if (nrow(fishpop) == 0) {
 
-      fishpop <- cbind(fishpop, stationary = numeric(0))
+      fishpop[1, ] <- NA
+
+      # add stationary col
+      fishpop$stationary <- NA
 
     } else {
 
+      # get number of digits of pop_n to create unique id
+      no_digits <- floor(log10(starting_values_temp$pop_n)) + 1
+
+      # create unique id; first number identifies metaecosystem
+      fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
+
+      # add stationary col
       fishpop$stationary <- 0
 
     }

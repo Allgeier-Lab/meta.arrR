@@ -104,7 +104,7 @@ fishpop <- lapply(metasyst$fishpop, function(i) as.matrix(i, xy = TRUE))
 mat <- rcpp_list_to_matrix(fishpop = fishpop,
                            pop_n_sum = sum(metasyst$starting_values$pop_n), id = TRUE)
 
-mat[5, 18] <- 3
+mat[5, 18] <- 1
 
 rcpp_matrix_to_list(fishpop = mat, n = metasyst$n)
 */

@@ -144,8 +144,8 @@ rcpp_meta_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track
 #' @rdname rcpp_move_meta
 #'
 #' @keywords export
-rcpp_move_meta <- function(fishpop, pop_n_sum, id_attr, stationary_values, id_meta, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, pop_n_sum, id_attr, stationary_values, id_meta, extent)
+rcpp_move_meta <- function(fishpop, stationary_values, pop_n_sum, id_attr, id_meta, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, stationary_values, pop_n_sum, id_attr, id_meta, extent)
 }
 
 #' rcpp_subset_matrix

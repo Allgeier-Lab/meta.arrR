@@ -155,7 +155,8 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
     // check if individuals move between meta systems
     if (flag_move) {
 
-      fishpop = rcpp_move_meta(fishpop, pop_n_sum, id_attr, stationary_values, id_meta, extent);
+      fishpop = rcpp_move_meta(fishpop, stationary_values, pop_n_sum,
+                               id_attr, id_meta, extent);
 
     }
 
