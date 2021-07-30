@@ -14,6 +14,8 @@
 globalVariables(names = c(
   "bottom_left",
   "bottom_right",
+  "burn_in",
+  "density",
   "input",
   "measure",
   "meta",

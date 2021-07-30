@@ -40,6 +40,10 @@ plot_local_abund <- function(x, base_size = 10, ...) {
                                 value = mean(x$starting_values$pop_n),
                                 measure = "Mean"))
 
+  # create title
+  title <- paste0("Fishpop (total) : ", sum(x$starting_values$pop_n),
+                  " indiv [Movement : ", x$movement, "]")
+
   # create plot
   gg_input <- ggplot2::ggplot(data = abundance) +
     ggplot2::geom_line(data = minmax_df, col = "lightgrey",
@@ -51,7 +55,7 @@ plot_local_abund <- function(x, base_size = 10, ...) {
     ggplot2::scale_linetype_manual(name = "", values = c("Min" = 2, "Max" = 2, "Mean" = 1)) +
     ggplot2::scale_y_continuous(limits = c(0, abundance_max + abundance_min),
                                 breaks = 0:(abundance_max + abundance_min)) +
-    ggplot2::labs(x = "Timestep", y = "Local abundance ") +
+    ggplot2::labs(x = "Timestep", y = "Local abundance", title = title) +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
                    legend.position = "bottom")

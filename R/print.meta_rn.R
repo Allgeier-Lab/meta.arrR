@@ -82,16 +82,16 @@ print.meta_rn <- function(x, digits = 2, timestep = x$max_i, ...) {
   cat(paste0("Total time : ", timestep_temp, " iterations (", total_time, " days) [Burn-in: ", x$burn_in, " iter.]\n",
              "Saved each : ", x$save_each, " iterations (", save_time, " days)\n",
              "Seafloor   : ", x$extent, "\n",
-             "ARs        : ", no_reefs, " cells\n\n"))
+             "ARs        : ", no_reefs, " cells (movement: ", x$movement, ")\n\n"))
 
   cat("Local metaecosystems:\n")
-  cat(paste0("ID\tBelowground\tAboveground\tNutrients\tDetritus\tFish\tLength\tMortality\n"))
+  cat(paste0("ID\tBG\tAG\tNutr\tDetr\tFish\tLength\tMort\n"))
 
   lapply(1:x$n, function(i) {
 
-    cat(paste0(i, "\t", biomass[[i]][[1]], "\t\t", biomass[[i]][[2]], "\t\t",
-               biomass[[i]][[3]], "\t\t", biomass[[i]][[4]], "\t\t", fish[[i]][[1]], "\t", fish[[i]][[2]], "\t",
-               fish[[i]][[3]], "\n"))
+    cat(paste0(i, "\t", biomass[[i]][[1]], "\t", biomass[[i]][[2]], "\t",
+               biomass[[i]][[3]], "\t", biomass[[i]][[4]], "\t", fish[[i]][[1]],
+               "\t", fish[[i]][[2]], "\t", fish[[i]][[3]], "\n"))
 
   })
 }

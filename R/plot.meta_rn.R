@@ -177,10 +177,10 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     legend_top_left <- cowplot::get_legend(gg_top_left)
 
     # create title
-    plot_title <- paste0("Total time : ", x$max_i, " iterations (",
-                         round(x$max_i * x$min_per_i / 60 / 24, 1), " days)",
-                         "\nFishpop    : ", x$starting_values$pop_n,
-                         " indiv (Movement: ", x$movement, ")")
+    plot_title <- paste0("Total time        : ", x$max_i, " iterations [",
+                         round(x$max_i * x$min_per_i / 60 / 24, 1), " days]",
+                         "\nFishpop (total) : ", sum(x$starting_values$pop_n),
+                         " indiv [Movement : ", x$movement, "]")
 
     # now add the title
     title <- cowplot::ggdraw() +
@@ -195,33 +195,41 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
                                  nrow = 2, ncol = 2)
 
     # add title
-    gg_all <- cowplot::plot_grid(title, gg_all, legend_top_left, ncol = 1, rel_heights = c(0.1, 1, 0.1))
+    gg_all <- cowplot::plot_grid(title, gg_all, legend_top_left, ncol = 1,
+                                 rel_heights = c(0.1, 0.8, 0.1))
 
   } else {
 
+    # save timestep in different named object to filter
+    timestep_slctd <- timestep
+
+    # check if i can be divided by save_each without reminder
+    if (timestep_slctd %% x$save_each != 0) {
+
+      stop("'timestep' was not saved during model run.",
+           call. = FALSE)
+    }
+
     if (what == "seafloor") {
-
-      # save timestep in different named object to filter
-      i <- timestep
-
-      # check if i can be divided by save_each without reminder
-      if (i %% x$save_each != 0) {
-
-        stop("'timestep' was not saved during model run.",
-             call. = FALSE)
-      }
 
       # get data.frame with all seafloor values of selected timestep
       seafloor <- do.call(rbind, lapply(seq_along(x$seafloor), function(j) {
 
         id <- paste0("Metaecosystem ", j)
 
-        cbind(subset(x$seafloor[[j]], timestep == i, select = c("x", "y", fill)), id)
+        cbind(subset(x$seafloor[[j]], timestep == timestep_slctd,
+                     select = c("x", "y", fill)), id)
 
       }))
 
       # rename coloumns for plotting
       names(seafloor) <- c("x", "y", "fill", "id")
+
+      # create title
+      title <- paste0("Timestep         : ", timestep_slctd, " iterations [",
+                           round(timestep_slctd * x$min_per_i / 60 / 24, 1), " days]",
+                           "\nFishpop (total) : ", sum(x$starting_values$pop_n),
+                           " indiv [Movement : ", x$movement, "]")
 
       # create ggplot
       gg_all <- ggplot2::ggplot(data = seafloor) +
@@ -231,15 +239,44 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
                                       na.value = "#9B964A", limits = limits,
                                       name = fill) +
         ggplot2::coord_equal() +
-        ggplot2::labs(x = "", y = "") +
+        ggplot2::labs(x = "", y = "", title = title) +
         ggplot2::theme_classic(base_size = base_size) +
         ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
 
     } else if (what == "fishpop") {
 
-      stop("Currently, no support for 'summarize = FALSE' and 'what = fishpop'.",
-           call. = FALSE)
+      # get density wihtin each cell
+      densities <- get_meta_densities(result = x, timestep = timestep_slctd)
 
+      # get number of reefs
+      no_reefs <- vapply(x$coords_reef, nrow, FUN.VALUE = numeric(1))
+
+      # get coords of reefs
+      coords_reef <- data.frame(do.call(rbind, x$coords_reef))
+
+      # add metaecosystem id
+      coords_reef$id <- rep(x = 1:x$n, times = no_reefs)
+
+      # rename
+      names(coords_reef) <- c("cell", "x", "y", "id")
+
+      # create title
+      title <- paste0("Timestep         : ", timestep_slctd, " iterations [",
+                      round(timestep_slctd * x$min_per_i / 60 / 24, 1), " days]",
+                      "\nFishpop (total) : ", sum(x$starting_values$pop_n),
+                      " indiv [Movement : ", x$movement, "]")
+
+      gg_all <- ggplot2::ggplot(data = densities) +
+        ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = density)) +
+        ggplot2::geom_raster(data = coords_reef, ggplot2::aes(x = x, y = y),
+                             fill = "#9B964A") +
+        ggplot2::facet_wrap(. ~ id) +
+        ggplot2::scale_fill_gradientn(colours = c("#368AC0", "#F4B5BD", "#EC747F"),
+                                      name = "Density") +
+        ggplot2::coord_equal() +
+        ggplot2::labs(x = "", y = "", title = title) +
+        ggplot2::theme_classic(base_size = base_size) +
+        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
     }
   }
 
