@@ -10,7 +10,7 @@ parameters <- meta.arrR::meta.arrR_parameters
 
 parameters$nutrients_output <- 0.1
 
-parameters$move_stationary <- max_i / 10
+parameters$move_residence <- max_i / 10
 
 # set number of metaecosystems
 n <- 5
@@ -52,8 +52,8 @@ metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = re
 input_max <- starting_values$nutrients_pool * 0.1
 
 nutr_input <- simulate_nutr_input(n = n, max_i = max_i,
-                                  freq_mn = 5, freq_sd = 0.1,
-                                  input_max = input_max, input_sd = 0.25)
+                                  freq_mn = 5, freq_var = 0.1,
+                                  input_max = input_max, input_var = 0.25)
 
 result_readme <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
                           parameters = parameters, movement = "attr",

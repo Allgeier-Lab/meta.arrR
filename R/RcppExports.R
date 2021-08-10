@@ -136,7 +136,7 @@ rcpp_meta_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track
 #' Simulate movement across local metaecosystem. Individuals move to a new local
 #' metaecosystem with a certain probability each timestep. The probability increases
 #' depending on the residence value and how long individuals already stayed on local
-#' metaecosystem. To avoid this movement set \code{parameters$move_stationary = 0}.
+#' metaecosystem. To avoid this movement set \code{parameters$move_residence = 0}.
 #'
 #' @return list
 #'

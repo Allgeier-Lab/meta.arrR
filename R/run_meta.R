@@ -268,7 +268,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
                                            yes = "yes", no = "no")
 
       # individuals did not move across ecosystems
-      if (parameters$move_stationary == 0) {
+      if (parameters$move_residence == 0) {
 
         fishpop_track[[i]]$residence <- fishpop_track[[i]]$timestep
 

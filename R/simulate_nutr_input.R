@@ -5,15 +5,15 @@
 #'
 #' @param n Integer with number of metaecosystems to setup.
 #' @param max_i Integer with maximum number of simulation time steps.
-#' @param freq_mn,freq_sd Numeric number of peak.
-#' @param input_max,input_sd Numeric with maximum input amount.
+#' @param freq_mn,freq_var Numeric number of peaks.
+#' @param input_max,input_var Numeric with maximum input amount.
 #' @param phase Numeric with sine curve parameters.
 #'
 #' @details
 #' Simulating nutrient input based on sine curve. The \code{freq_mn} argument quantifies
 #' how many complete cycles of the sine function are present for a given \code{max_i},
 #' i.e., how many "peaks" are present. The \code{input_max} argument quantifies the
-#' maximum value of the input "peaks". Both arguments can be multiplied by the \code{*_sd}
+#' maximum value of the input "peaks". Both arguments can be multiplied by the \code{*_var}
 #' argument and used as standard deviation of a normal distribution to add variability across
 #' metaecosystems.
 #'
@@ -21,15 +21,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' nutr_input <- simulate_nutr_input(n = n, max_i = max_i, freq_mn = 3, freq_sd = 0.1,
-#' input_max = input_max, input_sd = 0.5)
+#' nutr_input <- simulate_nutr_input(n = n, max_i = max_i, freq_mn = 3, freq_var = 0.1,
+#' input_max = input_max, input_var = 0.5)
 #' }
 #'
 #' @aliases simulate_nutr_input
 #' @rdname simulate_nutr_input
 #'
 #' @export
-simulate_nutr_input <- function(n, max_i, freq_mn, freq_sd, input_max, input_sd, phase = 0) {
+simulate_nutr_input <- function(n, max_i, freq_mn, freq_var, input_max, input_var, phase = 0) {
 
   # create empty list
   result_list <- vector(mode = "list", length = n)
@@ -47,10 +47,10 @@ simulate_nutr_input <- function(n, max_i, freq_mn, freq_sd, input_max, input_sd,
   for (i in seq_along(result_list)) {
 
     # sample mean period and amplitude from random norm dist
-    period_temp <- stats::rnorm(n = 1, mean = freq_mn, sd = freq_mn * freq_sd)
+    period_temp <- stats::rnorm(n = 1, mean = freq_mn, sd = freq_mn * freq_var)
 
     # amplitude must be positive
-    amplitude_temp <- abs(stats::rnorm(n = 1, mean = input_max, sd = input_max * input_sd))
+    amplitude_temp <- abs(stats::rnorm(n = 1, mean = input_max, sd = input_max * input_var))
 
     # amplitude * sin(period * (x + phase)) + vert
     # adding amplitude_temp again to make sure input >= 0.0

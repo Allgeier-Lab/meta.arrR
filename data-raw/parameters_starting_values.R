@@ -31,8 +31,8 @@ meta.arrR_parameters <- list(
   move_border = 2.0,
   move_reef = 0.5,
   move_return = 50.0,
-  move_stationary = 0.0,
-  move_stationary_var = 0.0,
+  move_residence = 0.0,
+  move_residence_var = 0.0,
 
   pop_a = 0.0121,
   pop_b = 3.161,

@@ -22,7 +22,7 @@ using namespace Rcpp;
 //' Simulate movement across local metaecosystem. Individuals move to a new local
 //' metaecosystem with a certain probability each timestep. The probability increases
 //' depending on the residence value and how long individuals already stayed on local
-//' metaecosystem. To avoid this movement set \code{parameters$move_stationary = 0}.
+//' metaecosystem. To avoid this movement set \code{parameters$move_residence = 0}.
 //'
 //' @return list
 //'
@@ -56,6 +56,9 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector residence_valu
       // // get current id
       // int id_meta_temp = fishpop_mat(i, 17);
 
+      // draw random number again
+      prob_random = runif(1, 0.0, 1.0)[0];
+
       // move to left metaecosystem
       if (prob_random < 0.5) {
 
@@ -63,9 +66,9 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector residence_valu
         fishpop_mat(i, 17) -= 1;
 
         // check if torus translate left
-        if (fishpop_mat(i, 17) < 0) {
+        if (fishpop_mat(i, 17) == 0) {
 
-          fishpop_mat(i, 17) = n - 1;
+          fishpop_mat(i, 17) = n;
 
         }
 
@@ -76,9 +79,9 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector residence_valu
         fishpop_mat(i, 17) += 1;
 
         // check if torus translate right
-        if (fishpop_mat(i, 17) < 0) {
+        if (fishpop_mat(i, 17) > n) {
 
-        fishpop_mat(i, 17) = 0;
+        fishpop_mat(i, 17) = 1;
 
         }
       }

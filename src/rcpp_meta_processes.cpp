@@ -82,7 +82,7 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
   bool flag_move = Rcpp::is_true(Rcpp::any(pop_n > 0));
 
   // set movement to false if parameter is 0.0
-  if (as<double>(parameters["move_stationary"]) <= 0.0) {
+  if (as<double>(parameters["move_residence"]) <= 0.0) {
 
     flag_move = FALSE;
 

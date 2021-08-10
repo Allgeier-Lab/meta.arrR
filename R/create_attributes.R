@@ -32,7 +32,7 @@ create_attributes <- function(fishpop, parameters) {
       if (!all(is.na(i))) {
 
         # return 0 for mean is zero
-        if (parameters$move_stationary == 0) {
+        if (parameters$move_residence == 0) {
 
           residence <- rep(x = 0.0, times = pop_n)
 
@@ -40,9 +40,9 @@ create_attributes <- function(fishpop, parameters) {
         } else {
 
           # draw from rlognorm with Inf maximum
+          # MH: sd = sqrt(parameters$move_residence_vars),
           residence <- vapply(1:pop_n, function(i)
-            arrR::rcpp_rlognorm(mean = parameters$move_stationary,
-                                sd = sqrt(parameters$move_stationary_var),
+            arrR::rcpp_rlognorm(mean = parameters$move_residence, sd = 0,
                                 min = 0, max = Inf),
             FUN.VALUE = numeric(1))
 

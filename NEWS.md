@@ -1,5 +1,6 @@
 # meta.arrR 0.3
 * Move only across neighboring ecosystems
+* Use different initial residence time as variability
 
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions

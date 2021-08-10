@@ -159,9 +159,20 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
       # create unique id; first number identifies metaecosystem
       fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
 
-      # add residence col
-      fishpop$residence <- 0
 
+      # add variable starting residence value
+      if (parameters$move_residence_var > 0) {
+
+        fishpop$residence <- floor(stats::runif(n = starting_values_temp$pop_n, min = 0,
+                                                max = parameters$move_residence *
+                                                  parameters$move_residence_var))
+
+      # add identical starting residence value
+      } else {
+
+        fishpop$residence <- 0
+
+      }
     }
 
     # save in final list
@@ -175,6 +186,7 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
   # create look-up table for residence value
   fishpop_attributes <- create_attributes(fishpop = fishpop_list,
                                           parameters = parameters)
+
 
   # combine everything to one list
   result_list <- list(seafloor = seafloor_list, fishpop = fishpop_list,
