@@ -78,7 +78,7 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @param max_dist Double with maximum movement distance.
 #' @param n Integer with number of metaecosystems.
 #' @param pop_n Vector with number of individuals.
-#' @param fishpop_attributes Matrix with stationary and reserves_thres values for each individual
+#' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual
 #' @param nutr_input List with amount of nutrient input each timestep.
 #' @param coords_reef List with ID and coords of reef cells.
 #' @param cell_adj Matrix with cell adjacencies.
@@ -128,14 +128,14 @@ rcpp_meta_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track
 #' @param fishpop List with fish population.
 #' @param pop_n_sum Integer with total number of individuals.
 #' @param id_attr Vector with unique id of fishpop attributes matrix.
-#' @param stationary_values Vector with stationary values.
+#' @param residence_values Vector with residence values.
 #' @param id_meta Vector with metaecosystem ids.
 #' @param extent Spatial extent of the seafloor raster.
 #'
 #' @details
 #' Simulate movement across local metaecosystem. Individuals move to a new local
 #' metaecosystem with a certain probability each timestep. The probability increases
-#' depending on the stationary value and how long individuals already stayed on local
+#' depending on the residence value and how long individuals already stayed on local
 #' metaecosystem. To avoid this movement set \code{parameters$move_stationary = 0}.
 #'
 #' @return list
@@ -144,8 +144,8 @@ rcpp_meta_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track
 #' @rdname rcpp_move_meta
 #'
 #' @keywords export
-rcpp_move_meta <- function(fishpop, stationary_values, pop_n_sum, id_attr, id_meta, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, stationary_values, pop_n_sum, id_attr, id_meta, extent)
+rcpp_move_meta <- function(fishpop, residence_values, pop_n_sum, id_attr, id_meta, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, residence_values, pop_n_sum, id_attr, id_meta, extent)
 }
 
 #' rcpp_subset_matrix

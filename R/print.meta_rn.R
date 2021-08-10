@@ -40,7 +40,7 @@ print.meta_rn <- function(x, digits = 2, timestep = x$max_i, ...) {
 
   })
 
-  # get number of rees
+  # get number of reefs
   no_reefs <- vapply(x$seafloor, function(i) {
 
     # only get first timestep because reefs are identical

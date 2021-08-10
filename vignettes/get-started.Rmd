@@ -87,7 +87,7 @@ plot(nutr_input)
 
 # dplyr::bind_rows(result$fishpop) %>% 
 #   dplyr::filter(timestep != 0) %>% 
-#   dplyr::mutate(stat_class = dplyr::case_when(stationary == 0 ~ "moved", 
+#   dplyr::mutate(stat_class = dplyr::case_when(residence == 0 ~ "moved", 
 #                                               TRUE ~ "stayed")) %>%
 #   dplyr::group_by(id, stat_class) %>% 
 #   dplyr::summarise(n = dplyr::n()) %>% 

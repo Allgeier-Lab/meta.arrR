@@ -24,7 +24,7 @@ using namespace Rcpp;
 //' @param max_dist Double with maximum movement distance.
 //' @param n Integer with number of metaecosystems.
 //' @param pop_n Vector with number of individuals.
-//' @param fishpop_attributes Matrix with stationary and reserves_thres values for each individual
+//' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual
 //' @param nutr_input List with amount of nutrient input each timestep.
 //' @param coords_reef List with ID and coords of reef cells.
 //' @param cell_adj Matrix with cell adjacencies.
@@ -108,8 +108,8 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
   // MH: This is not very elegant
   Rcpp::IntegerVector id_attr = as<Rcpp::IntegerVector>(id_attr_num);
 
-  // get stationary values
-  Rcpp::NumericVector stationary_values = fishpop_attributes(_, 1);
+  // get residence values
+  Rcpp::NumericVector residence_values = fishpop_attributes(_, 1);
 
   // get pop_reserves_thres values
   Rcpp::NumericVector pop_reserves_thres = fishpop_attributes(_, 2);
@@ -155,7 +155,7 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
     // check if individuals move between meta systems
     if (flag_move) {
 
-      fishpop = rcpp_move_meta(fishpop, stationary_values, pop_n_sum,
+      fishpop = rcpp_move_meta(fishpop, residence_values, pop_n_sum,
                                id_attr, id_meta, extent);
 
     }

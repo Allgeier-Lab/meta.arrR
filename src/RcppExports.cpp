@@ -78,18 +78,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_move_meta
-Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector stationary_values, int pop_n_sum, Rcpp::IntegerVector id_attr, Rcpp::IntegerVector id_meta, Rcpp::NumericVector extent);
-RcppExport SEXP _meta_arrR_rcpp_move_meta(SEXP fishpopSEXP, SEXP stationary_valuesSEXP, SEXP pop_n_sumSEXP, SEXP id_attrSEXP, SEXP id_metaSEXP, SEXP extentSEXP) {
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector residence_values, int pop_n_sum, Rcpp::IntegerVector id_attr, Rcpp::IntegerVector id_meta, Rcpp::NumericVector extent);
+RcppExport SEXP _meta_arrR_rcpp_move_meta(SEXP fishpopSEXP, SEXP residence_valuesSEXP, SEXP pop_n_sumSEXP, SEXP id_attrSEXP, SEXP id_metaSEXP, SEXP extentSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type fishpop(fishpopSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type stationary_values(stationary_valuesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type residence_values(residence_valuesSEXP);
     Rcpp::traits::input_parameter< int >::type pop_n_sum(pop_n_sumSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type id_attr(id_attrSEXP);
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type id_meta(id_metaSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type extent(extentSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_move_meta(fishpop, stationary_values, pop_n_sum, id_attr, id_meta, extent));
+    rcpp_result_gen = Rcpp::wrap(rcpp_move_meta(fishpop, residence_values, pop_n_sum, id_attr, id_meta, extent));
     return rcpp_result_gen;
 END_RCPP
 }

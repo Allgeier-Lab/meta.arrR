@@ -4,12 +4,12 @@
 \alias{rcpp_move_meta}
 \title{rcpp_move_meta}
 \usage{
-rcpp_move_meta(fishpop, stationary_values, pop_n_sum, id_attr, id_meta, extent)
+rcpp_move_meta(fishpop, residence_values, pop_n_sum, id_attr, id_meta, extent)
 }
 \arguments{
 \item{fishpop}{List with fish population.}
 
-\item{stationary_values}{Vector with stationary values.}
+\item{residence_values}{Vector with residence values.}
 
 \item{pop_n_sum}{Integer with total number of individuals.}
 
@@ -28,7 +28,7 @@ Rcpp move meta.
 \details{
 Simulate movement across local metaecosystem. Individuals move to a new local
 metaecosystem with a certain probability each timestep. The probability increases
-depending on the stationary value and how long individuals already stayed on local
+depending on the residence value and how long individuals already stayed on local
 metaecosystem. To avoid this movement set \code{parameters$move_stationary = 0}.
 }
 \keyword{export}

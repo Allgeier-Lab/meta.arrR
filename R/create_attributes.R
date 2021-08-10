@@ -7,7 +7,7 @@
 #' @param parameters List with parameters
 #'
 #' @details
-#' Creates matrix with id, stationary, and reserves threshold value for each
+#' Creates matrix with id, residence, and reserves threshold value for each
 #' individual of fish population.
 #'
 #' @return matrix
@@ -34,13 +34,13 @@ create_attributes <- function(fishpop, parameters) {
         # return 0 for mean is zero
         if (parameters$move_stationary == 0) {
 
-          stationary <- rep(x = 0.0, times = pop_n)
+          residence <- rep(x = 0.0, times = pop_n)
 
         # if create random number if mean != 0
         } else {
 
           # draw from rlognorm with Inf maximum
-          stationary <- vapply(1:pop_n, function(i)
+          residence <- vapply(1:pop_n, function(i)
             arrR::rcpp_rlognorm(mean = parameters$move_stationary,
                                 sd = sqrt(parameters$move_stationary_var),
                                 min = 0, max = Inf),
@@ -53,7 +53,7 @@ create_attributes <- function(fishpop, parameters) {
                                        max = parameters$pop_reserves_thres_hi)
 
         # combine to one matrix
-        cbind(id = i[, 1], stationary = stationary, reserves_thres = reserves_thres)
+        cbind(id = i[, 1], residence = residence, reserves_thres = reserves_thres)
       }}))
 
   return(result)

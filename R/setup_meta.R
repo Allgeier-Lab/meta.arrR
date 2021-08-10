@@ -148,8 +148,8 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
 
       fishpop[1, ] <- NA
 
-      # add stationary col
-      fishpop$stationary <- NA
+      # add residence col
+      fishpop$residence <- NA
 
     } else {
 
@@ -159,8 +159,8 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
       # create unique id; first number identifies metaecosystem
       fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
 
-      # add stationary col
-      fishpop$stationary <- 0
+      # add residence col
+      fishpop$residence <- 0
 
     }
 
@@ -172,7 +172,7 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
   # get extent
   extent <- raster::extent(x = seafloor_list[[1]])
 
-  # create look-up table for stationary value
+  # create look-up table for residence value
   fishpop_attributes <- create_attributes(fishpop = fishpop_list,
                                           parameters = parameters)
 

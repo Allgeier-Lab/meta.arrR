@@ -18,7 +18,7 @@ matrix
 Create attribute values.
 }
 \details{
-Creates matrix with id, stationary, and reserves threshold value for each
+Creates matrix with id, residence, and reserves threshold value for each
 individual of fish population.
 }
 \examples{

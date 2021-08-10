@@ -43,7 +43,7 @@ rcpp_meta_processes(
 
 \item{pop_n}{Vector with number of individuals.}
 
-\item{fishpop_attributes}{Matrix with stationary and reserves_thres values for each individual}
+\item{fishpop_attributes}{Matrix with residence and reserves_thres values for each individual}
 
 \item{nutr_input}{List with amount of nutrient input each timestep.}
 
