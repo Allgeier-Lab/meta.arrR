@@ -12,7 +12,7 @@ using namespace Rcpp;
 //' Rcpp move meta.
 //'
 //' @param fishpop List with fish population.
-//' @param pop_n_sum Integer with total number of individuals.
+//' @param n,pop_n_sum Integer with total number of local metaecosystems and individuals.
 //' @param id_attr Vector with unique id of fishpop attributes matrix.
 //' @param residence_values Vector with residence values.
 //' @param id_meta Vector with metaecosystem ids.
@@ -32,7 +32,7 @@ using namespace Rcpp;
 //' @keywords export
 // [[Rcpp::export]]
 Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector residence_values,
-                          int pop_n_sum, Rcpp::IntegerVector id_attr, Rcpp::IntegerVector id_meta,
+                          int n, int pop_n_sum, Rcpp::IntegerVector id_attr, Rcpp::IntegerVector id_meta,
                           Rcpp::NumericVector extent) {
 
   // convert list to matrix
@@ -53,17 +53,44 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector residence_valu
     // move if probability is below random number
     if (prob_random < prob_move) {
 
-      // get current id
-      int id_meta_temp = fishpop_mat(i, 17);
+      // // get current id
+      // int id_meta_temp = fishpop_mat(i, 17);
 
-      // get all id not currently in
-      Rcpp::IntegerVector id_new = id_meta[id_meta != id_meta_temp];
+      // move to left metaecosystem
+      if (prob_random < 0.5) {
 
-      // sample new random id
-      int id_random = Rcpp::sample(id_new, 1)[0];
+        // update meta id
+        fishpop_mat(i, 17) -= 1;
 
-      // update meta id
-      fishpop_mat(i, 17) = id_random;
+        // check if torus translate left
+        if (fishpop_mat(i, 17) < 0) {
+
+          fishpop_mat(i, 17) = n - 1;
+
+        }
+
+      // move to right metaecosystem
+      } else {
+
+        // update meta id
+        fishpop_mat(i, 17) += 1;
+
+        // check if torus translate right
+        if (fishpop_mat(i, 17) < 0) {
+
+        fishpop_mat(i, 17) = 0;
+
+        }
+      }
+
+      // // get all id not currently in
+      // Rcpp::IntegerVector id_new = id_meta[id_meta != id_meta_temp];
+      //
+      // // sample new random id
+      // int id_random = Rcpp::sample(id_new, 1)[0];
+      //
+      // // update meta id
+      // fishpop_mat(i, 17) = id_random;
 
       // random x coord
       fishpop_mat(i, 2) = Rcpp::runif(1, extent[0], extent[1])[0];

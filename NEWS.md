@@ -1,3 +1,6 @@
+# meta.arrR 0.3
+* Move only across neighboring ecosystems
+
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions
 * Renamed `simulate_meta` to `run_meta`

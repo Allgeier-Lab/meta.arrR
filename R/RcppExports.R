@@ -126,7 +126,7 @@ rcpp_meta_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track
 #' Rcpp move meta.
 #'
 #' @param fishpop List with fish population.
-#' @param pop_n_sum Integer with total number of individuals.
+#' @param n,pop_n_sum Integer with total number of local metaecosystems and individuals.
 #' @param id_attr Vector with unique id of fishpop attributes matrix.
 #' @param residence_values Vector with residence values.
 #' @param id_meta Vector with metaecosystem ids.
@@ -144,8 +144,8 @@ rcpp_meta_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track
 #' @rdname rcpp_move_meta
 #'
 #' @keywords export
-rcpp_move_meta <- function(fishpop, residence_values, pop_n_sum, id_attr, id_meta, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, residence_values, pop_n_sum, id_attr, id_meta, extent)
+rcpp_move_meta <- function(fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent)
 }
 
 #' rcpp_subset_matrix
