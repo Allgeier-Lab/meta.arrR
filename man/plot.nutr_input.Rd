@@ -20,8 +20,8 @@ Plotting method for nutr_input object.
 Ploting method for metaecosystem created with \code{setup_meta}.
 }
 \examples{
-nutr_input <- simulate_nutr_input(n = 3, max_i = 4380, freq_mn = 3, freq_var = 0.1,
-input_max = 0.1, input_var = 0.25)
+nutr_input <- simulate_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
+input_max = 1, variability = 0.5)
 plot(nutr_input)
 
 }

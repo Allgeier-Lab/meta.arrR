@@ -1,38 +1,36 @@
-#' simulate_nutr_input
+#' simulate_nutr_input_sd
 #'
 #' @description
 #' Simulate nutrient input.
 #'
 #' @param n Integer with number of metaecosystems to setup.
 #' @param max_i Integer with maximum number of simulation time steps.
-#' @param freq_mn,freq_var Numeric number of peaks.
-#' @param input_max,input_var Numeric with maximum input amount.
+#' @param freq_mn,freq_sd Numeric number of peak.
+#' @param input_max,input_sd Numeric with maximum input amount.
 #' @param phase Numeric with sine curve parameters.
 #'
 #' @details
 #' Simulating nutrient input based on sine curve. The \code{freq_mn} argument quantifies
 #' how many complete cycles of the sine function are present for a given \code{max_i},
 #' i.e., how many "peaks" are present. The \code{input_max} argument quantifies the
-#' maximum value of the input "peaks". Both arguments can be multiplied by the \code{*_var}
+#' maximum value of the input "peaks". Both arguments can be multiplied by the \code{*_sd}
 #' argument and used as standard deviation of a normal distribution to add variability across
 #' metaecosystems.
 #'
 #' @return vector
 #'
 #' @examples
-#' \dontrun{
-#' nutr_input <- simulate_nutr_input(n = n, max_i = max_i, freq_mn = 3, freq_var = 0.1,
-#' input_max = input_max, input_var = 0.5)
-#' }
+#' nutr_input <- simulate_nutr_input_sd(n = 3, max_i = 4380, freq_mn = 3, freq_sd = 0.1,
+#' input_max = 1, input_sd = 0.5)
 #'
-#' @aliases simulate_nutr_input
-#' @rdname simulate_nutr_input
+#' @aliases simulate_nutr_input_sd
+#' @rdname simulate_nutr_input_sd
 #'
 #' @export
-simulate_nutr_input <- function(n, max_i, freq_mn, freq_var, input_max, input_var, phase = 0) {
+simulate_nutr_input_sd <- function(n, max_i, freq_mn, freq_sd, input_max, input_sd, phase = 0) {
 
   # create empty list
-  result_list <- vector(mode = "list", length = n)
+  result_values <- vector(mode = "list", length = n)
 
   # create vector from 1 to max_i for nutrient input
   timestep <- 1:max_i
@@ -44,13 +42,13 @@ simulate_nutr_input <- function(n, max_i, freq_mn, freq_var, input_max, input_va
   input_max <- input_max / 2
 
   # loop through all metaecosystems
-  for (i in seq_along(result_list)) {
+  for (i in seq_along(result_values)) {
 
     # sample mean period and amplitude from random norm dist
-    period_temp <- stats::rnorm(n = 1, mean = freq_mn, sd = freq_mn * freq_var)
+    period_temp <- stats::rnorm(n = 1, mean = freq_mn, sd = freq_mn * freq_sd)
 
     # amplitude must be positive
-    amplitude_temp <- abs(stats::rnorm(n = 1, mean = input_max, sd = input_max * input_var))
+    amplitude_temp <- abs(stats::rnorm(n = 1, mean = input_max, sd = input_max * input_sd))
 
     # amplitude * sin(period * (x + phase)) + vert
     # adding amplitude_temp again to make sure input >= 0.0
@@ -64,9 +62,13 @@ simulate_nutr_input <- function(n, max_i, freq_mn, freq_var, input_max, input_va
     }
 
     # store results in data.frame
-    result_list[[i]] <- input_temp
+    result_values[[i]] <- input_temp
 
   }
+
+  # store results in final list
+  result_list <- list(values = result_values, freq_mn = freq_mn, freq_sd = freq_sd,
+                      input_max = input_max, input_sd = input_sd)
 
   # specify class of list
   class(result_list) <- "nutr_input"

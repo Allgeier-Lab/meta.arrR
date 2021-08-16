@@ -11,8 +11,8 @@
 #' Ploting method for metaecosystem created with \code{setup_meta}.
 #'
 #' @examples
-#' nutr_input <- simulate_nutr_input(n = 3, max_i = 4380, freq_mn = 3, freq_var = 0.1,
-#' input_max = 0.1, input_var = 0.25)
+#' nutr_input <- simulate_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
+#' input_max = 1, variability = 0.5)
 #' plot(nutr_input)
 #'
 #' @aliases plot.nutr_input
@@ -22,13 +22,13 @@
 plot.nutr_input <- function(x, base_size = 10, ...) {
 
   # combine all list elements to one data.frame
-  input_df <- do.call(rbind, lapply(seq_along(x), function(i){
+  input_df <- do.call(rbind, lapply(seq_along(x$values), function(i){
 
     # create timestep counter for each element of vector
-    timestep <- seq(from = 1, to = length(x[[i]]), length.out = length(x[[i]]))
+    timestep <- seq(from = 1, to = length(x$values[[i]]), length.out = length(x$values[[i]]))
 
     # create data.frame
-    data.frame(meta = i, timestep = timestep, input = x[[i]])
+    data.frame(meta = i, timestep = timestep, input = x$values[[i]])
     }))
 
   # create plot
@@ -36,7 +36,7 @@ plot.nutr_input <- function(x, base_size = 10, ...) {
     ggplot2::geom_line(ggplot2::aes(x = timestep, y = input,
                                     col = factor(meta))) +
     ggplot2::geom_hline(yintercept = 0, color = "lightgrey", linetype = 2) +
-    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "C") +
     ggplot2::labs(x = "Timestep", y = "Nutrient input [g/cell]") +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),

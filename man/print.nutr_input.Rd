@@ -20,8 +20,8 @@ Printing method for nutr_input object.
 Printing method for \code{nutr_input} created with \code{simulate_nutr_input}.
 }
 \examples{
-\dontrun{
+nutr_input <- simulate_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
+input_max = 1, variability = 0.5)
 print(nutr_input)
-}
 
 }

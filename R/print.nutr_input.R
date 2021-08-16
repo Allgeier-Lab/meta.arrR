@@ -11,9 +11,9 @@
 #' Printing method for \code{nutr_input} created with \code{simulate_nutr_input}.
 #'
 #' @examples
-#' \dontrun{
+#' nutr_input <- simulate_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
+#' input_max = 1, variability = 0.5)
 #' print(nutr_input)
-#' }
 #'
 #' @aliases print.nutr_input
 #' @rdname print.nutr_input
@@ -22,29 +22,29 @@
 print.nutr_input <- function(x, digits = NULL, ...) {
 
   # get number of metaecosystems
-  n <- length(x)
+  n <- length(x$values)
 
   # get maximum timesteps
-  n_input <- unique(vapply(x, FUN = length, FUN.VALUE = numeric(1)))
+  n_input <- length(x$values[[1]])
 
   # no digits argument present
   if (is.null(digits)) {
 
     # try to estimate number of digits
-    digits <- abs(floor(log10(max(x[[1]]))) + 1) + 1
+    digits <- abs(floor(log10(max(x$values[[1]]))) + 1) + 1
 
   }
 
   # get min input
-  min_input <- vapply(x, FUN = function(x) round(min(x), digits = digits),
+  min_input <- vapply(x$values, FUN = function(i) round(min(i), digits = digits),
                       FUN.VALUE = numeric(1))
 
   # get mean input
-  mean_input <- vapply(x, FUN = function(x) round(mean(x), digits = digits),
+  mean_input <- vapply(x$values, FUN = function(i) round(mean(i), digits = digits),
                        FUN.VALUE = numeric(1))
 
   # get max input
-  max_input <- vapply(x, FUN = function(x) round(max(x), digits = digits),
+  max_input <- vapply(x$values, FUN = function(i) round(max(i), digits = digits),
                       FUN.VALUE = numeric(1))
 
   if (all(mean_input == 0)) {

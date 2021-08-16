@@ -4,10 +4,8 @@ n <- 3
 # set max_i and save_each
 max_i <- 10
 
-save_each <- 2
-
-nutr <- simulate_nutr_input(n = n, max_i = max_i, freq_mn = 3, freq_var = 0.1,
-                            input_max = 0.1, input_var = 0.5)
+nutr <- simulate_nutr_input_noise(n = n, max_i = max_i, freq_mn = 3,
+                                  input_max = 1, variability = 0.5)
 
 nutr_gg <- plot(nutr)
 
