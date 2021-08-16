@@ -28,7 +28,7 @@
 #' @rdname sim_nutr_input_noise
 #'
 #' @export
-sim_nutr_input_noise <- function(n, max_i, freq_mn, input_max, variability, n_noise = 3) {
+sim_nutr_input_noise <- function(n, max_i, freq_mn, input_max, variability, n_noise = 5) {
 
   # init list with values for each local metaecosyst
   result_values <- vector(mode = "list", length = n)

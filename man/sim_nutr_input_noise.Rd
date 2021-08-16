@@ -4,7 +4,7 @@
 \alias{sim_nutr_input_noise}
 \title{sim_nutr_input_noise}
 \usage{
-sim_nutr_input_noise(n, max_i, freq_mn, input_max, variability, n_noise = 3)
+sim_nutr_input_noise(n, max_i, freq_mn, input_max, variability, n_noise = 5)
 }
 \arguments{
 \item{n}{Integer with number of metaecosystems to setup.}
