@@ -4,6 +4,7 @@
 #' Setup metaecosystems.
 #'
 #' @param n Integer with number of metaecosystems to setup.
+#' @param max_i Integer with maximum number of simulation time steps.
 #' @param dimensions Vector with number of rows and columns (spatial dimensions).
 #' @param grain Vector with size of cells in x- and y-direction (spatial grain).
 #' @param reefs 2-Column matrix with coordinates of artificial reefs.
@@ -22,17 +23,16 @@
 #'
 #' @examples
 #' \dontrun{
-#' metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,
-#' starting_values = starting_values, parameters = parameters)
+#' metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain,
+#' reefs = reefs, starting_values = starting_values, parameters = parameters)
 #' }
 #'
 #' @aliases setup_meta
 #' @rdname setup_meta
 #'
 #' @export
-setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_values, parameters,
-                       random = 0, use_log = TRUE,
-                       verbose = TRUE, ...) {
+setup_meta <- function(n, max_i, dimensions, grain = c(1, 1), reefs = NULL, starting_values, parameters,
+                       random = 0, use_log = TRUE, verbose = TRUE, ...) {
 
   # print some information on console
   if (verbose) {
@@ -159,20 +159,9 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
       # create unique id; first number identifies metaecosystem
       fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
 
+      # add initial residence column
+      fishpop$residence <- 0
 
-      # add variable starting residence value
-      if (parameters$move_residence_var > 0) {
-
-        fishpop$residence <- floor(stats::runif(n = starting_values_temp$pop_n, min = 0,
-                                                max = parameters$move_residence *
-                                                  parameters$move_residence_var))
-
-      # add identical starting residence value
-      } else {
-
-        fishpop$residence <- 0
-
-      }
     }
 
     # save in final list
@@ -185,7 +174,8 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
 
   # create look-up table for residence value
   fishpop_attributes <- create_attributes(fishpop = fishpop_list,
-                                          parameters = parameters)
+                                          parameters = parameters,
+                                          max_i = max_i)
 
 
   # combine everything to one list

@@ -6,6 +6,7 @@
 \usage{
 setup_meta(
   n,
+  max_i,
   dimensions,
   grain = c(1, 1),
   reefs = NULL,
@@ -19,6 +20,8 @@ setup_meta(
 }
 \arguments{
 \item{n}{Integer with number of metaecosystems to setup.}
+
+\item{max_i}{Integer with maximum number of simulation time steps.}
 
 \item{dimensions}{Vector with number of rows and columns (spatial dimensions).}
 
@@ -50,8 +53,8 @@ Function to setup the fish population. If no fish should be created, set
 }
 \examples{
 \dontrun{
-metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,
-starting_values = starting_values, parameters = parameters)
+metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain,
+reefs = reefs, starting_values = starting_values, parameters = parameters)
 }
 
 }
