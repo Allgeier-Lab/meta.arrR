@@ -103,8 +103,10 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
   # setup fishpop #
 
+  # MH: Check if actually present!
+
   # convert seafloor to matrix
-  fishpop <- lapply(metasyst$fishpop, function(i) as.matrix(i, xy = TRUE))
+  fishpop <- lapply(metasyst$fishpop, as.matrix)
 
   # calculate maximum movement distance
   mean_temp <- ifelse(test = movement == "behav",
@@ -113,13 +115,23 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   var_temp <- ifelse(test = movement == "behav",
                      yes = 1.0, no = parameters$move_var)
 
-  # sample from lognorm to get maximum distance
-  max_dist <- vapply(X = 1:1000000, FUN = function(i) {
-    arrR::rcpp_rlognorm(mean = mean_temp, sd = sqrt(var_temp), min = 0.0, max = Inf)},
-    FUN.VALUE = numeric(1))
+  # get max_dist if fishpop is present
+  if (any(metasyst$starting_values$pop_n != 0)) {
 
-  # set maximum distance to 95%
-  max_dist <- stats::quantile(x = max_dist, probs = 0.95, names = FALSE)
+    # sample from lognorm to get maximum distance
+    max_dist <- vapply(X = 1:1000000, FUN = function(i) {
+      arrR::rcpp_rlognorm(mean = mean_temp, sd = sqrt(var_temp), min = 0.0, max = Inf)},
+      FUN.VALUE = numeric(1))
+
+    # set maximum distance to 95%
+    max_dist <- stats::quantile(x = max_dist, probs = 0.95, names = FALSE)
+
+  # no fish present at all
+  } else {
+
+    max_dist <- 0.0
+
+  }
 
   fishpop_track <- vector(mode = "list", length = metasyst$n)
 
@@ -131,13 +143,15 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   # check if nutr_input has value for each iteration
   if (!is.null(nutr_input)) {
 
-    check <- all(vapply(nutr_input, function(i) length(i) == max_i, FUN.VALUE = logical(1)))
+    check <- all(vapply(nutr_input$values, function(i) length(i) == max_i, FUN.VALUE = logical(1)))
 
     if (!check) {
 
       stop("'nutr_input' must have input amount for each iteration.", call. = FALSE)
 
     }
+
+    nutr_input <- nutr_input$values
 
     # set nutrient flag to save results later
     flag_nutr_input <- TRUE
@@ -240,7 +254,12 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   # combine seafloor/fishpop to one dataframe
   for (i in 1:metasyst$n) {
 
+    # combine seafloor #
+
     seafloor_track[[i]] <- data.frame(do.call(what = "rbind", args = seafloor_track[[i]]))
+
+    # MH: remove col names...not great
+    rownames(seafloor_track[[i]]) <- 1:nrow(seafloor_track[[i]])
 
     # add timestep to  seafloor/fishpop counter
     seafloor_track[[i]]$timestep <- rep(x = seq(from = 0, to = max_i, by = save_each),
@@ -250,36 +269,29 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
     seafloor_track[[i]]$burn_in <- ifelse(test = seafloor_track[[i]]$timestep < burn_in,
                                           yes = "yes", no = "no")
 
-    # fishpop is present
-    if (any(metasyst$starting_values$pop_n > 0)) {
+    # combine fishpop #
 
-      # repeat each timestep accoding to number of rows (individuals) each track
-      timestep_temp <- rep(x = seq(from = 0, to = max_i, by = save_each),
-                           times = vapply(X = fishpop_track[[i]], FUN = nrow, FUN.VALUE = numeric(1)))
+    # repeat each timestep accoding to number of rows (individuals) each track
+    timestep_temp <- rep(x = seq(from = 0, to = max_i, by = save_each),
+                         times = vapply(X = fishpop_track[[i]], FUN = nrow, FUN.VALUE = numeric(1)))
 
-      # combine list to data.frame
-      fishpop_track[[i]] <- data.frame(do.call(what = "rbind", args = fishpop_track[[i]]))
+    # combine list to data.frame
+    fishpop_track[[i]] <- data.frame(do.call(what = "rbind", args = fishpop_track[[i]]))
 
-      # add timestep values
-      fishpop_track[[i]]$timestep <- timestep_temp
+    # MH: remove col names...not great
+    rownames(fishpop_track[[i]]) <- 1:nrow(fishpop_track[[i]])
 
-      # add burn in col
-      fishpop_track[[i]]$burn_in <- ifelse(test = fishpop_track[[i]]$timestep < burn_in,
+    # add timestep values
+    fishpop_track[[i]]$timestep <- timestep_temp
+
+    # add burn in col
+    fishpop_track[[i]]$burn_in <- ifelse(test = fishpop_track[[i]]$timestep < burn_in,
                                            yes = "yes", no = "no")
 
-      # individuals did not move across ecosystems
-      if (parameters$move_residence == 0) {
+    # individuals did not move across ecosystems
+    if (parameters$move_residence == 0) {
 
-        fishpop_track[[i]]$residence <- fishpop_track[[i]]$timestep
-
-      }
-
-    # no fish population present
-    } else {
-
-      fishpop_track[[i]]$timestep <- numeric(0)
-
-      fishpop_track[[i]]$burn_in <- character(0)
+      fishpop_track[[i]]$residence <- fishpop_track[[i]]$timestep
 
     }
 
@@ -303,7 +315,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track, n = metasyst$n,
                  fishpop_attributes = metasyst$fishpop_attributes, movement = movement,
                  starting_values = metasyst$starting_values, parameters = parameters,
-                 nutr_input = nutr_input, coords_reef = coords_reef,
+                 max_dist = max_dist, nutr_input = nutr_input, coords_reef = coords_reef,
                  extent = raster::extent(extent), grain = raster::res(metasyst$seafloor[[1]]),
                  dimensions = dimensions, max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  seagrass_each = seagrass_each, save_each = save_each)
