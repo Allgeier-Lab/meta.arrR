@@ -5,12 +5,12 @@ n <- 3
 max_i <- 10
 
 # simulate nutrient input
-nutr_noise <- simulate_nutr_input_noise(n = n, max_i = max_i, freq_mn = 3,
-                                        input_max = 1, variability = 0.5)
+nutr_noise <- sim_nutr_input_noise(n = n, max_i = max_i, freq_mn = 3,
+                                   input_max = 1, variability = 0.5)
 
 # simulate nutrient input
-nutr_jitter <- simulate_nutr_input_jitter(n = n, max_i = max_i, freq_mn = 3,
-                                          input_max = 1, variability = 0.5)
+nutr_jitter <- sim_nutr_input_jitter(n = n, max_i = max_i, freq_mn = 3,
+                                     input_max = 1, variability = 0.5)
 
 # extract values only
 values_noise <- vapply(nutr_noise$values, FUN = length, FUN.VALUE = numeric(1))

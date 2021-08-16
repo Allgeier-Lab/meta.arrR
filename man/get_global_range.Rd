@@ -7,7 +7,7 @@
 get_global_range(result, value, timestep = NULL)
 }
 \arguments{
-\item{result}{List with \code{meta_rn} objects simulated with \code{simulate_nutr_input}.}
+\item{result}{List with \code{meta_rn} objects simulated with \code{sim_nutr_input_*}.}
 
 \item{value}{Character with coloumn of seafloor to summarize.}
 

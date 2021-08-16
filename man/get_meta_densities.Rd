@@ -12,7 +12,7 @@ get_meta_densities(
 )
 }
 \arguments{
-\item{result}{List with \code{meta_rn} objects simulated with \code{simulate_nutr_input}.}
+\item{result}{List with \code{meta_rn} objects simulated with \code{sim_nutr_input_*}.}
 
 \item{timestep}{Numeric with time step to select}
 

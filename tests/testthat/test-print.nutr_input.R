@@ -5,8 +5,8 @@ n <- 3
 max_i <- 10
 
 # simulate nutrients
-nutr <- simulate_nutr_input_noise(n = n, max_i = max_i, freq_mn = 3,
-                                  input_max = 1, variability = 0.5)
+nutr <- sim_nutr_input_noise(n = n, max_i = max_i, freq_mn = 3,
+                             input_max = 1, variability = 0.5)
 
 test_that("print.nutr_input generates output", {
 

@@ -7,7 +7,7 @@
 \method{plot}{nutr_input}(x, base_size = 10, ...)
 }
 \arguments{
-\item{x}{\code{nutr_input} object simulated with \code{simulate_nutr_input}.}
+\item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
 
 \item{base_size}{Numeric to specify base font size.}
 
@@ -20,7 +20,7 @@ Plotting method for nutr_input object.
 Ploting method for metaecosystem created with \code{setup_meta}.
 }
 \examples{
-nutr_input <- simulate_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
+nutr_input <- sim_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
 input_max = 1, variability = 0.5)
 plot(nutr_input)
 

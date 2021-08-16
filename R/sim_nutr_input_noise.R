@@ -1,4 +1,4 @@
-#' simulate_nutr_input_noise
+#' sim_nutr_input_noise
 #'
 #' @description
 #' Simulate nutrient input.
@@ -21,14 +21,14 @@
 #' @return vector
 #'
 #' @examples
-#' nutr_input <- simulate_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
+#' nutr_input <- sim_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
 #' input_max = 1, variability = 0.5)
 #'
-#' @aliases simulate_nutr_input_noise
-#' @rdname simulate_nutr_input_noise
+#' @aliases sim_nutr_input_noise
+#' @rdname sim_nutr_input_noise
 #'
 #' @export
-simulate_nutr_input_noise <- function(n, max_i, freq_mn, input_max, variability, n_noise = 3) {
+sim_nutr_input_noise <- function(n, max_i, freq_mn, input_max, variability, n_noise = 3) {
 
   # init list with values for each local metaecosyst
   result_values <- vector(mode = "list", length = n)

@@ -3,7 +3,7 @@
 #' @description
 #' Plotting method for nutr_input object.
 #'
-#' @param x \code{nutr_input} object simulated with \code{simulate_nutr_input}.
+#' @param x \code{nutr_input} object simulated with \code{sim_nutr_input_*}.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
@@ -11,7 +11,7 @@
 #' Ploting method for metaecosystem created with \code{setup_meta}.
 #'
 #' @examples
-#' nutr_input <- simulate_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
+#' nutr_input <- sim_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
 #' input_max = 1, variability = 0.5)
 #' plot(nutr_input)
 #'

@@ -3,7 +3,7 @@
 #' @description
 #' Get metaecosystems densities
 #'
-#' @param result List with \code{meta_rn} objects simulated with \code{simulate_nutr_input}.
+#' @param result List with \code{meta_rn} objects simulated with \code{sim_nutr_input_*}.
 #' @param timestep Numeric with time step to select
 #' @param normalize Logical if TRUE count is divided by time steps.
 #' @param verbose Logical if warning messages should be printed.

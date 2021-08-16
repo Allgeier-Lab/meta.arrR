@@ -1,4 +1,4 @@
-#' simulate_nutr_input_jitter
+#' sim_nutr_input_jitter
 #'
 #' @description
 #' Simulate nutrient input.
@@ -20,14 +20,14 @@
 #' @return vector
 #'
 #' @examples
-#' nutr_input <- simulate_nutr_input_jitter(n = 3, max_i = 4380, freq_mn = 3,
+#' nutr_input <- sim_nutr_input_jitter(n = 3, max_i = 4380, freq_mn = 3,
 #' input_max = 1, variability = 0.5)
 #'
-#' @aliases simulate_nutr_input_jitter
-#' @rdname simulate_nutr_input_jitter
+#' @aliases sim_nutr_input_jitter
+#' @rdname sim_nutr_input_jitter
 #'
 #' @export
-simulate_nutr_input_jitter <- function(n, max_i, freq_mn, input_max, variability) {
+sim_nutr_input_jitter <- function(n, max_i, freq_mn, input_max, variability) {
 
   # init list with values for each local metaecosyst
   result_values <- vector(mode = "list", length = n)

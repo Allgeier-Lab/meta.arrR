@@ -1,4 +1,4 @@
-#' simulate_nutr_input_sd
+#' sim_nutr_input_sd
 #'
 #' @description
 #' Simulate nutrient input.
@@ -20,14 +20,14 @@
 #' @return vector
 #'
 #' @examples
-#' nutr_input <- simulate_nutr_input_sd(n = 3, max_i = 4380, freq_mn = 3, freq_sd = 0.1,
+#' nutr_input <- sim_nutr_input_sd(n = 3, max_i = 4380, freq_mn = 3, freq_sd = 0.1,
 #' input_max = 1, input_sd = 0.5)
 #'
-#' @aliases simulate_nutr_input_sd
-#' @rdname simulate_nutr_input_sd
+#' @aliases sim_nutr_input_sd
+#' @rdname sim_nutr_input_sd
 #'
 #' @export
-simulate_nutr_input_sd <- function(n, max_i, freq_mn, freq_sd, input_max, input_sd, phase = 0) {
+sim_nutr_input_sd <- function(n, max_i, freq_mn, freq_sd, input_max, input_sd, phase = 0) {
 
   # create empty list
   result_values <- vector(mode = "list", length = n)
