@@ -22,10 +22,8 @@
 #' @return meta_syst
 #'
 #' @examples
-#' \dontrun{
-#' metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain,
-#' reefs = reefs, starting_values = starting_values, parameters = parameters)
-#' }
+#' metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
+#' starting_values = meta.arrR_starting_values, parameters = meta.arrR_parameters)
 #'
 #' @aliases setup_meta
 #' @rdname setup_meta
