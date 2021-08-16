@@ -7,7 +7,7 @@
 get_abundance(result)
 }
 \arguments{
-\item{result}{\code{meta_rn} object simulated with \code{simulate_meta}.}
+\item{result}{\code{meta_rn} object simulated with \code{run_meta}.}
 }
 \value{
 data.frame
