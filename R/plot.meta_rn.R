@@ -234,14 +234,15 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       # create ggplot
       gg_all <- ggplot2::ggplot(data = seafloor) +
         ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = fill)) +
-        ggplot2::facet_wrap(. ~ id) +
+        ggplot2::facet_wrap(. ~ id, nrow = 1) +
         ggplot2::scale_fill_gradientn(colours = c("#368AC0", "#F4B5BD", "#EC747F"),
                                       na.value = "#9B964A", limits = limits,
                                       name = fill) +
         ggplot2::coord_equal() +
         ggplot2::labs(x = "", y = "", title = title) +
         ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
+                       legend.position = "bottom", legend.key.width = ggplot2::unit(10, 'mm'))
 
     } else if (what == "fishpop") {
 
