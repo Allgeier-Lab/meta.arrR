@@ -49,11 +49,14 @@ calc_cv.nutr_input <- function(x, timestep = NULL, verbose = TRUE) {
   # # # calc local relative
   # local_rel <- local_cv / global_cv * 100
 
+  # calc relative sd of cv
+  rel_sd <- sd(local_cv) / mean(local_cv) * 100
+
   # # combine to final result list
-  # result_list <- list(local = local_cv, local_rel = local_rel, global = global_cv)
+  result_list <- list(local = local_cv, rel_sd = rel_sd)
 
   # return result list
-  return(local_cv)
+  return(result_list)
 }
 
 #' #' @name calc_cv
