@@ -39,53 +39,65 @@ setup_meta <- function(n, max_i, dimensions, grain = c(1, 1), reefs = NULL, star
 
     message("> ...Creating seafloor with ", dimensions[1], " rows x ", dimensions[2], " cols...")
 
-    # reefs are present
-    if (!is.null(reefs)) {
+  }
 
-      # reefs are list, i.e., different across local metaecosystems
-      if (inherits(x = reefs, what = "list")) {
+  # reefs are present
+  if (!is.null(reefs)) {
 
-        # must be same length as number of local metaecosystems
-        if (length(reefs) != n) {
+    # reefs are list, i.e., different across local metaecosystems
+    if (inherits(x = reefs, what = "list")) {
 
-          stop("'reefs' must be matrix or list with reef coordinates.", call. = FALSE)
-
-        }
-
-      # reefs are matrix, i.e., the same for each local metaecosystem
-      } else if (inherits(x = reefs, what = "matrix")) {
-
-        reefs <- rep(x = list(reefs), each = n)
-
-      # reef argument is wrong
-      } else {
+      # must be same length as number of local metaecosystems
+      if (length(reefs) != n) {
 
         stop("'reefs' must be matrix or list with reef coordinates.", call. = FALSE)
 
       }
 
-      # get number of reefs for each local metaecosystem
-      no_reefs <- paste(c(vapply(reefs, FUN = function(i) {
+    # reefs are matrix, i.e., the same for each local metaecosystem
+    } else if (inherits(x = reefs, what = "matrix")) {
 
-        ifelse(test = is.null(i), yes = 0, no = nrow(i))
+      reefs <- rep(x = list(reefs), each = n)
 
-      }, FUN.VALUE = numeric(1))),  collapse = ", ")
+    # reef argument is wrong
+    } else {
 
+      stop("'reefs' must be matrix or list with reef coordinates.", call. = FALSE)
+
+    }
+
+    # get number of reefs for each local metaecosystem
+    no_reefs <- paste(c(vapply(reefs, FUN = function(i) {
+
+      ifelse(test = is.null(i), yes = 0, no = nrow(i))
+
+    }, FUN.VALUE = numeric(1))),  collapse = ", ")
+
+    if (verbose) {
 
       message("> ...Creating ", no_reefs, " artifical reef cells...")
 
-    # no reefs present
-    } else {
+    }
+
+  # no reefs present
+  } else {
+
+    if (verbose) {
 
       message("> ...No artifical reefs present...")
 
-      reefs <- rep(x = list(NULL), each = n)
-
     }
+
+    reefs <- rep(x = list(NULL), each = n)
+
+  }
+
+  if (verbose) {
 
     message("> ...Creating ", paste(starting_values$pop_n, collapse = ", "), " individuals...")
 
   }
+
 
   # make sure grain is vector xy dimension
   if (length(grain) == 1) {

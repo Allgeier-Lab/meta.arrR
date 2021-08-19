@@ -25,7 +25,8 @@ Imports:
     raster,
     Rcpp,
     rlang
-Suggests: 
+Suggests:
+    dplyr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

@@ -1,27 +1,16 @@
-# get parameters
-parameters <- meta.arrR::meta.arrR_parameters
-
-starting_values <- meta.arrR::meta.arrR_starting_values
-
-# set number of metaecosystems
-n <- 3
-
-# setup extent and grain
-dimensions <- c(100, 100)
-grain <- 1
-
-# set time per iterations
-min_per_i <- 120
-
 # setup seafloor and fishpop
 seafloor <- arrR::setup_seafloor(dimensions = dimensions, grain = grain, reefs = NULL,
-                                 starting_values = starting_values)
+                                 starting_values = starting_values, verbose = FALSE)
 
+starting_values$pop_n <- 8
+
+# setupt fishpop
 fishpop <- lapply(1:n, function(i)
   arrR::setup_fishpop(seafloor = seafloor, starting_values = starting_values,
-                      parameters = parameters))
+                      parameters = parameters, verbose = FALSE))
 
-attributes_matrix <- create_attributes(fishpop = fishpop, parameters = parameters)
+# create attributes
+attributes_matrix <- meta.arrR::create_attributes(fishpop = fishpop, parameters = parameters)
 
 test_that("create_attributes returns matrix", {
 
@@ -29,7 +18,7 @@ test_that("create_attributes returns matrix", {
 
 })
 
-test_that("create_attributes has correct dimeonsions", {
+test_that("create_attributes has correct dimensions", {
 
   expect_equal(object = nrow(attributes_matrix), expected = n * starting_values$pop_n)
 
