@@ -4,16 +4,18 @@
 \alias{sim_nutr_input_sd}
 \title{sim_nutr_input_sd}
 \usage{
-sim_nutr_input_sd(n, max_i, freq_mn, freq_sd, input_max, input_sd, phase = 0)
+sim_nutr_input_sd(n, max_i, freq_mn, input_max, variability)
 }
 \arguments{
 \item{n}{Integer with number of metaecosystems to setup.}
 
 \item{max_i}{Integer with maximum number of simulation time steps.}
 
-\item{freq_mn, freq_sd}{Numeric number of peak.}
+\item{freq_mn}{Numeric number of peak.}
 
-\item{input_max, input_sd}{Numeric with maximum input amount.}
+\item{input_max}{Numeric with maximum input amount.}
+
+\item{variability}{Variability of nutrient input}
 
 \item{phase}{Numeric with sine curve parameters.}
 }

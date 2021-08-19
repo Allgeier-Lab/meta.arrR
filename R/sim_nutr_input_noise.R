@@ -57,8 +57,11 @@ sim_nutr_input_noise <- function(n, max_i, freq_mn, input_max, variability, n_no
       # amplitude must be positive
       amplitude_temp <- abs(stats::rnorm(n = 1, mean = input_max, sd = input_max * variability))
 
+      # sample random phase shift
+      phase_temp <- stats::rnorm(n = 1, mean = max_i / 2, sd = (max_i / 2) * variability)
+
       # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
-      input_temp[[j]] <- amplitude_temp * sin(period_temp * timestep ) + amplitude_temp
+      input_temp[[j]] <- amplitude_temp * sin(period_temp * (timestep + phase_temp)) + amplitude_temp
 
       # check if any is negative
       if (any(input_temp[[j]] < 0)) {
