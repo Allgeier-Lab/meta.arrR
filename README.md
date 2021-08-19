@@ -8,7 +8,7 @@
 [![Project
 Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-experimental.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-[![R-CMD-check](https://github.com/Allgeier-Lab/meta.arrR/workflows/R-CMD-check/badge.svg)](https://github.com/Allgeier-Lab/meta.arrR/actions)
+[![R-CMD-check](https://github.com/Allgeier-Lab/meta.arrR/actions/workflows/R-CMD-check.yaml/badge.svg?branch=development)](https://github.com/Allgeier-Lab/meta.arrR/actions/workflows/R-CMD-check.yaml)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
