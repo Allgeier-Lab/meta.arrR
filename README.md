@@ -11,9 +11,12 @@ Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repost
 [![R-CMD-check](https://github.com/Allgeier-Lab/meta.arrR/workflows/R-CMD-check/badge.svg)](https://github.com/Allgeier-Lab/meta.arrR/actions)
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 <!-- badges: end -->
 
-The goal of meta.arrR is to …
+<img src="man/figures/logo.png" align="right" width="150" />
+
+The goal of meta.arrR is to simulate metaecosystems.
 
 ## Installation
 
@@ -27,11 +30,7 @@ devtools::install_github("Allgeier-Lab/meta.arrR")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(meta.arrR)
-```
+Please see `vignette("get-started")` to see how to use `meta.arrR`.
 
 ## Code of Conduct
 
