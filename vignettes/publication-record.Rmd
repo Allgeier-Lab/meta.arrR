@@ -10,3 +10,5 @@ vignette: >
 We try to maintain a list of publications that have used the **meta.arrR** package. If you have used **meta.arrR** in your own work, we would love to hear from you. Please file an issue on GitHub so we can add your work to this list or contact us via [e-mail](mailto:mhk.hesselbarth@gmail.com). 
 
 ## List of publications
+
+...Work in Progress...

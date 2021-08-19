@@ -36,11 +36,7 @@ devtools::install_github("Allgeier-Lab/meta.arrR")
 ```
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-library(meta.arrR)
-```
+Please see `vignette("get-started")` to see how to use `meta.arrR`.
 
 ## Code of Conduct
   
