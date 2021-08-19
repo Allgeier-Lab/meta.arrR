@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 
 <img src="man/figures/logo.png" align="right" width="150" />
 
-The goal of meta.arrR is to ...
+The goal of meta.arrR is to simulate metaecosystems.
 
 ## Installation
 
