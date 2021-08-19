@@ -34,12 +34,8 @@ seagrass_each <- 12
 save_each <- 2
 
 # simulate nutrient input
-nutr_noise <- meta.arrR::sim_nutr_input_noise(n = n, max_i = max_i, freq_mn = 3,
-                                              input_max = 1, variability = 0.5)
-
-# simulate nutrient input
-nutr_sd <-  meta.arrR::sim_nutr_input_sd(n = n, max_i = max_i, freq_mn = 3, freq_sd = 0.5,
-                                         input_max = 1, input_sd = 0.5)
+nutr_input <- meta.arrR::sim_nutr_input(n = n, max_i = max_i, freq_mn = 3,
+                                        input_max = 1, variability = 0.5)
 
 # setup metaecosystems
 metasyst <- meta.arrR::setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,

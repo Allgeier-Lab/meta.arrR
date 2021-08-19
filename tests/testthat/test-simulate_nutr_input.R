@@ -1,10 +1,10 @@
 # simulate nutrient input
-nutr_noise <- meta.arrR::sim_nutr_input_noise(n = n, max_i = max_i, freq_mn = 3,
-                                              input_max = 1, variability = 0.5)
+nutr_noise <- meta.arrR::sim_nutr_input(n = n, max_i = max_i, freq_mn = 3, method = "noise",
+                                        input_max = 1, variability = 0.5)
 
 # simulate nutrient input
-nutr_sd <-  meta.arrR::sim_nutr_input_sd(n = n, max_i = max_i, freq_mn = 3, freq_sd = 0.5,
-                                         input_max = 1, input_sd = 0.5)
+nutr_sd <- meta.arrR::sim_nutr_input(n = n, max_i = max_i, freq_mn = 3, method = "sd",
+                                     input_max = 1, variability = 0.5)
 
 # extract values only
 values_noise <- vapply(nutr_noise$values, FUN = length, FUN.VALUE = numeric(1))

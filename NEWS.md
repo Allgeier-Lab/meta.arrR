@@ -2,7 +2,7 @@
 * Move only across neighboring ecosystems
 * Use different initial residence time as variability
 * Add `calc_cv` function
-* Add `sim_nutr_input_noise` and `sim_nutr_input_sd`
+* Add `sim_nutr_input`
 
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions

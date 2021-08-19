@@ -7,12 +7,14 @@
 \usage{
 calc_cv(x, timestep, verbose)
 
-\method{calc_cv}{nutr_input}(x, timestep, verbose = TRUE)
+\method{calc_cv}{nutr_input}(x, timestep = NULL, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
 
 \item{timestep}{Timestep only used for \code{meta_rn} object.}
+
+\item{verbose}{If TRUE, progress reports are printed.}
 }
 \value{
 vector
@@ -24,7 +26,7 @@ Simulate nutrient input.
 Calculate CV of provided code{nutr_input} object.
 }
 \examples{
-nutr_input <- sim_nutr_input_noise(n = 3, max_i = 4380, freq_mn = 3,
+nutr_input <- sim_nutr_input(n = 3, max_i = 4380, freq_mn = 3,
 input_max = 1, variability = 0.5)
 calc_cv(nutr_input)
 
