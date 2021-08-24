@@ -11,7 +11,7 @@ Authors@R: c(person("Maximillian H.K.", "Hesselbarth",
              email = "jeallg@umich.edu", 
              comment = c(ORCID = "0000-0002-9005-6432")))
 Maintainer: Maximillian H.K. Hesselbarth <mhk.hesselbarth@gmail.com>
-Description: meta.arrR modes a metaecosystems of local artifical reefs using the arrR package <https://github.com/Allgeier-Lab/arrR>.
+Description: meta.arrR models a metaecosystems of local artifical reefs using the arrR package <https://github.com/Allgeier-Lab/arrR>.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -24,7 +24,9 @@ Imports:
     ggplot2,
     raster,
     Rcpp,
-    rlang
+    rlang, 
+    utils,
+    viridis
 Suggests:
     dplyr,
     knitr,

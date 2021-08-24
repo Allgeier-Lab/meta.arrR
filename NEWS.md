@@ -1,14 +1,13 @@
 # meta.arrR 0.3
 * Move only across neighboring ecosystems
-* Use different initial residence time as variability
-* Add `calc_cv` function
-* Add `sim_nutr_input`
+* Add `calc_cv()` function
+* Add `sim_nutr_input()`
 
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions
-* Renamed `simulate_meta` to `run_meta`
+* Renamed `simulate_meta()` to `run_meta()`
 * Adding plotting method for `summarize = FALSE`
-* Adding `get_global_range`
+* Adding `get_global_range()`
 * Renamed `stationary` to `residence`
 
 # meta.arrR 0.2.0

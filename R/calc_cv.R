@@ -13,8 +13,8 @@
 #' @return vector
 #'
 #' @examples
-#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, freq_mn = 3,
-#' input_max = 1, variability = 0.5)
+#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+#' variability = 0.5)
 #' calc_cv(nutr_input)
 #'
 #' @aliases calc_cv
@@ -34,26 +34,44 @@ calc_cv.nutr_input <- function(x, timestep = NULL, verbose = TRUE) {
 
   }
 
-  # calc local CVs
-  local_cv <- vapply(X = x$values, FUN = function(i) stats::sd(i) / mean(i) * 100,
-                     FUN.VALUE = numeric(1))
+  # preprocess values #
 
-  names(local_cv) <- paste0("Metaecosystem ", 1:length(x$values))
+  # convert to matrix
+  values_mat <- do.call("cbind", x$values)
 
-  # # combine values to global vector with all values
-  # global_values <- do.call(what = "c", args = x$values)
-  #
-  # # calc global cv
-  # global_cv <- stats::sd(global_values) / mean(global_values) * 100
-  #
-  # # # calc local relative
-  # local_rel <- local_cv / global_cv * 100
+  # alpha scale #
 
-  # calc relative sd of cv
-  rel_sd <- sd(local_cv) / mean(local_cv) * 100
+  # calculate relative Median Absolute Deviation
+  alpha_mad <- apply(values_mat, MARGIN = 2, FUN = function(i)
+    stats::mad(i) / stats::median(i) * 100)
 
-  # # combine to final result list
-  result_list <- list(local = local_cv, rel_sd = rel_sd)
+  # calc local alpha CVs
+  alpha_cv <- apply(values_mat, MARGIN = 2, FUN = function(i)
+    stats::sd(i) / mean(i) * 100)
+
+  # beta scale #
+
+  # calculate correlation matrix for synchronicity
+  beta_cor <- stats::cor(values_mat)
+
+  # get only lower triangle
+  beta_cor <- beta_cor[lower.tri(beta_cor, diag = FALSE)]
+
+  # set names
+  names(beta_cor) <- apply(X = utils::combn(1:length(x$values), 2),
+                           MARGIN = 2, FUN = paste, collapse = "_")
+
+  # gamma scale #
+
+  # calculate sum of each timestep
+  gamma_sum <- apply(X = values_mat, MARGIN = 1, FUN = sum)
+
+  # calculate global gamma CV
+  gamma_cv <- stats::sd(gamma_sum) / mean(gamma_sum) * 100
+
+  # combine to final result list
+  result_list <- list(alpha_mad = alpha_mad, alpha_cv = alpha_cv,
+                      beta_cor = beta_cor, gamma_cv = gamma_cv)
 
   # return result list
   return(result_list)

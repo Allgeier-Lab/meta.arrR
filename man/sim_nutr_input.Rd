@@ -7,9 +7,9 @@
 sim_nutr_input(
   n,
   max_i,
+  input_mn,
   freq_mn,
-  input_max,
-  variability,
+  variability = 0,
   method = "noise",
   n_noise = NULL,
   verbose = TRUE
@@ -20,9 +20,7 @@ sim_nutr_input(
 
 \item{max_i}{Integer with maximum number of simulation time steps.}
 
-\item{freq_mn}{Numeric number of peak.}
-
-\item{input_max}{Numeric with maximum input amount.}
+\item{input_mn, freq_mn}{Numeric with mean input amount and frequency.}
 
 \item{variability}{Variability of nutrient input}
 
@@ -45,7 +43,7 @@ i.e., how many "peaks" are present. The \code{input_max} argument quantifies the
 maximum value of the input "peaks".
 }
 \examples{
-nutr_input <- sim_nutr_input(n = 3, max_i = 4380, freq_mn = 3,
-input_max = 1, variability = 0.5)
+nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+variability = 0.5)
 
 }

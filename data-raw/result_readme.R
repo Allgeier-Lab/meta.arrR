@@ -49,11 +49,11 @@ starting_values$detritus_pool <- stable_vals$detritus_pool
 metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,
                        starting_values = starting_values, parameters = parameters)
 
-input_max <- starting_values$nutrients_pool * 0.1
+input_mn <- starting_values$nutrients_pool * 0.1
 
 nutr_input <- simulate_nutr_input(n = n, max_i = max_i,
-                                  freq_mn = 5, freq_var = 0.1,
-                                  input_max = input_max, input_var = 0.25)
+                                  input_mn = input_mn, freq_mn = 5,
+                                  variability = 0.1)
 
 result_readme <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
                           parameters = parameters, movement = "attr",

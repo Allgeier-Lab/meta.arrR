@@ -26,8 +26,8 @@ Simulate nutrient input.
 Calculate CV of provided code{nutr_input} object.
 }
 \examples{
-nutr_input <- sim_nutr_input(n = 3, max_i = 4380, freq_mn = 3,
-input_max = 1, variability = 0.5)
+nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+variability = 0.5)
 calc_cv(nutr_input)
 
 }

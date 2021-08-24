@@ -20,8 +20,8 @@ Printing method for nutr_input object.
 Printing method for \code{nutr_input} created with \code{sim_nutr_input_*}.
 }
 \examples{
-nutr_input <- sim_nutr_input(n = 3, max_i = 4380, freq_mn = 3,
-input_max = 1, variability = 0.5)
+nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+variability = 0.5)
 print(nutr_input)
 
 }

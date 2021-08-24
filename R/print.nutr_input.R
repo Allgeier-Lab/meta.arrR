@@ -11,8 +11,8 @@
 #' Printing method for \code{nutr_input} created with \code{sim_nutr_input_*}.
 #'
 #' @examples
-#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, freq_mn = 3,
-#' input_max = 1, variability = 0.5)
+#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+#' variability = 0.5)
 #' print(nutr_input)
 #'
 #' @aliases print.nutr_input
@@ -27,6 +27,9 @@ print.nutr_input <- function(x, digits = NULL, ...) {
   # get maximum timesteps
   n_input <- length(x$values[[1]])
 
+  # convert to matrix
+  values_mat <- do.call("cbind", x$values)
+
   # no digits argument present
   if (is.null(digits)) {
 
@@ -36,16 +39,16 @@ print.nutr_input <- function(x, digits = NULL, ...) {
   }
 
   # get min input
-  min_input <- vapply(x$values, FUN = function(i) round(min(i), digits = digits),
-                      FUN.VALUE = numeric(1))
+  min_input <- apply(X = values_mat, MARGIN = 2,
+                     FUN = function(i) round(min(i), digits = digits))
 
   # get mean input
-  mean_input <- vapply(x$values, FUN = function(i) round(mean(i), digits = digits),
-                       FUN.VALUE = numeric(1))
+  mean_input <- apply(X = values_mat, MARGIN = 2,
+                      FUN = function(i) round(mean(i), digits = digits))
 
   # get max input
-  max_input <- vapply(x$values, FUN = function(i) round(max(i), digits = digits),
-                      FUN.VALUE = numeric(1))
+  max_input <- apply(X = values_mat, MARGIN = 2,
+                     FUN = function(i) round(max(i), digits = digits))
 
   if (all(mean_input == 0)) {
 

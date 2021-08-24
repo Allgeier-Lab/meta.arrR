@@ -4,12 +4,16 @@
 \alias{plot.nutr_input}
 \title{plot.nutr_input}
 \usage{
-\method{plot}{nutr_input}(x, base_size = 10, ...)
+\method{plot}{nutr_input}(x, add_total = TRUE, base_size = 10, viridis_option = "C", ...)
 }
 \arguments{
 \item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
 
+\item{add_total}{Logical if TRUE total input line is added.}
+
 \item{base_size}{Numeric to specify base font size.}
+
+\item{viridis_option}{Character with option of viridis color option.}
 
 \item{...}{Not used.}
 }
@@ -20,8 +24,8 @@ Plotting method for nutr_input object.
 Ploting method for metaecosystem created with \code{setup_meta}.
 }
 \examples{
-nutr_input <- sim_nutr_input(n = 3, max_i = 4380, freq_mn = 3,
-input_max = 1, variability = 0.5)
+nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+variability = 0.5)
 plot(nutr_input)
 
 }

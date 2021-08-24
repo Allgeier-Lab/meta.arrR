@@ -5,8 +5,7 @@
 #'
 #' @param n Integer with number of metaecosystems to setup.
 #' @param max_i Integer with maximum number of simulation time steps.
-#' @param freq_mn Numeric number of peak.
-#' @param input_max Numeric with maximum input amount.
+#' @param input_mn,freq_mn Numeric with mean input amount and frequency.
 #' @param variability Variability of nutrient input
 #' @param method String to specify how variability is simulated ('noise' or 'sd').
 #' @param n_noise Integer with number of sine curves used for noise.
@@ -21,28 +20,26 @@
 #' @return vector
 #'
 #' @examples
-#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, freq_mn = 3,
-#' input_max = 1, variability = 0.5)
+#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+#' variability = 0.5)
 #'
 #' @aliases sim_nutr_input
 #' @rdname sim_nutr_input
 #'
 #' @export
-sim_nutr_input <- function(n, max_i, freq_mn, input_max, variability,
+sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
                            method = "noise", n_noise = NULL, verbose = TRUE) {
 
   # init list with values for each local metaecosyst
   result_values <- vector(mode = "list", length = n)
 
+  # set names
+  names(result_values) <- paste0("Metaecosystem_", 1:n)
+
   # create vector from 1 to max_i for nutrient input
   timestep <- 1:max_i
 
-  # calculate period for number of input peaks (period = 2 * pi / b)
-  freq_mn <- freq_mn / (max_i / (2 * pi))
-
-  # calculate maximum of input peaks, amplitude is "half" of whole sine function
-  input_max <- input_max / 2
-
+  # check if n_noise is required and already provided
   if (method == "noise") {
 
     # set default n_noise
@@ -51,6 +48,37 @@ sim_nutr_input <- function(n, max_i, freq_mn, input_max, variability,
       n_noise <- 3
 
     }
+
+    # calculate needed numbers of draws
+    n <- n * n_noise
+
+  }
+
+  # draw random amplitudes
+  amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability))
+
+  # draw random frequencies
+  freq_rand <- abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability))
+
+  # calculate period for number of input peaks (period = 2 * pi / b)
+  period_rand <- freq_rand / (max_i / (2 * pi))
+
+  # set phase shift to zero
+  if (variability == 0) {
+
+    phase_rand <- rep(x = 0, times = max_i)
+
+  # draw random phase shifts
+  } else {
+
+    phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability)
+
+  }
+
+  if (method == "noise") {
+
+    # set counter
+    counter <- 0
 
     # loop through all metaecosystems
     for (i in seq_along(result_values)) {
@@ -61,17 +89,14 @@ sim_nutr_input <- function(n, max_i, freq_mn, input_max, variability,
       # loop through noise sine curves
       for (j in 1:n_noise) {
 
-        # sample mean period and amplitude from random norm dist
-        period_temp <- stats::rnorm(n = 1, mean = freq_mn, sd = freq_mn * variability)
-
-        # amplitude must be positive
-        amplitude_temp <- abs(stats::rnorm(n = 1, mean = input_max, sd = input_max * variability))
-
-        # sample random phase shift
-        phase_temp <- stats::rnorm(n = 1, mean = max_i / 2, sd = (max_i / 2) * variability)
+        # increase counter
+        counter <- counter + 1
 
         # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
-        input_temp[[j]] <- amplitude_temp * sin(period_temp * (timestep + phase_temp)) + amplitude_temp
+        input_values <- amplitude_rand[counter] *
+          sin(period_rand[counter] * (timestep + phase_rand[counter])) + amplitude_rand[counter]
+
+        input_temp[[j]] <- input_values
 
         # check if any is negative
         if (any(input_temp[[j]] < 0)) {
@@ -91,28 +116,26 @@ sim_nutr_input <- function(n, max_i, freq_mn, input_max, variability,
 
   } else if (method == "sd") {
 
-    # return warning
-    if (!is.null(n_noise) && verbose) {
+    # print information to console
+    if (verbose) {
 
-      warning("'n_noise' is used for method = 'noise' only.", call. = FALSE)
+      warning("'method = sd' is deprecated and should not be used.", call. = FALSE)
 
+      # return warning
+      if (!is.null(n_noise)) {
+
+        warning("'n_noise' is used for method = 'noise' only.", call. = FALSE)
+
+      }
     }
 
     # loop through all metaecosystems
     for (i in seq_along(result_values)) {
 
-      # sample mean period and amplitude from random norm dist
-      period_temp <- stats::rnorm(n = 1, mean = freq_mn, sd = freq_mn * variability)
-
-      # amplitude must be positive
-      amplitude_temp <- abs(stats::rnorm(n = 1, mean = input_max, sd = input_max * variability))
-
-      # sample random phase shift
-      phase_temp <- stats::rnorm(n = 1, mean = max_i / 2, sd = (max_i / 2) * variability)
-
       # amplitude * sin(period * (x + phase)) + vert
       # adding amplitude_temp again to make sure input >= 0.0
-      input_temp <- amplitude_temp * sin(period_temp * (timestep + phase_temp)) + amplitude_temp
+      input_temp <- amplitude_rand[i] *
+        sin(period_rand[i] * (timestep + phase_rand[i])) + amplitude_rand[i]
 
       # check if any is negativ
       if (any(input_temp < 0)) {
@@ -133,7 +156,8 @@ sim_nutr_input <- function(n, max_i, freq_mn, input_max, variability,
   }
 
   # store results in final list
-  result_list <- list(values = result_values, freq_mn = freq_mn, input_max = input_max,
+  result_list <- list(values = result_values,
+                      input_mn = input_mn, freq_mn = freq_mn,
                       variability = variability)
 
   # specify class of list
