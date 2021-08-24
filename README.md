@@ -16,12 +16,12 @@ v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/li
 
 <img src="man/figures/logo.png" align="right" width="150" />
 
-The goal of meta.arrR is to simulate metaecosystems.
+The goal of **meta.arrR** is to simulate metaecosystems.
 
 ## Installation
 
 You can install the development version from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/) with (you need a PAT for this though):
 
 ``` r
 # install.packages("devtools")
