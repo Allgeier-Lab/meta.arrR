@@ -311,6 +311,11 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
   }
 
+  # name lists
+  names(seafloor_track) <- paste0("Metaecosystem_", 1:n)
+
+  names(fishpop_track) <- paste0("Metaecosystem_", 1:n)
+
   # combine result to list
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track, n = metasyst$n,
                  fishpop_attributes = metasyst$fishpop_attributes, movement = movement,
