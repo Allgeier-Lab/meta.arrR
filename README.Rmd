@@ -28,11 +28,11 @@ knitr::opts_chunk$set(
 
 <img src="man/figures/logo.png" align="right" width="150" />
 
-The goal of meta.arrR is to simulate metaecosystems.
+The goal of **meta.arrR** is to simulate metaecosystems.
 
 ## Installation
 
-You can install the development version from [GitHub](https://github.com/) with:
+You can install the development version from [GitHub](https://github.com/) with (you need a PAT for this though):
 
 ``` r
 # install.packages("devtools")
