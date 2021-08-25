@@ -3,18 +3,21 @@
 \name{calc_cv}
 \alias{calc_cv}
 \alias{calc_cv.nutr_input}
+\alias{calc_cv.meta_rn}
 \title{calc_cv}
 \usage{
 calc_cv(x, timestep, verbose)
 
 \method{calc_cv}{nutr_input}(x, timestep = NULL, verbose = TRUE)
+
+\method{calc_cv}{meta_rn}(x, timestep = x$max_i, verbose = TRUE)
 }
 \arguments{
-\item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
+\item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
-\item{timestep}{Timestep only used for \code{meta_rn} object.}
+\item{timestep}{Numeric with maximum timestep Only used for \code{meta_rn} object.}
 
-\item{verbose}{If TRUE, progress reports are printed.}
+\item{verbose}{Logical if TRUE progress reports are printed.}
 }
 \value{
 vector
@@ -23,7 +26,12 @@ vector
 Simulate nutrient input.
 }
 \details{
-Calculate CV of provided code{nutr_input} object.
+Calculates relative median absolute deviation (MAD) and coefficient of variation (CV)
+of provided \code{nutr_input} or \code{meta_rn} object.
+
+MAD = mad(x) / median(x) * 100
+
+CV = sd(x) / mean(x) * 100
 }
 \examples{
 nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,

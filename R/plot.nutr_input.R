@@ -4,7 +4,7 @@
 #' Plotting method for nutr_input object.
 #'
 #' @param x \code{nutr_input} object simulated with \code{sim_nutr_input_*}.
-#' @param add_total Logical if TRUE total input line is added.
+#' @param total Logical if TRUE total input line is added.
 #' @param viridis_option Character with option of viridis color option.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
@@ -21,7 +21,7 @@
 #' @rdname plot.nutr_input
 #'
 #' @export
-plot.nutr_input <- function(x, add_total = TRUE, base_size = 10, viridis_option = "C", ...) {
+plot.nutr_input <- function(x, total = TRUE, base_size = 10, viridis_option = "C", ...) {
 
   # combine all list elements to one data.frame
   input_df <- do.call(rbind, lapply(seq_along(x$values), function(i) {
@@ -48,7 +48,7 @@ plot.nutr_input <- function(x, add_total = TRUE, base_size = 10, viridis_option 
                    legend.position = "bottom")
 
   # add total input
-  if (add_total) {
+  if (total) {
 
     # Formulas, one ~ one, one ~ many, many ~ one, and many ~ many:
     input_sum_df <- stats::aggregate(input ~ timestep, data = input_df, sum)

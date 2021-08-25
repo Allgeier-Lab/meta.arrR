@@ -4,12 +4,12 @@
 \alias{plot.nutr_input}
 \title{plot.nutr_input}
 \usage{
-\method{plot}{nutr_input}(x, add_total = TRUE, base_size = 10, viridis_option = "C", ...)
+\method{plot}{nutr_input}(x, total = TRUE, base_size = 10, viridis_option = "C", ...)
 }
 \arguments{
 \item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
 
-\item{add_total}{Logical if TRUE total input line is added.}
+\item{total}{Logical if TRUE total input line is added.}
 
 \item{base_size}{Numeric to specify base font size.}
 

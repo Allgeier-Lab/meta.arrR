@@ -204,7 +204,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     timestep_slctd <- timestep
 
     # check if i can be divided by save_each without reminder
-    if (timestep_slctd %% x$save_each != 0) {
+    if (timestep_slctd %% x$save_each != 0 || timestep_slctd > x$max_i) {
 
       stop("'timestep' was not saved during model run.",
            call. = FALSE)
