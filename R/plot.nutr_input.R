@@ -24,23 +24,17 @@
 plot.nutr_input <- function(x, total = TRUE, base_size = 10, viridis_option = "C", ...) {
 
   # combine all list elements to one data.frame
-  input_df <- do.call(rbind, lapply(seq_along(x$values), function(i) {
+  input_df <-  get_global_input(x = x, long = TRUE)
 
-    # create timestep counter for each element of vector
-    timestep <- seq(from = 1, to = length(x$values[[i]]), length.out = length(x$values[[i]]))
-
-    # create data.frame
-    data.frame(meta = i, timestep = timestep, input = x$values[[i]])
-
-  }))
+  input_df$Facet <- ifelse(input_df$Meta == "Total", yes = "Total", no = "Metaecosystems")
 
   # setupt color scale
   col_viridis <- viridis::viridis(n = length(x$values), option = viridis_option)
 
   # create plot
-  gg_input <- ggplot2::ggplot(data = input_df) +
-    ggplot2::geom_line(ggplot2::aes(x = timestep, y = input,
-                                    col = factor(meta))) +
+  gg_input <- ggplot2::ggplot(data = subset(input_df, Meta != "Total")) +
+    ggplot2::geom_line(ggplot2::aes(x = Timestep, y = Value,
+                                    col = factor(Meta))) +
     ggplot2::geom_hline(yintercept = 0, color = "lightgrey", linetype = 2) +
     ggplot2::labs(x = "Timestep", y = "Nutrient input [g/cell]") +
     ggplot2::theme_classic(base_size = base_size) +
@@ -50,19 +44,18 @@ plot.nutr_input <- function(x, total = TRUE, base_size = 10, viridis_option = "C
   # add total input
   if (total) {
 
-    # Formulas, one ~ one, one ~ many, many ~ one, and many ~ many:
-    input_sum_df <- stats::aggregate(input ~ timestep, data = input_df, sum)
-
     gg_input <- gg_input +
-      ggplot2::geom_line(data = input_sum_df, ggplot2::aes(x = timestep, y = input, col = "Total"),
+      ggplot2::geom_line(data = subset(input_df, Meta == "Total"),
+                         ggplot2::aes(x = Timestep, y = Value, col = "Total"),
                          linetype = 1) +
-      ggplot2::scale_color_manual(name = "Metaecosystem", values = c(col_viridis, "grey"))
+      ggplot2::scale_color_manual(name = "", values = c(col_viridis, "black")) +
+      ggplot2::facet_wrap(. ~ Facet, ncol = 1)
 
   # add only color scale
   } else {
 
     gg_input <- gg_input +
-      ggplot2::scale_color_manual(name = "Metaecosystem", values = col_viridis)
+      ggplot2::scale_color_manual(name = "", values = col_viridis)
 
 
   }

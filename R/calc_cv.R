@@ -57,7 +57,7 @@ calc_cv.nutr_input <- function(x, timestep = NULL, verbose = TRUE) {
   # beta scale #
 
   # calculate correlation matrix for synchronicity
-  beta_cor <- stats::cor(values_mat)
+  beta_cor <- suppressWarnings(stats::cor(values_mat))
 
   # get only lower triangle
   beta_cor <- beta_cor[lower.tri(beta_cor, diag = FALSE)]

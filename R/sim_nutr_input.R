@@ -43,19 +43,26 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
   # create vector from 1 to max_i for nutrient input
   timestep <- 1:max_i
 
-  # check how many variability parameters are provided
-  if (length(variability) > 2) {
+  # draw random amplitudes
+  amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability))
 
-    stop("Please provide either one or two 'variability' parameters.",
-         call. = FALSE)
+  # set frequency to zero if variability = 0
+  if (variability == 0) {
 
-  # repeate parameter if only one is present
-  } else if (length(variability) == 1) {
+    freq_rand <- rep(x = 0.0, times = n)
 
-    variability <- rep(x = variability, each = 2)
+  # draw random frequency
+  } else {
+
+    freq_rand <- abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability))
 
   }
 
+  # calculate period for number of input peaks (period = 2 * pi / b)
+  period_rand <- freq_rand / (max_i / (2 * pi))
+
+  # draw random phase shift
+  phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability)
 
   # check if n_noise is required and already provided
   if (method == "noise") {
@@ -67,38 +74,6 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
 
     }
 
-    # calculate needed numbers of draws
-    n <- n * n_noise
-
-  }
-
-  # draw random amplitudes
-  amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability[1]))
-
-  # draw random frequencies
-  freq_rand <- abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability[2]))
-
-  # calculate period for number of input peaks (period = 2 * pi / b)
-  period_rand <- freq_rand / (max_i / (2 * pi))
-
-  # set phase shift to zero
-  if (variability[2] == 0) {
-
-    phase_rand <- rep(x = 0, times = max_i)
-
-  # draw random phase shifts
-  } else {
-
-    phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability[2])
-
-  }
-
-  # use noise signal
-  if (method == "noise") {
-
-    # set counter needed for generated random values
-    counter <- 0
-
     # loop through all metaecosystems
     for (i in seq_along(result_values)) {
 
@@ -108,12 +83,29 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
       # loop through noise sine curves
       for (j in 1:n_noise) {
 
-        # increase counter
-        counter <- counter + 1
+        # draw modifier; increase if already smaller than mean, increase if bigger
+        modifier_amplitude <- ifelse(test = amplitude_rand[i] >= input_mn,
+                                     yes = 1 + stats::runif(n = 1, min = 0, max = variability),
+                                     no = 1 - stats::runif(n = 1, min = 0, max = variability))
+
+        modifier_period <- ifelse(test = period_rand[i] >= input_mn,
+                                  yes = 1 + stats::runif(n = 1, min = 0, max = variability),
+                                  no = 1 - stats::runif(n = 1, min = 0, max = variability))
+
+        modifier_phase <- ifelse(test = phase_rand[i] >= input_mn,
+                                 yes = 1 + stats::runif(n = 1, min = 0, max = variability),
+                                 no = 1 - stats::runif(n = 1, min = 0, max = variability))
+
+        # get temp sine curve parameters and add noise
+        amplitude_temp <- amplitude_rand[i] * modifier_amplitude
+
+        period_temp <- period_rand[i] * modifier_period
+
+        phase_temp <- phase_rand[i] * modifier_phase
 
         # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
-        input_values <- amplitude_rand[counter] *
-          sin(period_rand[counter] * (timestep + phase_rand[counter])) + amplitude_rand[counter]
+        # adding amplitude_temp again to make sure input >= 0.0
+        input_values <- amplitude_temp * sin(period_temp * (timestep + phase_temp)) + amplitude_temp
 
         input_temp[[j]] <- input_values
 
@@ -152,7 +144,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
     # loop through all metaecosystems
     for (i in seq_along(result_values)) {
 
-      # amplitude * sin(period * (x + phase)) + vert
+      # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
       # adding amplitude_temp again to make sure input >= 0.0
       input_temp <- amplitude_rand[i] *
         sin(period_rand[i] * (timestep + phase_rand[i])) + amplitude_rand[i]

@@ -18,11 +18,11 @@ globalVariables(names = c(
   "density",
   "input",
   "measure",
-  "meta",
-  "timestep",
+  "Meta", "meta",
+  "Timestep", "timestep",
   "top_left",
   "top_right",
-  "value",
+  "Value", "value",
   "x",
   "y"
 ))
