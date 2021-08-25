@@ -107,9 +107,9 @@ calc_cv.meta_rn <- function(x, timestep = x$max_i, verbose = TRUE) {
     seafloor_temp <- subset(i, timestep <= timestep_slctd,
                             select = c("timestep", "bg_biomass", "ag_biomass"))
 
-    seafloor_temp <- aggregate(x = seafloor_temp[, c(2:3)],
-                               by = list(timestep = seafloor_temp$timestep),
-                               FUN = "sum")
+    seafloor_temp <- stats::aggregate(x = seafloor_temp[, c(2:3)],
+                                      by = list(timestep = seafloor_temp$timestep),
+                                      FUN = "sum")
   })
 
   # calculate mad and cv for each metaecosystem
