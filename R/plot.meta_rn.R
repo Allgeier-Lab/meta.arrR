@@ -7,9 +7,11 @@
 #' @param what Character specifying what to plot.
 #' @param summarize Logical if TRUE values over time steps are plotted.
 #' @param fill Character specifying which column to use for plotting.
+#' @param gamma Logical if TRUE gamma input line is added.
 #' @param timestep Numeric with time step to plot.
 #' @param limits Vector with minium and maximum value of \code{fill} values.
 #' @param burn_in If TRUE, line to indicate burn-in time is plotted.
+#' @param viridis_option Character with \code{viridis} color palette.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
@@ -26,8 +28,9 @@
 #' @rdname plot.meta_rn
 #'
 #' @export
-plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_biomass",
-                         timestep = x$max_i, limits = NULL,  burn_in = TRUE, base_size = 10, ...) {
+plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_biomass", gamma = FALSE,
+                         timestep = x$max_i, limits = NULL,  burn_in = TRUE, base_size = 10,
+                         viridis_option = "C", ...) {
 
   if (!what %in% c("seafloor", "fishpop")) {
 
@@ -35,10 +38,23 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
          call. = FALSE)
   }
 
+
+  # plot value over timesteps
   if (summarize) {
 
     # set color for burn in threshold
     col_burn <- ifelse(test = burn_in, yes = "grey", no = NA)
+
+    # setup color scale
+    col_viridis <- if (gamma) {
+
+      col_viridis <- "black"
+
+    } else {
+
+      col_viridis <- viridis::viridis(n = x$n, option = viridis_option)
+
+    }
 
     # get burn_in value for filtering
     burn_in_itr <- x$burn_in
@@ -49,27 +65,35 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
                                  burn_in = x$burn_in),
                             summary = "mean"))
 
-    # get total mean value
-    result_sum <- arrR::summarize_mdlrn(result = list(seafloor = do.call(rbind, x$seafloor),
-                                                      fishpop = do.call(rbind, x$fishpop),
-                                                      burn_in = x$burn_in),
-                                        summary = "mean")
-
     if (what == "seafloor") {
 
       # get only seafloor results
       result_sep <- do.call(rbind, lapply(1:x$n, function(i)
         cbind(meta = i, result_sep[[i]]$seafloor)))
 
+      # calculate total sum of values
+      if (gamma) {
+
+        # calculate sum for each timestep
+        result_sep <- stats::aggregate(x = result_sep[, c(3:6)],
+                                       by = list(timestep = result_sep$timestep),
+                                       FUN = "sum")
+
+        # add id col for plotting
+        result_sep$meta <- "Gamma"
+
+
+      } else {
+
+        # better naming for plotting
+        result_sep$meta <- paste0("Meta_", result_sep$meta)
+
+      }
+
       # order cols of local metaecosystems
       result_sep <- result_sep[, c("meta", "timestep",
                                    "ag_biomass", "bg_biomass",
                                    "nutrients_pool", "detritus_pool")]
-
-      # order cols total values
-      result_sum <- result_sum$seafloor[, c("timestep",
-                                            "ag_biomass", "bg_biomass",
-                                            "nutrients_pool", "detritus_pool")]
 
       # setup labels
       y_labels <- c("Dry weight ag biomass [g/cell]", "Dry weight bg biomass [g/cell]",
@@ -83,15 +107,30 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       result_sep <- do.call(rbind, lapply(1:x$n, function(i)
         cbind(meta = i, result_sep[[i]]$fishpop)))
 
+      # calculate total sum of values
+      if (gamma) {
+
+        # calculate sum for each timestep
+        # MH: check if these are correct cols
+        result_sep <- stats::aggregate(x = result_sep[, c(3:6)],
+                                       by = list(timestep = result_sep$timestep),
+                                       FUN = "sum")
+
+        # add id col for plotting
+        result_sep$meta <- "Gamma"
+
+
+      } else {
+
+        # better naming for plotting
+        result_sep$meta <- paste0("Meta_", result_sep$meta)
+
+      }
+
       # order cols of local metaecosystems
       result_sep <- result_sep[, c("meta", "timestep",
                                    "length", "weight",
                                    "died_consumption", "died_background")]
-
-      # order total mean value
-      result_sum <- result_sum$fishpop[, c("timestep",
-                                           "length", "weight",
-                                           "died_consumption", "died_background")]
 
       # setup labels
       y_labels <- c("Body length [cm]", "Body weigth [g]",
@@ -102,24 +141,14 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     }
 
     # setup names of list
-    names(result_sep) <- c("meta", "timestep",
-                           "top_left", "top_right",
-                           "bottom_left", "bottom_right")
-
-    names(result_sum) <- c("timestep",
-                           "top_left", "top_right",
+    names(result_sep) <- c("meta", "timestep", "top_left", "top_right",
                            "bottom_left", "bottom_right")
 
     # create plot
     gg_top_left <- ggplot2::ggplot(data = result_sep) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_left, col = factor(meta),
-                                      linetype = "Local")) +
-      ggplot2::geom_line(data = result_sum,
-                         ggplot2::aes(x = timestep, y = top_left, linetype = "Regional"),
-                         col = "black") +
-      # ggplot2::scale_y_continuous(limits = limits$ag_biomass) +
-      ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_left, col = factor(meta))) +
+      ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
       ggplot2::labs(x = "Timestep", y = y_labels[1]) +
       ggplot2::theme_classic(base_size = base_size) +
@@ -129,30 +158,18 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     # create plot
     gg_top_right <- ggplot2::ggplot(data = result_sep) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_right, col = factor(meta),
-                                      linetype = "Local")) +
-      ggplot2::geom_line(data = result_sum,
-                         ggplot2::aes(x = timestep, y = top_right, linetype = "Regional"),
-                         col = "black") +
-      # ggplot2::scale_y_continuous(limits = limits$bg_biomass) +
-      ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-      ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_right, col = factor(meta))) +
+      ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[2]) +
       ggplot2::theme_classic(base_size = base_size) +
       ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
 
-  # create plot
+    # create plot
     gg_bottom_left <- ggplot2::ggplot(data = result_sep) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_left, col = factor(meta),
-                                      linetype = "Local")) +
-      ggplot2::geom_line(data = result_sum,
-                         ggplot2::aes(x = timestep, y = bottom_left, linetype = "Regional"),
-                         col = "black") +
-      # ggplot2::scale_y_continuous(limits = limits$nutrients_pool) +
-      ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-      ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_left, col = factor(meta))) +
+      ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[3]) +
       ggplot2::theme_classic(base_size = base_size) +
@@ -161,14 +178,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     # create plot
     gg_bottom_right <- ggplot2::ggplot(data = result_sep) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_right, col = factor(meta),
-                                      linetype = "Local")) +
-      ggplot2::geom_line(data = result_sum,
-                         ggplot2::aes(x = timestep, y = bottom_right, linetype = "Regional"),
-                         col = "black") +
-      # ggplot2::scale_y_continuous(limits = limits$detritus_pool) +
-      ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
-      ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
+      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_right, col = factor(meta))) +
+      ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[4]) +
       ggplot2::theme_classic(base_size = base_size) +
@@ -208,6 +219,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
       stop("'timestep' was not saved during model run.",
            call. = FALSE)
+
     }
 
     if (what == "seafloor") {
@@ -222,7 +234,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
       }))
 
-      # rename coloumns for plotting
+      # rename columns for plotting
       names(seafloor) <- c("x", "y", "fill", "id")
 
       # create title
@@ -246,7 +258,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
     } else if (what == "fishpop") {
 
-      # get density wihtin each cell
+      # get density within each cell
       densities <- get_meta_densities(result = x, timestep = timestep_slctd)
 
       # get number of reefs

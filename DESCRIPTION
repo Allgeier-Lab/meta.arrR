@@ -21,6 +21,7 @@ Depends: R (>= 3.1)
 Imports:
     arrR,
     cowplot,
+    ForeCA,
     ggplot2,
     raster,
     Rcpp,

@@ -30,7 +30,7 @@ get_global_input <- function(x, long = FALSE) {
   input_df <- data.frame(Timestep = 1:nrow(input_df), input_df)
 
   # calculate total input
-  input_df$Total <- rowSums(input_df[, -1])
+  input_df$Gamma <- rowSums(input_df[, -1])
 
   # reshape to long format
   if (long) {
@@ -40,6 +40,10 @@ get_global_input <- function(x, long = FALSE) {
                                new.row.names = seq(from = 1, to = nrow(input_df) *
                                                      (ncol(input_df) - 1)),
                                direction = "long")
+
+    # set factor levels
+    input_df$Meta <- factor(input_df$Meta,
+                            levels = c(paste0("Meta_", 1:x$n), "Gamma"))
 
   }
 

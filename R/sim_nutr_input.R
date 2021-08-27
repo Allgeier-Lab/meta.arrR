@@ -38,7 +38,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
   result_values <- vector(mode = "list", length = n)
 
   # set names
-  names(result_values) <- paste0("Metaecosystem_", 1:n)
+  names(result_values) <- paste0("Meta_", 1:n)
 
   # create vector from 1 to max_i for nutrient input
   timestep <- 1:max_i
@@ -169,7 +169,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
   }
 
   # store results in final list
-  result_list <- list(values = result_values,
+  result_list <- list(values = result_values, n = n, max_i = max_i,
                       input_mn = input_mn, freq_mn = freq_mn,
                       variability = variability)
 

@@ -4,16 +4,22 @@
 #' Simulate nutrient input.
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
+#' @param what String specifying which column us used for \code{meta_rn} object.
 #' @param timestep Numeric with maximum timestep Only used for \code{meta_rn} object.
 #' @param verbose Logical if TRUE progress reports are printed.
 #'
 #' @details
-#' Calculates relative median absolute deviation (MAD) and coefficient of variation (CV)
-#' of provided \code{nutr_input} or \code{meta_rn} object.
+#' Calculates relative median absolute deviation (MAD), coefficient of variation (CV), and
+#' forecastability (Omega) of provided \code{nutr_input} or \code{meta_rn} object.
 #'
 #' MAD = mad(x) / median(x) * 100
 #'
 #' CV = sd(x) / mean(x) * 100
+#'
+#' @references
+#' Goerg, G., 2013. Forecastable component analysis, in: Dasgupta, S., McAllester, D. (Eds.),
+#' Proceedings of the 30th International Conference on Machine Learning, Proceedings
+#' of Machine Learning Research. Proceedings of Machine Learning Research, Atlanta, USA, pp. 64–72.
 #'
 #' @return vector
 #'
@@ -26,14 +32,14 @@
 #' @rdname calc_cv
 #'
 #' @export
-calc_cv <- function(x, timestep, verbose) UseMethod("calc_cv")
+calc_cv <- function(x, what, timestep, verbose) UseMethod("calc_cv")
 
 #' @name calc_cv
 #' @export
-calc_cv.nutr_input <- function(x, timestep = NULL, verbose = TRUE) {
+calc_cv.nutr_input <- function(x, what = NULL, timestep = NULL, verbose = TRUE) {
 
   # timestep not used
-  if (!is.null(timestep) && verbose) {
+  if (!is.null(timestep) || !is.null(what)  && verbose) {
 
     warning("'timestep' is only used for mdl_rn object.", call. = FALSE)
 
@@ -47,12 +53,24 @@ calc_cv.nutr_input <- function(x, timestep = NULL, verbose = TRUE) {
   # alpha scale #
 
   # calculate relative Median Absolute Deviation
-  alpha_mad <- apply(values_mat, MARGIN = 2, FUN = function(i)
-    stats::mad(i) / stats::median(i) * 100)
+  alpha_mad <- unname(apply(X = values_mat, MARGIN = 2, FUN = function(i) {
+    stats::mad(i) / stats::median(i) * 100}))
 
   # calc local alpha CVs
-  alpha_cv <- apply(values_mat, MARGIN = 2, FUN = function(i)
-    stats::sd(i) / mean(i) * 100)
+  alpha_cv <- unname(apply(X = values_mat, MARGIN = 2, FUN = function(i) {
+    stats::sd(i) / mean(i) * 100}))
+
+  # calculate local alpha forecastability
+  alpha_omega <- unname(apply(X = values_mat, MARGIN = 2, FUN = function(i) {
+
+    ifelse(test = length(unique(i)) == 1,
+           yes = 100, no = as.numeric(ForeCA::Omega(i)))
+
+   }))
+
+  # combine to data.frame
+  alpha_df <- data.frame(Meta = 1:x$n, MAD = alpha_mad, CV = alpha_cv,
+                         Omega = alpha_omega)
 
   # beta scale #
 
@@ -60,11 +78,14 @@ calc_cv.nutr_input <- function(x, timestep = NULL, verbose = TRUE) {
   beta_cor <- suppressWarnings(stats::cor(values_mat))
 
   # get only lower triangle
-  beta_cor <- beta_cor[lower.tri(beta_cor, diag = FALSE)]
+  beta_cor <- beta_cor[lower.tri(x = beta_cor, diag = FALSE)]
 
-  # set names
-  names(beta_cor) <- apply(X = utils::combn(1:length(x$values), 2),
-                           MARGIN = 2, FUN = paste, collapse = "_")
+  # get all combinations of correlation
+  id_combinations <- utils::combn(1:x$n, 2)
+
+  # combine to data.frame
+  beta_df <- data.frame(Meta_a = id_combinations[1, ], Meta_b = id_combinations[2, ],
+                        Correlation = beta_cor)
 
   # gamma scale #
 
@@ -77,10 +98,15 @@ calc_cv.nutr_input <- function(x, timestep = NULL, verbose = TRUE) {
   # calculate global gamma CV
   gamma_cv <- stats::sd(gamma_sum) / mean(gamma_sum) * 100
 
+  # calculate global gamma forecastability
+  gamma_omega <- ifelse(test = length(unique(gamma_sum)) == 1,
+                        yes = 100, no = as.numeric(ForeCA::Omega(gamma_sum)))
+
+  # combine to data.frame
+  gamma_df <- data.frame(Meta = NA, MAD = gamma_mad, CV = gamma_cv, Omega = gamma_omega)
+
   # combine to final result list
-  result_list <- list(alpha_mad = alpha_mad, alpha_cv = alpha_cv,
-                      beta_cor = beta_cor,
-                      gamma_mad = gamma_mad, gamma_cv = gamma_cv)
+  result_list <- list(alpha = alpha_df, beta = beta_df, gamma = gamma_df)
 
   # return result list
   return(result_list)
@@ -88,7 +114,18 @@ calc_cv.nutr_input <- function(x, timestep = NULL, verbose = TRUE) {
 
 #' @name calc_cv
 #' @export
-calc_cv.meta_rn <- function(x, timestep = x$max_i, verbose = TRUE) {
+calc_cv.meta_rn <- function(x, what = "ag_biomass", timestep = x$max_i, verbose = TRUE) {
+
+  # MH: What about fishpop?
+
+  # preprocess data #
+
+  # check if what makes sense
+  if (!what %in% names(x$seafloor[[1]])) {
+
+    stop("Please select column of seafloor data.frame.", call. = FALSE)
+
+  }
 
   # get selected timestep
   timestep_slctd <- timestep
@@ -102,60 +139,94 @@ calc_cv.meta_rn <- function(x, timestep = x$max_i, verbose = TRUE) {
   }
 
   # summarize values of each timestep
-  seafloor_sum <- lapply(x$seafloor, function(i) {
+  seafloor_sum <- lapply(X = x$seafloor, FUN = function(i) {
 
-    seafloor_temp <- subset(i, timestep <= timestep_slctd,
-                            select = c("timestep", "bg_biomass", "ag_biomass"))
+    # get all values until timestep and selected column
+    seafloor_temp <- subset(x = i, timestep <= timestep_slctd,
+                            select = c("timestep", what))
 
-    seafloor_temp <- stats::aggregate(x = seafloor_temp[, c(2:3)],
+    # sum for each timestep
+    seafloor_temp <- stats::aggregate(x = seafloor_temp[, what],
                                       by = list(timestep = seafloor_temp$timestep),
                                       FUN = "sum")
   })
 
+  # init matrix for beta correlation
+  values_mat <- matrix(nrow = length(seq(from = 0, to = x$max_i, by = x$save_each)),
+                       ncol = x$n)
+
+  # fill matrix with meta values
+  for (i in 1:x$n) {
+
+    values_mat[, i] <- seafloor_sum[[i]][, 2]
+
+  }
+
+
+  # alpha scale #
+
   # calculate mad and cv for each metaecosystem
-  alpha <- do.call("rbind", lapply(seq_along(seafloor_sum), function(i) {
+  alpha_df <- do.call("rbind", lapply(X = seq_along(seafloor_sum), FUN = function(i) {
 
     # calculate relative Median Absolute Deviation
-    alpha_mad <- unname(apply(X = seafloor_sum[[i]][, c(2:3)], MARGIN = 2, function(i)
-      stats::mad(i) / stats::median(i) * 100))
+    alpha_mad <- stats::mad(seafloor_sum[[i]][, 2]) / stats::median(seafloor_sum[[i]][, 2]) * 100
 
     # calculate cv
-    alpha_cv <- unname(apply(X = seafloor_sum[[i]][, c(2:3)], MARGIN = 2, function(i)
-      stats::sd(i) / mean(i) * 100))
+    alpha_cv <- stats::sd(seafloor_sum[[i]][, 2]) / mean(seafloor_sum[[i]][, 2]) * 100
+
+    # calculate local alpha forecastability
+    alpha_omega <- ifelse(test = length(unique(seafloor_sum[[i]][, 2])) == 1,
+                          yes = 100, no = as.numeric(ForeCA::Omega(seafloor_sum[[i]][, 2])))
 
     # combine to one data.frame
-    data.frame(metaecosystem = rep(x = i, times = 2), part = c("bg", "ag"),
-               mad = alpha_mad, cv = alpha_cv)
+    data.frame(Meta = i, mad = alpha_mad, cv = alpha_cv, omega = alpha_omega)
 
   }))
+
+  # beta scale #
+
+  # calculate correlation matrix for synchronicity
+  beta_cor <- suppressWarnings(stats::cor(values_mat))
+
+  # get only lower triangle
+  beta_cor <- beta_cor[lower.tri(x = beta_cor, diag = FALSE)]
+
+  # get all combinations of correlation
+  id_combinations <- utils::combn(1:x$n, 2)
+
+  # combine to data.frame
+  beta_df <- data.frame(Meta_a = id_combinations[1, ], Meta_b = id_combinations[2, ],
+                        Correlation = beta_cor)
+
+  # gamma scale #
 
   # create sequence of all present timesteps
   timesteps_unique <- seq(from = 0, to = x$max_i, by = x$save_each)
 
   # create empty data.frame
-  seafloor_gamma <- data.frame(timestep = timesteps_unique,
-                               bg_biomass = numeric(length(timesteps_unique)),
-                               ag_biomass = numeric(length(timesteps_unique)))
+  seafloor_total <- data.frame(timestep = timesteps_unique,
+                               x = numeric(length(timesteps_unique)))
 
   # loop through all metaecosystems
   for (i in 1:x$n) {
 
-    seafloor_gamma$bg_biomass <- seafloor_gamma$bg_biomass + seafloor_sum[[i]]$bg_biomass
-
-    seafloor_gamma$ag_biomass <- seafloor_gamma$ag_biomass + seafloor_sum[[i]]$ag_biomass
+    seafloor_total$x <- seafloor_total$x + seafloor_sum[[i]]$x
 
   }
 
-  gamma_mad <- unname(apply(X = seafloor_gamma[, c(2:3)], MARGIN = 2, function(i)
-    stats::mad(i) / stats::median(i) * 100))
+  # calculad MAD on gamma scale
+  gamma_mad <- stats::mad(seafloor_total$x) / stats::median(seafloor_total$x) * 100
 
+  # calculate CV on gamma scale
+  gamma_cv <- stats::sd(seafloor_total$x) / mean(seafloor_total$x) * 100
 
-  gamma_cv <- unname(apply(X = seafloor_gamma[, c(2:3)], MARGIN = 2, function(i)
-    stats::sd(i) / mean(i) * 100))
+  # calculate global gamma forecastability
+  gamma_omega <- ifelse(test = length(unique(seafloor_total$x)) == 1,
+                        yes = 100, no = as.numeric(ForeCA::Omega(seafloor_total$x)))
 
-  gamma <- data.frame(part = c("bg", "ag"), mad = gamma_mad, cv = gamma_cv)
+  gamma_df <- data.frame(Meta = NA, mad = gamma_mad, cv = gamma_cv, omega = gamma_omega)
 
-  result_list <- list(alpha = alpha, gamma = gamma)
+  result_list <- list(alpha = alpha_df, beta = beta_df, gamma = gamma_df)
 
   # return result list
   return(result_list)

@@ -21,12 +21,6 @@
 #' @export
 print.nutr_input <- function(x, digits = NULL, ...) {
 
-  # get number of metaecosystems
-  n <- length(x$values)
-
-  # get maximum timesteps
-  n_input <- length(x$values[[1]])
-
   # convert to matrix
   values_mat <- do.call("cbind", x$values)
 
@@ -58,8 +52,8 @@ print.nutr_input <- function(x, digits = NULL, ...) {
 
   # print message
   cat(paste0(
-    "Metaecosystems : ", n, "\n",
-    "Total inputs   : ", n_input, " timesteps\n",
+    "Metaecosystems : ", x$n, "\n",
+    "Total inputs   : ", x$max_i, " timesteps\n",
     "Min input      : ", paste(min_input, collapse = ", "), "\n",
     "Mean input     : ", paste(mean_input, collapse = ", "),  "\n",
     "Max input      : ", paste(max_input, collapse = ", ")))

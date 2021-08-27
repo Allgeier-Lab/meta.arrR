@@ -6,14 +6,16 @@
 \alias{calc_cv.meta_rn}
 \title{calc_cv}
 \usage{
-calc_cv(x, timestep, verbose)
+calc_cv(x, what, timestep, verbose)
 
-\method{calc_cv}{nutr_input}(x, timestep = NULL, verbose = TRUE)
+\method{calc_cv}{nutr_input}(x, what = NULL, timestep = NULL, verbose = TRUE)
 
-\method{calc_cv}{meta_rn}(x, timestep = x$max_i, verbose = TRUE)
+\method{calc_cv}{meta_rn}(x, what = "ag_biomass", timestep = x$max_i, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
+
+\item{what}{String specifying which column us used for \code{meta_rn} object.}
 
 \item{timestep}{Numeric with maximum timestep Only used for \code{meta_rn} object.}
 
@@ -26,8 +28,8 @@ vector
 Simulate nutrient input.
 }
 \details{
-Calculates relative median absolute deviation (MAD) and coefficient of variation (CV)
-of provided \code{nutr_input} or \code{meta_rn} object.
+Calculates relative median absolute deviation (MAD), coefficient of variation (CV), and
+forecastability (Omega) of provided \code{nutr_input} or \code{meta_rn} object.
 
 MAD = mad(x) / median(x) * 100
 
@@ -38,4 +40,9 @@ nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 variability = 0.5)
 calc_cv(nutr_input)
 
+}
+\references{
+Goerg, G., 2013. Forecastable component analysis, in: Dasgupta, S., McAllester, D. (Eds.),
+Proceedings of the 30th International Conference on Machine Learning, Proceedings
+of Machine Learning Research. Proceedings of Machine Learning Research, Atlanta, USA, pp. 64–72.
 }

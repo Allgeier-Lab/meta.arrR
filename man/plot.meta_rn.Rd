@@ -9,10 +9,12 @@
   what = "seafloor",
   summarize = FALSE,
   fill = "ag_biomass",
+  gamma = FALSE,
   timestep = x$max_i,
   limits = NULL,
   burn_in = TRUE,
   base_size = 10,
+  viridis_option = "C",
   ...
 )
 }
@@ -25,6 +27,8 @@
 
 \item{fill}{Character specifying which column to use for plotting.}
 
+\item{gamma}{Logical if TRUE gamma input line is added.}
+
 \item{timestep}{Numeric with time step to plot.}
 
 \item{limits}{Vector with minium and maximum value of \code{fill} values.}
@@ -32,6 +36,8 @@
 \item{burn_in}{If TRUE, line to indicate burn-in time is plotted.}
 
 \item{base_size}{Numeric to specify base font size.}
+
+\item{viridis_option}{Character with \code{viridis} color palette.}
 
 \item{...}{Not used.}
 }
