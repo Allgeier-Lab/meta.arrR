@@ -31,7 +31,7 @@ Returns the densities (i.e., number of fish) within each cell.
 }
 \examples{
 \dontrun{
-get_meta_densities(result = result_attr)
+get_meta_densities(result = result_rand)
 }
 
 }

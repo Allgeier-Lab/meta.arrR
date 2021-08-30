@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' get_abundance(result = result_attr)
+#' get_abundance(result = result_rand)
 #' }
 #'
 #' @aliases get_abundance

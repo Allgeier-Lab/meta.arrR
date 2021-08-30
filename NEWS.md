@@ -1,6 +1,6 @@
 # meta.arrR 0.3
 * Move only across neighboring ecosystems
-* Add `calc_cv()` function including `ForeCA` omega
+* Add `calc_cv()` function
 * Add `sim_nutr_input()`
 
 # meta.arrR 0.2.1

@@ -24,7 +24,7 @@ Returns the mean values for several seafloor and fish population values.
 }
 \examples{
 \dontrun{
-print(result_attr)
+print(result_rand)
 }
 
 }

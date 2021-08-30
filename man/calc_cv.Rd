@@ -22,27 +22,40 @@ calc_cv(x, what, timestep, verbose)
 \item{verbose}{Logical if TRUE progress reports are printed.}
 }
 \value{
-vector
+list
 }
 \description{
 Simulate nutrient input.
 }
 \details{
-Calculates relative median absolute deviation (MAD), coefficient of variation (CV), and
-forecastability (Omega) of provided \code{nutr_input} or \code{meta_rn} object.
+Calculates coefficient of variation on alpha, beta and gamma scale, where \emph{i}
+refers to values on local scale and \emph{m} refers to the sum of all values
+in the metaecosystem.
 
-MAD = mad(x) / median(x) * 100
+\deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
 
-CV = sd(x) / mean(x) * 100
+\deqn{\alpha = sum(mean(x_{i}) / mean(x_{m}) * \alpha_{i})}
+
+\deqn{\gamma = sd(x_{m}) / mean(x_{m})}
+
+\deqn{\beta = \alpha / \gamma}
+
+\deqn{synchrony = var(x_{m}) / (sum(\alpha_{i}) ^ 2)}
 }
 \examples{
 nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 variability = 0.5)
 calc_cv(nutr_input)
 
+\dontrun{
+calc_cv(result)
+}
+
 }
 \references{
-Goerg, G., 2013. Forecastable component analysis, in: Dasgupta, S., McAllester, D. (Eds.),
-Proceedings of the 30th International Conference on Machine Learning, Proceedings
-of Machine Learning Research. Proceedings of Machine Learning Research, Atlanta, USA, pp. 64–72.
+Wang, S., Loreau, M., 2014. Ecosystem stability in space: α, β and γ
+variability. Ecol Lett 17, 891–901. \url{https://doi.org/10.1111/ele.12292}
+
+Wang, S., Loreau, M., 2016. Biodiversity and ecosystem stability across scales
+in metacommunities. Ecol Lett 19, 510–518. \url{https://doi.org/10.1111/ele.12582}
 }

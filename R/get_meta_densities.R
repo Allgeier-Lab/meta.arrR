@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' get_meta_densities(result = result_attr)
+#' get_meta_densities(result = result_rand)
 #' }
 #'
 #' @aliases get_meta_densities

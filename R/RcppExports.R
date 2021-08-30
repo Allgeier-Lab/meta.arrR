@@ -101,8 +101,8 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' individuals, (vii) growth of individuals, (viii) mortality of individuals,
 #' (ix) diffusion of nutrients/detritus, and (x) nutrient output (all inner loop).
 #'
-#' For a detailed describtion of all sub-processes (with exception of (i)), see the
-#' \code{arrR} package.
+#' For a detailed description of all sub-processes (with exception of (i)), see the
+#' \pkg{arrR} package.
 #'
 #' @references
 #' For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.

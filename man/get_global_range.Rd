@@ -25,7 +25,7 @@ created with \code{run_meta}.
 }
 \examples{
 \dontrun{
-get_global_range(result = result_attr)
+get_global_range(result = result_rand)
 }
 
 }

@@ -4,12 +4,12 @@
 \alias{plot.nutr_input}
 \title{plot.nutr_input}
 \usage{
-\method{plot}{nutr_input}(x, gamma = TRUE, base_size = 10, viridis_option = "C", ...)
+\method{plot}{nutr_input}(x, alpha = TRUE, gamma = TRUE, base_size = 10, viridis_option = "C", ...)
 }
 \arguments{
 \item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
 
-\item{gamma}{Logical if TRUE gamma input line is added.}
+\item{alpha, gamma}{Logical if TRUE alpha and/or gamma are plotted.}
 
 \item{base_size}{Numeric to specify base font size.}
 

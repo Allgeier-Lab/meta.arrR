@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' plot(result_attr)
+#' plot(result_rand)
 #' }
 #'
 #' @aliases plot.meta_rn

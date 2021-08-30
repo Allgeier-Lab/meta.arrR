@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' print(result_attr)
+#' print(result_rand)
 #' }
 #'
 #' @aliases print.meta_rn

@@ -21,7 +21,7 @@ created with \code{run_meta}.
 }
 \examples{
 \dontrun{
-get_abundance(result = result_attr)
+get_abundance(result = result_rand)
 }
 
 }

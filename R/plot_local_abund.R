@@ -3,7 +3,7 @@
 #' @description
 #' Plot local abundance.
 #'
-#' @param x \code{meta_rn} object simulated with \code{run_meta}.
+#' @param result \code{meta_rn} object simulated with \code{run_meta}.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
@@ -14,17 +14,17 @@
 #'
 #' @examples
 #' \dontrun{
-#' plot_local_abund(x = result_attr)
+#' plot_local_abund(result = result_rand)
 #' }
 #'
 #' @aliases plot_local_abund
 #' @rdname plot_local_abund
 #'
 #' @export
-plot_local_abund <- function(x, base_size = 10, ...) {
+plot_local_abund <- function(result, base_size = 10, ...) {
 
   # get abundance of all metaecosystems
-  abundance <- get_abundance(result = x)
+  abundance <- get_abundance(result = result)
 
   # get min and max values
   abundance_max <- max(abundance$abundance)
@@ -37,12 +37,12 @@ plot_local_abund <- function(x, base_size = 10, ...) {
                      data.frame(timestep = unique(abundance$timestep),
                                 value = abundance_max, measure = "Max"),
                      data.frame(timestep = unique(abundance$timestep),
-                                value = mean(x$starting_values$pop_n),
+                                value = mean(result$starting_values$pop_n),
                                 measure = "Mean"))
 
   # create title
-  title <- paste0("Fishpop (total) : ", sum(x$starting_values$pop_n),
-                  " indiv [Movement : ", x$movement, "]")
+  title <- paste0("Fishpop (total) : ", sum(result$starting_values$pop_n),
+                  " indiv [Movement : ", result$movement, "]")
 
   # create plot
   gg_input <- ggplot2::ggplot(data = abundance) +

@@ -50,7 +50,7 @@ with \code{run_meta}.
 }
 \examples{
 \dontrun{
-plot(result_attr)
+plot(result_rand)
 }
 
 }

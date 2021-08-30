@@ -4,7 +4,7 @@
 #' Plotting method for nutr_input object.
 #'
 #' @param x \code{nutr_input} object simulated with \code{sim_nutr_input_*}.
-#' @param gamma Logical if TRUE gamma input line is added.
+#' @param alpha,gamma Logical if TRUE alpha and/or gamma are plotted.
 #' @param viridis_option Character with option of viridis color option.
 #' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
@@ -22,7 +22,15 @@
 #' @rdname plot.nutr_input
 #'
 #' @export
-plot.nutr_input <- function(x, gamma = TRUE, base_size = 10, viridis_option = "C", ...) {
+plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
+                            base_size = 10, viridis_option = "C", ...) {
+
+  # check if both are FALSE
+  if (!alpha && !gamma) {
+
+    stop("Either 'alpha' and/or 'gamma' must be TRUE.", call. = FALSE)
+
+  }
 
   # combine all list elements to one data.frame
   input_df <- get_global_input(x = x, long = TRUE)
@@ -36,7 +44,16 @@ plot.nutr_input <- function(x, gamma = TRUE, base_size = 10, viridis_option = "C
 
   input_df$Facet <- factor(input_df$Facet, levels = c("Alpha scale", "Gamma scale"))
 
-  # subset data depending on gamma
+  # subset data depending on alpha and gamma option
+  if (!alpha) {
+
+    input_df <- subset(input_df, Facet == "Gamma scale")
+
+    # remove black color
+    col_viridis <- "black"
+
+  }
+
   if (!gamma) {
 
     input_df <- subset(input_df, Facet == "Alpha scale")

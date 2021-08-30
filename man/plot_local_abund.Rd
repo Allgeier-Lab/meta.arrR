@@ -4,10 +4,10 @@
 \alias{plot_local_abund}
 \title{plot_local_abund}
 \usage{
-plot_local_abund(x, base_size = 10, ...)
+plot_local_abund(result, base_size = 10, ...)
 }
 \arguments{
-\item{x}{\code{meta_rn} object simulated with \code{run_meta}.}
+\item{result}{\code{meta_rn} object simulated with \code{run_meta}.}
 
 \item{base_size}{Numeric to specify base font size.}
 
@@ -23,7 +23,7 @@ included.
 }
 \examples{
 \dontrun{
-plot_local_abund(x = result_attr)
+plot_local_abund(result = result_rand)
 }
 
 }

@@ -48,7 +48,7 @@ meta_rn
 Run metaecosystems simulation.
 }
 \details{
-This is the core function of the \code{meta.arrR} model that allows to easily run the
+This is the core function of the \pkg{meta.arrR} model that allows to easily run the
 model. Besides running all sub-processes, the function also includes some basic
 checks to make sure the model does not crash. However, this does not ensure that
 e.g. all parameter values "make sense". The function returns a \code{meta_rn} object
@@ -78,8 +78,8 @@ before this timestep is reached.
 }
 \examples{
 \dontrun{
-result_attr <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
-parameters = parameters, movement = "attr", max_i = max_i, seagrass_each = seagrass_each,
+result_rand <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
+parameters = parameters, movement = "rand", max_i = max_i, seagrass_each = seagrass_each,
 min_per_i = min_per_i, save_each = save_each, verbose = TRUE)
 }
 
