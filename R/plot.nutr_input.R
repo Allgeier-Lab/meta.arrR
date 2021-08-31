@@ -63,6 +63,12 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
 
   }
 
+  # get number of needed cols for legend
+  ncol <- ifelse(test = gamma,
+                 yes = ifelse(test = alpha,
+                              yes = x$n + 1, no = 1),
+                 no = x$n)
+
   # create plot
   gg_input <- ggplot2::ggplot(data = input_df) +
     ggplot2::geom_line(ggplot2::aes(x = Timestep, y = Value, color = Meta)) +
@@ -75,7 +81,7 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
     ggplot2::scale_color_manual(name = "", values = col_viridis) +
     ggplot2::theme(strip.background = ggplot2::element_blank(),
                    strip.text = ggplot2::element_blank()) +
-    ggplot2::guides(color = ggplot2::guide_legend(nrow = 1, ncol = 6))
+    ggplot2::guides(color = ggplot2::guide_legend(nrow = 1, ncol = ncol))
 
   return(gg_input)
 }

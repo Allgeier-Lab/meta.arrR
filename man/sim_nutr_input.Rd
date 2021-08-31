@@ -31,7 +31,7 @@ sim_nutr_input(
 \item{verbose}{If TRUE, progress reports are printed.}
 }
 \value{
-vector
+nutr_input
 }
 \description{
 Simulate nutrient input.
@@ -45,6 +45,8 @@ of \code{n_noise} sine curves to generate a noise signal.
 
 If two \code{variability} parameters are provided, the first one is used for \code{input_mn},
 the second one for \code{freq_mn}.
+
+If \code{n_noise = NULL} (default), the value will be set to \code{n_noise = 5} automatically.
 }
 \examples{
 nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,

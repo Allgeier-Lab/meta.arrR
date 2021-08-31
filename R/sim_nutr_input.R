@@ -21,7 +21,9 @@
 #' If two \code{variability} parameters are provided, the first one is used for \code{input_mn},
 #' the second one for \code{freq_mn}.
 #'
-#' @return vector
+#' If \code{n_noise = NULL} (default), the value will be set to \code{n_noise = 5} automatically.
+#'
+#' @return nutr_input
 #'
 #' @examples
 #' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
@@ -31,7 +33,7 @@
 #' @rdname sim_nutr_input
 #'
 #' @export
-sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
+sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0.0,
                            method = "noise", n_noise = NULL, verbose = TRUE) {
 
   # init list with values for each local metaecosyst
@@ -44,17 +46,24 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
   timestep <- 1:max_i
 
   # draw random amplitudes
-  amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability))
+  amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability[1]))
+
+  # check if only one variability parameter is provided
+  if (length(variability) == 1) {
+
+    variability <- rep(variability, times = 2)
+
+  }
 
   # set frequency to zero if variability = 0
-  if (variability == 0) {
+  if (all(variability == 0)) {
 
     freq_rand <- rep(x = 0.0, times = n)
 
   # draw random frequency
   } else {
 
-    freq_rand <- abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability))
+    freq_rand <- abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability[2]))
 
   }
 
@@ -62,7 +71,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
   period_rand <- freq_rand / (max_i / (2 * pi))
 
   # draw random phase shift
-  phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability)
+  phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability[2])
 
   # check if n_noise is required and already provided
   if (method == "noise") {
@@ -70,7 +79,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
     # set default n_noise
     if (is.null(n_noise)) {
 
-      n_noise <- 3
+      n_noise <- 5
 
     }
 
@@ -85,16 +94,16 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0,
 
         # draw modifier; increase if already smaller than mean, increase if bigger
         modifier_amplitude <- ifelse(test = amplitude_rand[i] >= input_mn,
-                                     yes = 1 + stats::runif(n = 1, min = 0, max = variability),
-                                     no = 1 - stats::runif(n = 1, min = 0, max = variability))
+                                     yes = 1 + stats::runif(n = 1, min = 0, max = variability[1]),
+                                     no = 1 - stats::runif(n = 1, min = 0, max = variability[1]))
 
         modifier_period <- ifelse(test = period_rand[i] >= input_mn,
-                                  yes = 1 + stats::runif(n = 1, min = 0, max = variability),
-                                  no = 1 - stats::runif(n = 1, min = 0, max = variability))
+                                  yes = 1 + stats::runif(n = 1, min = 0, max = variability[2]),
+                                  no = 1 - stats::runif(n = 1, min = 0, max = variability[2]))
 
         modifier_phase <- ifelse(test = phase_rand[i] >= input_mn,
-                                 yes = 1 + stats::runif(n = 1, min = 0, max = variability),
-                                 no = 1 - stats::runif(n = 1, min = 0, max = variability))
+                                 yes = 1 + stats::runif(n = 1, min = 0, max = variability[2]),
+                                 no = 1 - stats::runif(n = 1, min = 0, max = variability[2]))
 
         # get temp sine curve parameters and add noise
         amplitude_temp <- amplitude_rand[i] * modifier_amplitude
