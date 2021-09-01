@@ -33,8 +33,8 @@
 #' @rdname sim_nutr_input
 #'
 #' @export
-sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0.0,
-                           method = "noise", n_noise = NULL, verbose = TRUE) {
+sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0),
+                           method = "sd", n_noise = NULL, verbose = TRUE) {
 
   # init list with values for each local metaecosyst
   result_values <- vector(mode = "list", length = n)
@@ -45,9 +45,6 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0.0,
   # create vector from 1 to max_i for nutrient input
   timestep <- 1:max_i
 
-  # draw random amplitudes
-  amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability[1]))
-
   # check if only one variability parameter is provided
   if (length(variability) == 1) {
 
@@ -55,23 +52,17 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0.0,
 
   }
 
-  # set frequency to zero if variability = 0
-  if (all(variability == 0)) {
-
-    freq_rand <- rep(x = 0.0, times = n)
+  # draw random amplitudes
+  amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability[1]))
 
   # draw random frequency
-  } else {
-
-    freq_rand <- abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability[2]))
-
-  }
+  freq_rand <- abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability[2]))
 
   # calculate period for number of input peaks (period = 2 * pi / b)
   period_rand <- freq_rand / (max_i / (2 * pi))
 
-  # draw random phase shift
-  phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability[2])
+  # # draw random phase shift
+  # phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability[2])
 
   # check if n_noise is required and already provided
   if (method == "noise") {
@@ -101,20 +92,20 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0.0,
                                   yes = 1 + stats::runif(n = 1, min = 0, max = variability[2]),
                                   no = 1 - stats::runif(n = 1, min = 0, max = variability[2]))
 
-        modifier_phase <- ifelse(test = phase_rand[i] >= input_mn,
-                                 yes = 1 + stats::runif(n = 1, min = 0, max = variability[2]),
-                                 no = 1 - stats::runif(n = 1, min = 0, max = variability[2]))
+        # modifier_phase <- ifelse(test = phase_rand[i] >= input_mn,
+        #                          yes = 1 + stats::runif(n = 1, min = 0, max = variability[2]),
+        #                          no = 1 - stats::runif(n = 1, min = 0, max = variability[2]))
 
         # get temp sine curve parameters and add noise
         amplitude_temp <- amplitude_rand[i] * modifier_amplitude
 
         period_temp <- period_rand[i] * modifier_period
 
-        phase_temp <- phase_rand[i] * modifier_phase
+        # phase_temp <- phase_rand[i] * modifier_phase
 
         # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
         # adding amplitude_temp again to make sure input >= 0.0
-        input_values <- amplitude_temp * sin(period_temp * (timestep + phase_temp)) + amplitude_temp
+        input_values <- amplitude_temp * sin(period_temp * timestep ) + (max(amplitude_rand) * modifier_amplitude)
 
         input_temp[[j]] <- input_values
 
@@ -137,17 +128,11 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0.0,
   # use standard deviation from mean method
   } else if (method == "sd") {
 
-    # print information to console
-    if (verbose) {
+    # return warning that n_noise is not justed
+    if (verbose && !is.null(n_noise)) {
 
-      warning("'method = sd' is deprecated and should not be used.", call. = FALSE)
+      warning("'n_noise' is used for method = 'noise' only.", call. = FALSE)
 
-      # return warning
-      if (!is.null(n_noise)) {
-
-        warning("'n_noise' is used for method = 'noise' only.", call. = FALSE)
-
-      }
     }
 
     # loop through all metaecosystems
@@ -155,8 +140,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = 0.0,
 
       # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
       # adding amplitude_temp again to make sure input >= 0.0
-      input_temp <- amplitude_rand[i] *
-        sin(period_rand[i] * (timestep + phase_rand[i])) + amplitude_rand[i]
+      input_temp <- amplitude_rand[i] * sin(period_rand[i] * timestep) + max(amplitude_rand)
 
       # check if any is negative
       if (any(input_temp < 0)) {

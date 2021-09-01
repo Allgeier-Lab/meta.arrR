@@ -9,8 +9,8 @@ sim_nutr_input(
   max_i,
   input_mn,
   freq_mn,
-  variability = 0,
-  method = "noise",
+  variability = c(0, 0),
+  method = "sd",
   n_noise = NULL,
   verbose = TRUE
 )
