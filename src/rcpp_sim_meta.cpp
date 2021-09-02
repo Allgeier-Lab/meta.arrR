@@ -4,7 +4,7 @@
 #include <progress.hpp>
 #include <progress_bar.hpp>
 #include <arrR.h>
-#include "rcpp_meta_processes.h"
+#include "rcpp_sim_meta.h"
 #include "rcpp_list_to_matrix.h"
 #include "rcpp_move_meta.h"
 #include "rcpp_which.h"
@@ -12,7 +12,7 @@
 
 using namespace Rcpp;
 
-//' rcpp_meta_processes
+//' rcpp_sim_meta
 //'
 //' @description
 //' Rcpp run simulation of metaecosystems processes.
@@ -58,20 +58,19 @@ using namespace Rcpp;
 //'
 //' @return void
 //'
-//' @aliases rcpp_meta_processes
-//' @rdname rcpp_meta_processes
+//' @aliases rcpp_sim_meta
+//' @rdname rcpp_sim_meta
 //'
 //' @export
 // [[Rcpp::export]]
-void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
-                         Rcpp::List seafloor_track, Rcpp::List fishpop_track,
-                         Rcpp::List parameters, Rcpp::String movement, double max_dist,
-                         int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes,
-                         Rcpp::List nutr_input,
-                         Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj,
-                         Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions,
-                         int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in,
-                         bool verbose) {
+void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
+                   Rcpp::List seafloor_track, Rcpp::List fishpop_track,
+                   Rcpp::List parameters, Rcpp::String movement, double max_dist,
+                   int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes,
+                   Rcpp::List nutr_input, Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj,
+                   Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions,
+                   int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in,
+                   bool verbose) {
 
   // setup progress bar
   Progress progress(max_i, verbose);
@@ -94,7 +93,8 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
     (as<double>(parameters["detritus_fish_diffusion"])) > 0.0;
 
   // flag if nutrient output needs to be run
-  bool flag_output = as<double>(parameters["nutrients_output"]) > 0.0;
+  bool flag_output = (as<double>(parameters["nutrients_output"]) > 0.0) ||
+    (as<double>(parameters["detritus_output"]) > 0.0);
 
   // init fish population things //
 
@@ -259,7 +259,7 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
       // remove nutrients from cells if output parameter > 0
       if (flag_output) {
 
-        arrR::rcpp_nutr_output(seafloor[j], parameters["nutrients_output"]);
+        arrR::rcpp_nutr_output(seafloor[j], parameters["nutrients_output"], parameters["detritus_output"]);
 
       }
 
@@ -280,7 +280,7 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
 }
 
 /*** R
-rcpp_meta_processes(seafloor = seafloor, fishpop = fishpop,
+rcpp_sim_meta(seafloor = seafloor, fishpop = fishpop,
                    seafloor_track = seafloor_track, fishpop_track = fishpop_track,
                    parameters = parameters, movement = movement, max_dist = max_dist,
                    n = metasyst$n, pop_n = metasyst$starting_values$pop_n,

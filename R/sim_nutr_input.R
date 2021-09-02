@@ -61,11 +61,37 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   # calculate period for number of input peaks (period = 2 * pi / b)
   period_rand <- freq_rand / (max_i / (2 * pi))
 
-  # # draw random phase shift
-  # phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability[2])
+  # draw random phase shift
+  phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability[2])
 
-  # check if n_noise is required and already provided
-  if (method == "noise") {
+  if (method == "sd") {
+
+    # return warning that n_noise is not justed
+    if (verbose && !is.null(n_noise)) {
+
+      warning("'n_noise' is used for method = 'noise' only.", call. = FALSE)
+
+    }
+
+    # loop through all metaecosystems
+    for (i in seq_along(result_values)) {
+
+      # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
+      input_temp <- amplitude_rand[i] * sin(period_rand[i] * (timestep + phase_rand[i])) +
+        max(amplitude_rand)
+
+      # check if any is negative
+      if (any(input_temp < 0)) {
+
+        stop("Negative input value created. Please check arguments.")
+
+      }
+
+      # store results in data.frame
+      result_values[[i]] <- input_temp
+
+    }
+  } else if (method == "noise") {
 
     # set default n_noise
     if (is.null(n_noise)) {
@@ -92,20 +118,20 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
                                   yes = 1 + stats::runif(n = 1, min = 0, max = variability[2]),
                                   no = 1 - stats::runif(n = 1, min = 0, max = variability[2]))
 
-        # modifier_phase <- ifelse(test = phase_rand[i] >= input_mn,
-        #                          yes = 1 + stats::runif(n = 1, min = 0, max = variability[2]),
-        #                          no = 1 - stats::runif(n = 1, min = 0, max = variability[2]))
+        modifier_phase <- ifelse(test = phase_rand[i] >= input_mn,
+                                 yes = 1 + stats::runif(n = 1, min = 0, max = variability[2]),
+                                 no = 1 - stats::runif(n = 1, min = 0, max = variability[2]))
 
         # get temp sine curve parameters and add noise
         amplitude_temp <- amplitude_rand[i] * modifier_amplitude
 
         period_temp <- period_rand[i] * modifier_period
 
-        # phase_temp <- phase_rand[i] * modifier_phase
+        phase_temp <- phase_rand[i] * modifier_phase
 
         # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
-        # adding amplitude_temp again to make sure input >= 0.0
-        input_values <- amplitude_temp * sin(period_temp * timestep ) + (max(amplitude_rand) * modifier_amplitude)
+        input_values <- amplitude_temp * sin(period_temp * (timestep + phase_temp)) +
+          (max(amplitude_rand) * modifier_amplitude)
 
         input_temp[[j]] <- input_values
 
@@ -125,32 +151,21 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
 
     }
 
-  # use standard deviation from mean method
-  } else if (method == "sd") {
+  # constant nutrient input
+  } else if (method == "const") {
 
-    # return warning that n_noise is not justed
-    if (verbose && !is.null(n_noise)) {
+    # print warning if two variabilites are provided
+    if (variability[1] != variability[2] && verbose) {
 
-      warning("'n_noise' is used for method = 'noise' only.", call. = FALSE)
+      warning("Only one variability is used for method = 'const'.", call. = FALSE)
 
     }
 
     # loop through all metaecosystems
     for (i in seq_along(result_values)) {
 
-      # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
-      # adding amplitude_temp again to make sure input >= 0.0
-      input_temp <- amplitude_rand[i] * sin(period_rand[i] * timestep) + max(amplitude_rand)
-
-      # check if any is negative
-      if (any(input_temp < 0)) {
-
-        stop("Negative input value created. Please check arguments.")
-
-      }
-
-      # store results in data.frame
-      result_values[[i]] <- input_temp
+      # constant nutrient input of amplitude_rand
+      result_values[[i]] <- rep(x = amplitude_rand[[i]], times = max_i)
 
     }
 

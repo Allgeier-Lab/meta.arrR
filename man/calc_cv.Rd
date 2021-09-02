@@ -6,18 +6,16 @@
 \alias{calc_cv.meta_rn}
 \title{calc_cv}
 \usage{
-calc_cv(x, what, timestep, verbose)
+calc_cv(x, what, verbose)
 
-\method{calc_cv}{nutr_input}(x, what = NULL, timestep = NULL, verbose = TRUE)
+\method{calc_cv}{nutr_input}(x, what = NULL, verbose = TRUE)
 
-\method{calc_cv}{meta_rn}(x, what = "ag_biomass", timestep = x$max_i, verbose = TRUE)
+\method{calc_cv}{meta_rn}(x, what = "ag_biomass", verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
 \item{what}{String specifying which column us used for \code{meta_rn} object.}
-
-\item{timestep}{Numeric with maximum timestep Only used for \code{meta_rn} object.}
 
 \item{verbose}{Logical if TRUE progress reports are printed.}
 }
@@ -25,7 +23,7 @@ calc_cv(x, what, timestep, verbose)
 list
 }
 \description{
-Simulate nutrient input.
+Calculate CV
 }
 \details{
 Calculates coefficient of variation on alpha, beta and gamma scale, where \emph{i}

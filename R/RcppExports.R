@@ -66,7 +66,35 @@ rcpp_matrix_to_list <- function(fishpop, n) {
     .Call(`_meta_arrR_rcpp_matrix_to_list`, fishpop, n)
 }
 
-#' rcpp_meta_processes
+#' rcpp_move_meta
+#'
+#' @description
+#' Rcpp move meta.
+#'
+#' @param fishpop List with fish population.
+#' @param n,pop_n_sum Integer with total number of local metaecosystems and individuals.
+#' @param id_attr Vector with unique id of fishpop attributes matrix.
+#' @param residence_values Vector with residence values.
+#' @param id_meta Vector with metaecosystem ids.
+#' @param extent Spatial extent of the seafloor raster.
+#'
+#' @details
+#' Simulate movement across local metaecosystem. Individuals move to a new local
+#' metaecosystem with a certain probability each timestep. The probability increases
+#' depending on the residence value and how long individuals already stayed on local
+#' metaecosystem. To avoid this movement set \code{parameters$move_residence = 0}.
+#'
+#' @return list
+#'
+#' @aliases rcpp_move_meta
+#' @rdname rcpp_move_meta
+#'
+#' @keywords export
+rcpp_move_meta <- function(fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent)
+}
+
+#' rcpp_sim_meta
 #'
 #' @description
 #' Rcpp run simulation of metaecosystems processes.
@@ -112,40 +140,12 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #'
 #' @return void
 #'
-#' @aliases rcpp_meta_processes
-#' @rdname rcpp_meta_processes
+#' @aliases rcpp_sim_meta
+#' @rdname rcpp_sim_meta
 #'
 #' @export
-rcpp_meta_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
-    invisible(.Call(`_meta_arrR_rcpp_meta_processes`, seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
-}
-
-#' rcpp_move_meta
-#'
-#' @description
-#' Rcpp move meta.
-#'
-#' @param fishpop List with fish population.
-#' @param n,pop_n_sum Integer with total number of local metaecosystems and individuals.
-#' @param id_attr Vector with unique id of fishpop attributes matrix.
-#' @param residence_values Vector with residence values.
-#' @param id_meta Vector with metaecosystem ids.
-#' @param extent Spatial extent of the seafloor raster.
-#'
-#' @details
-#' Simulate movement across local metaecosystem. Individuals move to a new local
-#' metaecosystem with a certain probability each timestep. The probability increases
-#' depending on the residence value and how long individuals already stayed on local
-#' metaecosystem. To avoid this movement set \code{parameters$move_residence = 0}.
-#'
-#' @return list
-#'
-#' @aliases rcpp_move_meta
-#' @rdname rcpp_move_meta
-#'
-#' @keywords export
-rcpp_move_meta <- function(fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent)
+rcpp_sim_meta <- function(seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
+    invisible(.Call(`_meta_arrR_rcpp_sim_meta`, seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
 }
 
 #' rcpp_subset_matrix

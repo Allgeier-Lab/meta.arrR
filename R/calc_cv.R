@@ -1,11 +1,10 @@
 #' calc_cv
 #'
 #' @description
-#' Simulate nutrient input.
+#' Calculate CV
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
 #' @param what String specifying which column us used for \code{meta_rn} object.
-#' @param timestep Numeric with maximum timestep Only used for \code{meta_rn} object.
 #' @param verbose Logical if TRUE progress reports are printed.
 #'
 #' @details
@@ -45,22 +44,13 @@
 #' @rdname calc_cv
 #'
 #' @export
-calc_cv <- function(x, what, timestep, verbose) UseMethod("calc_cv")
+calc_cv <- function(x, what, verbose) UseMethod("calc_cv")
 
 #' @name calc_cv
 #' @export
-calc_cv.nutr_input <- function(x, what = NULL, timestep = NULL, verbose = TRUE) {
+calc_cv.nutr_input <- function(x, what = NULL, verbose = TRUE) {
 
-  # MH: What about timestep subset?
-
-  # timestep not used
-  if (!is.null(timestep) || !is.null(what)  && verbose) {
-
-    warning("'timestep' is only used for mdl_rn object.", call. = FALSE)
-
-  }
-
-  # preprocess values #
+  # pre-process values #
 
   # convert to matrix
   values_i <- do.call("cbind", x$values)
@@ -76,36 +66,17 @@ calc_cv.nutr_input <- function(x, what = NULL, timestep = NULL, verbose = TRUE) 
 
 #' @name calc_cv
 #' @export
-calc_cv.meta_rn <- function(x, what = "ag_biomass", timestep = x$max_i, verbose = TRUE) {
+calc_cv.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
 
   # MH: What about fishpop?
 
-  # preprocess data #
-
-  # check if what makes sense
-  if (!what %in% names(x$seafloor[[1]])) {
-
-    stop("Please select column of seafloor data.frame.", call. = FALSE)
-
-  }
-
-  # get selected timestep
-  timestep_slctd <- timestep
-
-  # check if i can be divided by save_each without reminder
-  if (timestep_slctd %% x$save_each != 0 || timestep_slctd > x$max_i) {
-
-    stop("'timestep' was not saved during model run.",
-         call. = FALSE)
-
-  }
+  # pre-process data #
 
   # summarize values of each timestep
   seafloor_sum <- lapply(X = x$seafloor, FUN = function(i) {
 
     # get all values until timestep and selected column
-    seafloor_temp <- subset(x = i, timestep <= timestep_slctd,
-                            select = c("timestep", what))
+    seafloor_temp <- subset(x = i, select = c("timestep", what))
 
     # sum for each timestep
     seafloor_temp <- stats::aggregate(x = seafloor_temp[, what],
