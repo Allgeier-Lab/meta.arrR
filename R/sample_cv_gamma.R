@@ -35,7 +35,9 @@ sample_cv_gamma.nutr_input <- function(x, what = NULL, verbose = TRUE) {
   # pre-process data #
 
   # create empty result df
-  result_df <- data.frame(n = numeric(x$n), gamma = numeric(x$n), synchrony = numeric(x$n))
+  result_df <- data.frame(n = numeric(x$n),
+                          alpha = numeric(x$n), beta = numeric(x$n),
+                          gamma = numeric(x$n), synchrony = numeric(x$n))
 
   # shuffle id of metaecosystems
   n_total <- sample(x = 1:x$n, size = x$n)
@@ -56,7 +58,8 @@ sample_cv_gamma.nutr_input <- function(x, what = NULL, verbose = TRUE) {
     cv_temp <- calc_cv_internal(values_i = values_temp, values_m = values_m)
 
     # save results in data.frame
-    result_df[i, ] <- cbind(i, cv_temp$gamma, cv_temp$synchrony)
+    result_df[i, ] <-  cbind(i, cv_temp$alpha, cv_temp$beta,
+                             cv_temp$gamma, cv_temp$synchrony)
 
   }
 
@@ -71,7 +74,9 @@ sample_cv_gamma.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
   # pre-process data #
 
   # create empty result df
-  result_df <- data.frame(n = numeric(x$n), gamma = numeric(x$n), synchrony = numeric(x$n))
+  result_df <- data.frame(n = numeric(x$n),
+                          alpha = numeric(x$n), beta = numeric(x$n),
+                          gamma = numeric(x$n), synchrony = numeric(x$n))
 
   # shuffle id of metaecosystems
   n_total <- sample(x = 1:x$n, size = x$n)
@@ -108,7 +113,8 @@ sample_cv_gamma.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
     cv_temp <- calc_cv_internal(values_i = values_temp, values_m = values_m)
 
     # save results in data.frame
-    result_df[i, ] <- cbind(i, cv_temp$gamma, cv_temp$synchrony)
+    result_df[i, ] <- cbind(i, cv_temp$alpha, cv_temp$beta,
+                            cv_temp$gamma, cv_temp$synchrony)
 
   }
 
