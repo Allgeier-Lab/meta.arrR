@@ -1,7 +1,7 @@
-#' get_global_input
+#' get_input_df
 #'
 #' @description
-#' Get global range
+#' Get input data.frame
 #'
 #' @param x \code{nutr_input} object simulated with \code{sim_nutr_input}.
 #' @param long Logical if TRUE, \code{data.frame} will be reshaped to long format.
@@ -15,13 +15,13 @@
 #' @examples
 #' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)
-#' get_global_input(nutr_input)
+#' get_input_df(nutr_input)
 #'
-#' @aliases get_global_input
-#' @rdname get_global_input
+#' @aliases get_input_df
+#' @rdname get_input_df
 #'
 #' @export
-get_global_input <- function(x, long = FALSE) {
+get_input_df <- function(x, long = FALSE) {
 
   # cbind all loocal ecosystems
   input_df <- do.call("cbind", x$values)

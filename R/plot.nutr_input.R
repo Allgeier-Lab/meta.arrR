@@ -33,7 +33,7 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
   }
 
   # combine all list elements to one data.frame
-  input_df <- get_global_input(x = x, long = TRUE)
+  input_df <- get_input_df(x = x, long = TRUE)
 
   # setup color scale
   col_viridis <- c(viridis::viridis(n = x$n, option = viridis_option), "black")

@@ -55,8 +55,10 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   # draw random amplitudes
   amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability[1]))
 
+  # MH: This wouldnt allow equal total input
   # draw random frequency
-  freq_rand <- abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability[2]))
+  # abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability[2]))
+  freq_rand <- rep(freq_mn, times = n)
 
   # calculate period for number of input peaks (period = 2 * pi / b)
   period_rand <- freq_rand / (max_i / (2 * pi))

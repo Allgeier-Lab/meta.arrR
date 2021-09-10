@@ -1,7 +1,8 @@
 # meta.arrR 0.3
 * Move only across neighboring ecosystems
 * Add `calc_cv()` function
-* Add `sim_nutr_input()`
+* Add `sim_nutr_input()` function
+* Add `get_input_df()` function
 
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions
