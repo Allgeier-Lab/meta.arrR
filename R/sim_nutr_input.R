@@ -48,40 +48,57 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
 
   }
 
+  # init results
+  values_input <- vector(mode = "list", length = n)
+
+  input_i <- vector(mode = "numeric", length = n)
+
+  phase_i <- vector(mode = "numeric", length = n)
+
   # calculate period for number of input peaks (period = 2 * pi / b)
   period <- freq_mn / (max_i / (2 * pi))
 
-  values_input <- lapply(1:n, function(i) {
+  for (i in 1:n) {
+
+    # modifier for amplitude; if variability 0
+    amplitude_mod <- ifelse(test = variability[1] == 0.0,
+                            yes = 1, no = stats::runif(n = 1, min = -variability[1],
+                                                       max = variability[1]))
 
     # sample random amplitude
-    amplitude_temp <- input_mn * stats::runif(n = 1, min = -variability[1],
-                                                   max = variability[1])
+    amplitude_temp <- input_mn * amplitude_mod
 
-    # sample random period
-    # MH: This changes the sum of all input values
-    period_temp <- period * (1 + stats::runif(n = 1, min = -variability[2],
-                                              max = variability[2]))
+    # sample random phase shift
+    phase_temp <- stats::runif(n = 1, min = 0, max = max_i * variability[2])
 
     # calculate sine curve; vertical shift to make sure x > 0
     # amplitude * sin(period * (x + phase)) + vertical
-    values_temp <- amplitude_temp * sin(period_temp * timestep) + input_mn
+    values_temp <- amplitude_temp * sin(period * (timestep + phase_temp)) + input_mn
 
-      if (any(values_temp < 0)) {
+    # save values for resulting object
+    values_input[[i]] <- values_temp
 
-        warning("Negative input value created. Please check arguments.", call. = FALSE)
+    input_i[i] <- amplitude_temp
 
-      }
+    phase_i[i] <- phase_temp
 
-    return(values_temp)
+    if (any(values_temp < 0)) {
 
-  })
+      warning("Negative input value created. Please check arguments.", call. = FALSE)
+
+    }
+  }
 
   # set names
   names(values_input) <- paste0("Meta_", 1:n)
 
+  names(input_i) <- paste0("Meta_", 1:n)
+
+  names(phase_i) <- paste0("Meta_", 1:n)
+
   # store results in final list
   result_list <- list(values = values_input, n = n, max_i = max_i,
-                      input_mn = input_mn, freq_mn = freq_mn,
+                      input_i = input_i, phase_i = phase_i,
                       variability = variability)
 
   # specify class of list
