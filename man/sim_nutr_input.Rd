@@ -10,7 +10,6 @@ sim_nutr_input(
   input_mn,
   freq_mn,
   variability = c(0, 0),
-  method = "sd",
   verbose = TRUE
 )
 }
@@ -22,8 +21,6 @@ sim_nutr_input(
 \item{input_mn, freq_mn}{Numeric with mean input amount and frequency.}
 
 \item{variability}{Variability of nutrient input.}
-
-\item{method}{String to specify how variability is simulated ('const' or 'sd').}
 
 \item{verbose}{If TRUE, progress reports are printed.}
 }

@@ -1,36 +1,24 @@
 # simulate nutrient input
-nutr_const <- meta.arrR::sim_nutr_input(n = n, max_i = max_i, input_mn = 1, freq_mn = 3,
-                                        variability = 0.5, method = "const")
-
-# simulate nutrient input
-nutr_sd <- meta.arrR::sim_nutr_input(n = n, max_i = max_i, input_mn = 1, freq_mn = 3,
-                                     variability = 0.5, method = "sd", verbose = FALSE)
+nutr_input <- meta.arrR::sim_nutr_input(n = n, max_i = max_i, input_mn = 1, freq_mn = 3,
+                                     variability = 0.5, verbose = FALSE)
 
 # extract values only
-values_const <- vapply(nutr_const$values, FUN = length, FUN.VALUE = numeric(1))
-
-values_sd <- vapply(nutr_sd$values, FUN = length, FUN.VALUE = numeric(1))
+values <- vapply(nutr_input$values, FUN = length, FUN.VALUE = numeric(1))
 
 test_that("simulate_nutr_input returns meta_rn", {
 
-  expect_is(object = nutr_const, class = "nutr_input")
-
-  expect_is(object = nutr_sd, class = "nutr_input")
+  expect_is(object = nutr_input, class = "nutr_input")
 
 })
 
 test_that("simulate_nutr_input returns input for each n", {
 
-  expect_length(object = nutr_const$values, n = n)
-
-  expect_length(object = nutr_sd$values, n = n)
+  expect_length(object = nutr_input$values, n = n)
 
 })
 
 test_that("simulate_nutr_input returns value for timestep", {
 
-  expect_equal(object = unname(values_const), expected = rep(x = max_i, times = n))
-
-  expect_equal(object = unname(values_sd), expected = rep(x = max_i, times = n))
+  expect_equal(object = unname(values), expected = rep(x = max_i, times = n))
 
 })

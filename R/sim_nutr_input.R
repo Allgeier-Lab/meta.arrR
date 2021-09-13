@@ -7,7 +7,6 @@
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param input_mn,freq_mn Numeric with mean input amount and frequency.
 #' @param variability Variability of nutrient input.
-#' @param method String to specify how variability is simulated ('const' or 'sd').
 #' @param verbose If TRUE, progress reports are printed.
 #'
 #' @details
@@ -30,7 +29,7 @@
 #'
 #' @export
 sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0),
-                           method = "sd", verbose = TRUE) {
+                           verbose = TRUE) {
 
   # init list with values for each local metaecosyst
   result_values <- vector(mode = "list", length = n)
@@ -48,9 +47,6 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
 
   }
 
-  # set flag for warning
-  flag_negative <- FALSE
-
   # draw random amplitudes
   amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability[1]))
 
@@ -65,65 +61,22 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   phase_rand <- rep(x = 0, times = max_i)
   # phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability[2])
 
-  if (method == "sd") {
+  # loop through all metaecosystems
+  for (i in seq_along(result_values)) {
 
-    # loop through all metaecosystems
-    for (i in seq_along(result_values)) {
+    # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
+    input_temp <- amplitude_rand[i] * sin(period_rand[i] * (timestep + phase_rand[i])) +
+      max(amplitude_rand)
 
-      # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
-      input_temp <- amplitude_rand[i] * sin(period_rand[i] * (timestep + phase_rand[i])) +
-        max(amplitude_rand)
+    # check if any is negative
+    if (any(input_temp < 0)) {
 
-      # check if any is negative
-      if (any(input_temp < 0)) {
-
-        flag_negative <- TRUE
-
-      }
-
-      # store results in data.frame
-      result_values[[i]] <- input_temp
+      warning("Negative input value created. Please check arguments.", call. = FALSE)
 
     }
 
-  # constant nutrient input
-  } else if (method == "const") {
-
-    # print warning if two variabilites are provided
-    if (variability[1] != variability[2] && verbose) {
-
-      warning("Only one variability is used for method = 'const'.", call. = FALSE)
-
-    }
-
-    # loop through all metaecosystems
-    for (i in seq_along(result_values)) {
-
-      # reate values
-      input_temp <- rep(x = amplitude_rand[[i]], times = max_i)
-
-      # constant nutrient input of amplitude_rand
-      result_values[[i]] <- input_temp
-
-      # check if any is negative
-      if (any(input_temp < 0)) {
-
-        flag_negative <- TRUE
-
-      }
-    }
-
-  # method selection is wrong
-  } else {
-
-    stop("Please select either method = 'noise' or method = 'sd'.", call. = FALSE)
-
-  }
-
-  # print warning
-  if (flag_negative) {
-
-    warning("Negative input value created. Please check arguments.", call. = FALSE)
+    # store results in data.frame
+    result_values[[i]] <- input_temp
 
   }
 
