@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-#' variability = 0.5)
+#' variability = c(1.0, 0.0))
 #'
 #' @aliases sim_nutr_input
 #' @rdname sim_nutr_input
@@ -60,13 +60,9 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
 
   for (i in 1:n) {
 
-    # modifier for amplitude; if variability 0
-    amplitude_mod <- ifelse(test = variability[1] == 0.0,
-                            yes = 1, no = stats::runif(n = 1, min = -variability[1],
-                                                       max = variability[1]))
-
     # sample random amplitude
-    amplitude_temp <- input_mn * amplitude_mod
+    amplitude_temp <- input_mn * (1 - stats::runif(n = 1, min = 0.0,
+                                                   max = variability[1]))
 
     # sample random phase shift
     phase_temp <- stats::runif(n = 1, min = 0, max = max_i * variability[2])
