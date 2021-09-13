@@ -68,8 +68,6 @@ calc_cv.nutr_input <- function(x, what = NULL, verbose = TRUE) {
 #' @export
 calc_cv.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
 
-  # MH: What about fishpop?
-
   # pre-process data #
 
   # summarize values of each timestep

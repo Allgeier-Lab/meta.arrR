@@ -11,7 +11,6 @@ sim_nutr_input(
   freq_mn,
   variability = c(0, 0),
   method = "sd",
-  n_noise = NULL,
   verbose = TRUE
 )
 }
@@ -24,9 +23,7 @@ sim_nutr_input(
 
 \item{variability}{Variability of nutrient input.}
 
-\item{method}{String to specify how variability is simulated ('noise' or 'sd').}
-
-\item{n_noise}{Integer with number of sine curves used for noise.}
+\item{method}{String to specify how variability is simulated ('const' or 'sd').}
 
 \item{verbose}{If TRUE, progress reports are printed.}
 }
@@ -40,13 +37,10 @@ Simulate nutrient input.
 Simulating nutrient input based on sine curves. The \code{freq_mn} argument quantifies
 how many complete cycles of the sine function are present for a given \code{max_i},
 i.e., how many "peaks" are present. The \code{input_mn} argument quantifies the
-maximum value of the input "peaks". The default \code{method = 'noise'} uses the mean
-of \code{n_noise} sine curves to generate a noise signal.
+mean input values.
 
 If two \code{variability} parameters are provided, the first one is used for \code{input_mn},
 the second one for \code{freq_mn}.
-
-If \code{n_noise = NULL} (default), the value will be set to \code{n_noise = 5} automatically.
 }
 \examples{
 nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
