@@ -31,12 +31,6 @@
 sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0),
                            verbose = TRUE) {
 
-  # init list with values for each local metaecosyst
-  result_values <- vector(mode = "list", length = n)
-
-  # set names
-  names(result_values) <- paste0("Meta_", 1:n)
-
   # create vector from 1 to max_i for nutrient input
   timestep <- 1:max_i
 
@@ -47,41 +41,46 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
 
   }
 
-  # draw random amplitudes
-  amplitude_rand <- abs(stats::rnorm(n = n, mean = input_mn, sd = input_mn * variability[1]))
+  # warning if variability values are outside boundary
+  if (any(variability > 1.0) || any(variability < 0.0)) {
 
-  # MH: This wouldn't allow equal total input
-  # draw random frequency
-  freq_rand <- abs(stats::rnorm(n = n, mean = freq_mn, sd = freq_mn * variability[2]))
-
-  # calculate period for number of input peaks (period = 2 * pi / b)
-  period_rand <- freq_rand / (max_i / (2 * pi))
-
-  # draw random phase shift
-  phase_rand <- rep(x = 0, times = max_i)
-  # phase_rand <- stats::runif(n = n, min = 0, max = max_i * variability[2])
-
-  # loop through all metaecosystems
-  for (i in seq_along(result_values)) {
-
-    # simulate sine curve: amplitude * sin(period * (x + phase)) + vertical
-    input_temp <- amplitude_rand[i] * sin(period_rand[i] * (timestep + phase_rand[i])) +
-      max(amplitude_rand)
-
-    # check if any is negative
-    if (any(input_temp < 0)) {
-
-      warning("Negative input value created. Please check arguments.", call. = FALSE)
-
-    }
-
-    # store results in data.frame
-    result_values[[i]] <- input_temp
+    warning("'variability' values should be 0 <= x <= 1.", call. = FALSE)
 
   }
 
+  # calculate period for number of input peaks (period = 2 * pi / b)
+  period <- freq_mn / (max_i / (2 * pi))
+
+  values_input <- lapply(1:n, function(i) {
+
+    # sample random amplitude
+    amplitude_temp <- input_mn * stats::runif(n = 1, min = -variability[1],
+                                                   max = variability[1])
+
+    # sample random period
+    # MH: This changes the sum of all input values
+    period_temp <- period * (1 + stats::runif(n = 1, min = -variability[2],
+                                              max = variability[2]))
+
+    # calculate sine curve; vertical shift to make sure x > 0
+    # amplitude * sin(period * (x + phase)) + vertical
+    values_temp <- amplitude_temp * sin(period_temp * timestep) + input_mn
+
+      if (any(values_temp < 0)) {
+
+        warning("Negative input value created. Please check arguments.", call. = FALSE)
+
+      }
+
+    return(values_temp)
+
+  })
+
+  # set names
+  names(values_input) <- paste0("Meta_", 1:n)
+
   # store results in final list
-  result_list <- list(values = result_values, n = n, max_i = max_i,
+  result_list <- list(values = values_input, n = n, max_i = max_i,
                       input_mn = input_mn, freq_mn = freq_mn,
                       variability = variability)
 
