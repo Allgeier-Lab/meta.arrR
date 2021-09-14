@@ -1,7 +1,7 @@
-#' sample_cv_gamma_gamma
+#' sample_variability
 #'
 #' @description
-#' Sample CV on gamma scale
+#' Sample variability
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
 #' @param what String specifying which column us used for \code{meta_rn} object.
@@ -9,28 +9,28 @@
 #'
 #' @details
 #' Samples coefficient of variation (on gamma scale) for increasing number of metaecosystems. For
-#' more information see \code{calc_cv}.
+#' more information see \code{calc_variability}.
 #'
 #' @return data.frame
 #'
 #' @examples
 #' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)
-#' sample_cv_gamma(nutr_input)
+#' sample_variability(nutr_input)
 #'
 #' \dontrun{
-#' sample_cv_gamma(result)
+#' sample_variability(result)
 #' }
 #'
-#' @aliases sample_cv_gamma
-#' @rdname sample_cv_gamma
+#' @aliases sample_variability
+#' @rdname sample_variability
 #'
 #' @export
-sample_cv_gamma <- function(x, what, verbose) UseMethod("sample_cv_gamma")
+sample_variability <- function(x, what, verbose) UseMethod("sample_variability")
 
-#' @name sample_cv_gamma
+#' @name sample_variability
 #' @export
-sample_cv_gamma.nutr_input <- function(x, what = NULL, verbose = TRUE) {
+sample_variability.nutr_input <- function(x, what = NULL, verbose = TRUE) {
 
   # pre-process data #
 
@@ -55,7 +55,7 @@ sample_cv_gamma.nutr_input <- function(x, what = NULL, verbose = TRUE) {
     values_m <- apply(X = values_temp, MARGIN = 1, FUN = sum)
 
     # calculate CV
-    cv_temp <- calc_cv_internal(values_i = values_temp, values_m = values_m)
+    cv_temp <- calc_variability_internal(values_i = values_temp, values_m = values_m)
 
     # save results in data.frame
     result_df[i, ] <-  cbind(i, cv_temp$alpha, cv_temp$beta,
@@ -67,9 +67,9 @@ sample_cv_gamma.nutr_input <- function(x, what = NULL, verbose = TRUE) {
   return(result_df)
 }
 
-#' @name sample_cv_gamma
+#' @name sample_variability
 #' @export
-sample_cv_gamma.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
+sample_variability.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
 
   # pre-process data #
 
@@ -110,7 +110,7 @@ sample_cv_gamma.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
     values_m <- apply(X = values_temp, MARGIN = 1, FUN = sum)
 
     # calculate CV
-    cv_temp <- calc_cv_internal(values_i = values_temp, values_m = values_m)
+    cv_temp <- calc_variability_internal(values_i = values_temp, values_m = values_m)
 
     # save results in data.frame
     result_df[i, ] <- cbind(i, cv_temp$alpha, cv_temp$beta,

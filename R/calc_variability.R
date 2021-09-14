@@ -1,7 +1,7 @@
-#' calc_cv
+#' calc_variability
 #'
 #' @description
-#' Calculate CV
+#' Calculate variability
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
 #' @param what String specifying which column us used for \code{meta_rn} object.
@@ -34,21 +34,21 @@
 #' @examples
 #' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)
-#' calc_cv(nutr_input)
+#' calc_variability(nutr_input)
 #'
 #' \dontrun{
-#' calc_cv(result)
+#' calc_variability(result)
 #' }
 #'
-#' @aliases calc_cv
-#' @rdname calc_cv
+#' @aliases calc_variability
+#' @rdname calc_variability
 #'
 #' @export
-calc_cv <- function(x, what, verbose) UseMethod("calc_cv")
+calc_variability <- function(x, what, verbose) UseMethod("calc_variability")
 
-#' @name calc_cv
+#' @name calc_variability
 #' @export
-calc_cv.nutr_input <- function(x, what = NULL, verbose = TRUE) {
+calc_variability.nutr_input <- function(x, what = NULL, verbose = TRUE) {
 
   # pre-process values #
 
@@ -58,15 +58,15 @@ calc_cv.nutr_input <- function(x, what = NULL, verbose = TRUE) {
   # calculate sum of each timestep
   values_m <- apply(X = values_i, MARGIN = 1, FUN = sum)
 
-  result_list <- calc_cv_internal(values_i = values_i, values_m = values_m)
+  result_list <- calc_variability_internal(values_i = values_i, values_m = values_m)
 
   # return result list
   return(result_list)
 }
 
-#' @name calc_cv
+#' @name calc_variability
 #' @export
-calc_cv.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
+calc_variability.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
 
   # pre-process data #
 
@@ -91,14 +91,14 @@ calc_cv.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
   # calculate sum of each timestep
   values_m <- apply(X = values_i, MARGIN = 1, FUN = sum)
 
-  result_list <- calc_cv_internal(values_i = values_i, values_m = values_m)
+  result_list <- calc_variability_internal(values_i = values_i, values_m = values_m)
 
   # return result list
   return(result_list)
 
 }
 
-calc_cv_internal <- function(values_i, values_m) {
+calc_variability_internal <- function(values_i, values_m) {
 
   # alpha scale #
 
