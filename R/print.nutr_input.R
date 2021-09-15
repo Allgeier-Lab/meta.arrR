@@ -53,8 +53,8 @@ print.nutr_input <- function(x, digits = NULL, ...) {
   # print message
   cat(paste0(
     "Metaecosystems : ", x$n, "\n",
-    "Total inputs   : ", x$max_i, " timesteps\n",
+    "Total inputs   : ", length(x$timesteps), " timesteps [max_i: ", x$max_i, "]\n",
     "Min input      : ", paste(min_input, collapse = ", "), "\n",
-    "Mean input     : ", paste(mean_input, collapse = ", "),  "\n",
-    "Max input      : ", paste(max_input, collapse = ", ")))
+    "Mean input     : ", paste(mean_input, collapse = ", "), "\n",
+    "Max input      : ", paste(max_input, collapse = ", "), "\n"))
 }

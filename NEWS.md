@@ -3,6 +3,7 @@
 * Add `calc_variability()` and `sample_variability()` function
 * Add `sim_nutr_input()` function
 * Add `get_input_df()` function
+* Add `filter_nutr_input()` function
 
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions

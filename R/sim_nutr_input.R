@@ -32,7 +32,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
                            verbose = TRUE) {
 
   # create vector from 1 to max_i for nutrient input
-  timestep <- 1:max_i
+  timesteps <- 1:max_i
 
   # check if only one variability parameter is provided
   if (length(variability) == 1) {
@@ -69,7 +69,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
 
     # calculate sine curve; vertical shift to make sure x > 0
     # amplitude * sin(period * (x + phase)) + vertical
-    values_temp <- amplitude_temp * sin(period * (timestep + phase_temp)) + input_mn
+    values_temp <- amplitude_temp * sin(period * (timesteps + phase_temp)) + input_mn
 
     # save values for resulting object
     values_input[[i]] <- values_temp
@@ -93,9 +93,8 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   names(phase_i) <- paste0("Meta_", 1:n)
 
   # store results in final list
-  result_list <- list(values = values_input, n = n, max_i = max_i,
-                      input_i = input_i, phase_i = phase_i,
-                      variability = variability)
+  result_list <- list(values = values_input, n = n, timesteps = timesteps, max_i = max_i,
+                      input_i = input_i, phase_i = phase_i, variability = variability)
 
   # specify class of list
   class(result_list) <- "nutr_input"

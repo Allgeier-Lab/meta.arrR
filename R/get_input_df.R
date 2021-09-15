@@ -27,7 +27,7 @@ get_input_df <- function(x, long = FALSE) {
   input_df <- do.call("cbind", x$values)
 
   # convert to data.frame including timestep
-  input_df <- data.frame(Timestep = 1:nrow(input_df), input_df)
+  input_df <- data.frame(Timestep = x$timesteps, input_df)
 
   # calculate total input
   input_df$Gamma <- rowSums(input_df[, -1])
