@@ -63,14 +63,14 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
   # check input and warnings #
 
+  # MH: Check parameters?
+
   # check if metasyst is correct class
   if (!inherits(x = metasyst, what = "meta_syst")) {
 
     stop("Please provide meta_syst object created with setupt_meta().", call. = FALSE)
 
   }
-
-  # MH: Check parameters?
 
   # check if max_i can be divided by provided save_each without reminder
   if (max_i %% save_each != 0) {
@@ -143,15 +143,12 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   # check if nutr_input has value for each iteration
   if (!is.null(nutr_input)) {
 
-    check <- all(vapply(nutr_input$values, function(i) length(i) == max_i, FUN.VALUE = logical(1)))
+    # check if nutr_input is correct class
+    if (!inherits(x = nutr_input, what = "nutr_input")) {
 
-    if (!check) {
-
-      stop("'nutr_input' must have input amount for each iteration.", call. = FALSE)
+      stop("The nutrient input must be of class 'nutr_input'.", call. = FALSE)
 
     }
-
-    nutr_input <- nutr_input$values
 
     # set nutrient flag to save results later
     flag_nutr_input <- TRUE
@@ -159,7 +156,8 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   # create nutrient input if not present
   } else {
 
-    nutr_input <- lapply(1:metasyst$n, function(i) rep(x = 0.0, times = max_i))
+    nutr_input <- sim_nutr_input(n = metasyst$n, max_i = max_i, input_mn = 0, freq_mn = 0,
+                                 verbose = FALSE)
 
     # set nutrient flag to save results later
     flag_nutr_input <- FALSE
@@ -236,7 +234,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
                 parameters = parameters, movement = movement, max_dist = max_dist,
                 n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
                 fishpop_attributes = metasyst$fishpop_attributes,
-                nutr_input = nutr_input, coords_reef = coords_reef, cell_adj = cell_adj,
+                nutr_input = nutr_input$values, coords_reef = coords_reef, cell_adj = cell_adj,
                 extent = extent, dimensions = dimensions,
                 max_i = max_i, min_per_i = min_per_i, save_each = save_each,
                 seagrass_each = seagrass_each, burn_in = burn_in,
@@ -305,6 +303,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
     }
   }
 
+  # no nutrient input was provided; return NA
   if (!flag_nutr_input) {
 
     nutr_input <- NA
