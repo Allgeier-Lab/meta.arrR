@@ -4,10 +4,12 @@
 \alias{get_input_df}
 \title{get_input_df}
 \usage{
-get_input_df(x, long = FALSE)
+get_input_df(x, gamma = TRUE, long = FALSE)
 }
 \arguments{
 \item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input}.}
+
+\item{gamma}{Logical if TRUE, the sum of gamma (regional) scale will be added.}
 
 \item{long}{Logical if TRUE, \code{data.frame} will be reshaped to long format.}
 }

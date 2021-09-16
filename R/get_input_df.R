@@ -4,6 +4,7 @@
 #' Get input data.frame
 #'
 #' @param x \code{nutr_input} object simulated with \code{sim_nutr_input}.
+#' @param gamma Logical if TRUE, the sum of gamma (regional) scale will be added.
 #' @param long Logical if TRUE, \code{data.frame} will be reshaped to long format.
 #'
 #' @details
@@ -21,27 +22,33 @@
 #' @rdname get_input_df
 #'
 #' @export
-get_input_df <- function(x, long = FALSE) {
+get_input_df <- function(x, gamma = TRUE, long = FALSE) {
 
-  # cbind all loocal ecosystems
+  # cbind all local ecosystems
   input_df <- do.call("cbind", x$values)
 
   # convert to data.frame including timestep
   input_df <- data.frame(Timestep = x$timesteps, input_df)
 
-  # calculate total input
-  input_df$Gamma <- rowSums(input_df[, -1])
+  # calculate sum on regional/gamma scale
+  if (gamma) {
+
+    # calculate total input
+    input_df$Gamma <- rowSums(input_df[, -1])
+
+  }
 
   # reshape to long format
   if (long) {
 
-    input_df <- stats::reshape(data = input_df, varying = names(input_df[, -1]),
-                               v.names = "Value", timevar = "Meta", times = names(input_df[, -1]),
-                               new.row.names = seq(from = 1, to = nrow(input_df) *
-                                                     (ncol(input_df) - 1)),
-                               direction = "long")
+    input_df <- stats::reshape(data = input_df, direction = "long",
+                   v.names = "Value", varying = list(names(input_df[, -1])),
+                   idvar = "Timestep", ids = input_df[, 1],
+                   timevar = "Meta", times = names(input_df[, -1]),
+                   new.row.names = seq(from = 1, to = nrow(input_df) *
+                                         (ncol(input_df) - 1)))
 
-    # set factor levels
+    # set factor levels (gamma always last even if not present)
     input_df$Meta <- factor(input_df$Meta,
                             levels = c(paste0("Meta_", 1:x$n), "Gamma"))
 
