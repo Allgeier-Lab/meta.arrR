@@ -5,7 +5,8 @@
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
 #' @param what String specifying which column us used for \code{meta_rn} object.
-#' @param verbose Logical if TRUE progress reports are printed.
+#' @param lag Logical if TRUE, the difference to the previous timestep is returned.
+#' @param verbose Logical if TRUE, progress reports are printed.
 #'
 #' @details
 #' Samples coefficient of variation (on gamma scale) for increasing number of metaecosystems. For
@@ -26,11 +27,11 @@
 #' @rdname sample_variability
 #'
 #' @export
-sample_variability <- function(x, what, verbose) UseMethod("sample_variability")
+sample_variability <- function(x, what, lag, verbose) UseMethod("sample_variability")
 
 #' @name sample_variability
 #' @export
-sample_variability.nutr_input <- function(x, what = NULL, verbose = TRUE) {
+sample_variability.nutr_input <- function(x, what = NULL, lag = FALSE, verbose = TRUE) {
 
   # pre-process data #
 
@@ -42,14 +43,32 @@ sample_variability.nutr_input <- function(x, what = NULL, verbose = TRUE) {
   # shuffle id of metaecosystems
   n_total <- sample(x = 1:x$n, size = x$n)
 
+  # MH: does this even make sense for input?
+  # calculate difference to previous value
+  if (lag) {
+
+    # MH: This is a problem because it gets negative
+    x$values <- lapply(x$values, function(i) {
+      c(NA, i[2:length(i)] - i[1:(length(i) - 1)])
+    })
+
+  }
+
   # convert to matrix
   values_i <- do.call("cbind", x$values)
+
+  # remove first NA row
+  if (lag) {
+
+    values_i <- values_i[complete.cases(values_i), ]
+
+  }
 
   # loop through 1...n meteecosystems
   for (i in 1:length(n_total)) {
 
     # get increasing number of metaecosystems
-    values_temp <- matrix(values_i[, n_total[1:i]], nrow = x$max_i, ncol = i)
+    values_temp <- matrix(values_i[, n_total[1:i]], nrow = nrow(values_i), ncol = i)
 
     # calculate sum of each timestep
     values_m <- apply(X = values_temp, MARGIN = 1, FUN = sum)
@@ -69,7 +88,7 @@ sample_variability.nutr_input <- function(x, what = NULL, verbose = TRUE) {
 
 #' @name sample_variability
 #' @export
-sample_variability.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
+sample_variability.meta_rn <- function(x, what = "ag_biomass", lag = FALSE, verbose = TRUE) {
 
   # pre-process data #
 
@@ -92,6 +111,14 @@ sample_variability.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
                                       by = list(timestep = seafloor_temp$timestep),
                                       FUN = "sum")
 
+    # use difference to previous timestep
+    if (lag) {
+
+      seafloor_temp[, 2] <- c(NA, seafloor_temp[2:nrow(seafloor_temp), 2] -
+                                seafloor_temp[1:(nrow(seafloor_temp) - 1), 2])
+
+    }
+
     return(seafloor_temp[, 2])
 
   })
@@ -103,8 +130,16 @@ sample_variability.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
   for (i in 1:length(n_total)) {
 
     # get increasing number of metaecosystems
-    values_temp <- matrix(values_i[, n_total[1:i]],
+    values_temp <- matrix(data = values_i[, n_total[1:i]],
                           nrow = (x$max_i / x$save_each) + 1, ncol = i)
+
+    # remove first NA row
+    if (lag) {
+
+      values_temp <- matrix(data = values_temp[stats::complete.cases(values_temp), ],
+                            nrow = (x$max_i / x$save_each), ncol = i)
+
+    }
 
     # calculate sum of each timestep
     values_m <- apply(X = values_temp, MARGIN = 1, FUN = sum)

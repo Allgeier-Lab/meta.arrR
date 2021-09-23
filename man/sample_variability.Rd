@@ -6,18 +6,20 @@
 \alias{sample_variability.meta_rn}
 \title{sample_variability}
 \usage{
-sample_variability(x, what, verbose)
+sample_variability(x, what, lag, verbose)
 
-\method{sample_variability}{nutr_input}(x, what = NULL, verbose = TRUE)
+\method{sample_variability}{nutr_input}(x, what = NULL, lag = FALSE, verbose = TRUE)
 
-\method{sample_variability}{meta_rn}(x, what = "ag_biomass", verbose = TRUE)
+\method{sample_variability}{meta_rn}(x, what = "ag_biomass", lag = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
 \item{what}{String specifying which column us used for \code{meta_rn} object.}
 
-\item{verbose}{Logical if TRUE progress reports are printed.}
+\item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
+
+\item{verbose}{Logical if TRUE, progress reports are printed.}
 }
 \value{
 data.frame
