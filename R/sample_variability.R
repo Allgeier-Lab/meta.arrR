@@ -31,7 +31,14 @@ sample_variability <- function(x, what, lag, verbose) UseMethod("sample_variabil
 
 #' @name sample_variability
 #' @export
-sample_variability.nutr_input <- function(x, what = NULL, lag = FALSE, verbose = TRUE) {
+sample_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = TRUE) {
+
+  # warning for lag argument
+  if (!is.null(lag) && verbose) {
+
+    warning("'lag' is used for 'meta_rn' objects only.", call. = FALSE)
+
+  }
 
   # pre-process data #
 
@@ -43,26 +50,8 @@ sample_variability.nutr_input <- function(x, what = NULL, lag = FALSE, verbose =
   # shuffle id of metaecosystems
   n_total <- sample(x = 1:x$n, size = x$n)
 
-  # MH: does this even make sense for input?
-  # calculate difference to previous value
-  if (lag) {
-
-    # MH: This is a problem because it gets negative
-    x$values <- lapply(x$values, function(i) {
-      c(NA, i[2:length(i)] - i[1:(length(i) - 1)])
-    })
-
-  }
-
   # convert to matrix
   values_i <- do.call("cbind", x$values)
-
-  # remove first NA row
-  if (lag) {
-
-    values_i <- values_i[complete.cases(values_i), ]
-
-  }
 
   # loop through 1...n meteecosystems
   for (i in 1:length(n_total)) {
@@ -89,6 +78,22 @@ sample_variability.nutr_input <- function(x, what = NULL, lag = FALSE, verbose =
 #' @name sample_variability
 #' @export
 sample_variability.meta_rn <- function(x, what = "ag_biomass", lag = FALSE, verbose = TRUE) {
+
+  # check lag argument
+  if (lag && what %in% c("ag_biomass", "bg_biomass", "nutrients_pool", "detritus_pool",
+                         "detritus_fish")) {
+
+    # set lag to false
+    lag <- FALSE
+
+    # print warning
+    if (verbose) {
+
+      warning("'lag' not allowed for selected 'what' argument due to negative numbers.",
+              call. = FALSE)
+
+    }
+  }
 
   # pre-process data #
 
