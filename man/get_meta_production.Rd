@@ -4,12 +4,14 @@
 \alias{get_meta_production}
 \title{get_meta_production}
 \usage{
-get_meta_production(result, lag = TRUE)
+get_meta_production(result, lag = TRUE, turnover = FALSE)
 }
 \arguments{
 \item{result}{\code{meta_rn} object simulated \code{run_meta}.}
 
 \item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
+
+\item{turnover}{Logical if TRUE, the turnover is returned.}
 }
 \value{
 data.frame
@@ -20,6 +22,9 @@ Get global range
 \details{
 Calculate the production of each metaecosystem. The \code{lag} argument allows to either
 calculate the cumulative production or the increase between timesteps.
+
+If \code{turnover = TRUE}, the turnover is calculated defined as
+turnover = biomass / production.
 }
 \examples{
 \dontrun{

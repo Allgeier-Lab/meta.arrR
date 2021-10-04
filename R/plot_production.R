@@ -5,11 +5,14 @@
 #'
 #' @param result \code{meta_rn} object simulated with \code{run_meta}.
 #' @param lag Logical if TRUE, the difference to the previous timestep is returned.
+#' @param turnover Logical if TRUE, the turnover is returned.
 #' @param base_size Numeric to specify base font size.
-#' @param ... Not used.
 #'
 #' @details
-#' Plot the production per meta ecosystem
+#' Plot the production per meta ecosystem.
+#'
+#' If \code{turnover = TRUE}, the turnover is calculated defined as
+#' turnover = biomass / production.
 #'
 #' @examples
 #' \dontrun{
@@ -20,10 +23,10 @@
 #' @rdname plot_production
 #'
 #' @export
-plot_production <- function(result, lag = TRUE, base_size = 10, ...) {
+plot_production <- function(result, lag = TRUE, turnover = FALSE, base_size = 10) {
 
   # calculate production
-  production <- get_meta_production(result = result, lag = lag)
+  production <- get_meta_production(result = result, lag = lag, turnover = turnover)
 
   # remove NA rows (first row)
   production <- production[stats::complete.cases(production), ]
