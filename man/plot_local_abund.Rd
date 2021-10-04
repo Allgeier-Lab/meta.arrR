@@ -4,14 +4,12 @@
 \alias{plot_local_abund}
 \title{plot_local_abund}
 \usage{
-plot_local_abund(result, base_size = 10, ...)
+plot_local_abund(result, base_size = 10)
 }
 \arguments{
 \item{result}{\code{meta_rn} object simulated with \code{run_meta}.}
 
 \item{base_size}{Numeric to specify base font size.}
-
-\item{...}{Not used.}
 }
 \description{
 Plot local abundance.

@@ -5,6 +5,7 @@
 * Add `get_input_df()` function
 * Add `filter_nutr_input()` function
 * Simplified code for `plot.meta_rn()`
+* Add `get_meta_production()` and `plot_production()`
 
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions

@@ -5,7 +5,6 @@
 #'
 #' @param result \code{meta_rn} object simulated with \code{run_meta}.
 #' @param base_size Numeric to specify base font size.
-#' @param ... Not used.
 #'
 #' @details
 #' The resulting plot describes the number of individuals within each local metaecosystem
@@ -21,7 +20,7 @@
 #' @rdname plot_local_abund
 #'
 #' @export
-plot_local_abund <- function(result, base_size = 10, ...) {
+plot_local_abund <- function(result, base_size = 10) {
 
   # get abundance of all metaecosystems
   abundance <- get_abundance(result = result)
