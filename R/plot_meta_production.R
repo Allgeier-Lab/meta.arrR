@@ -1,4 +1,4 @@
-#' plot_production
+#' plot_meta_production
 #'
 #' @description
 #' Plot local abundance.
@@ -16,14 +16,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' plot_production(result = result_rand)
+#' plot_meta_production(result = result_rand)
 #' }
 #'
-#' @aliases plot_production
-#' @rdname plot_production
+#' @aliases plot_meta_production
+#' @rdname plot_meta_production
 #'
 #' @export
-plot_production <- function(result, lag = TRUE, turnover = FALSE, base_size = 10) {
+plot_meta_production <- function(result, lag = TRUE, turnover = FALSE, base_size = 10) {
 
   # calculate production
   production <- get_meta_production(result = result, lag = lag, turnover = turnover)
