@@ -4,13 +4,16 @@
 #' Calculate variability
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
-#' @param what String specifying which column us used for \code{meta_rn} object.
+#' @param what String specifying which measure to use to calculate variability.
+#' @param lag Logical if TRUE, the difference to the previous timestep is returned.
 #' @param verbose Logical if TRUE progress reports are printed.
 #'
 #' @details
 #' Calculates coefficient of variation on alpha, beta and gamma scale, where \emph{i}
 #' refers to values on local scale and \emph{m} refers to the sum of all values
 #' in the metaecosystem.
+#'
+#' The 'what' argument can be either 'biomass', 'production' or 'turnover'.
 #'
 #' \deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
 #'
@@ -44,11 +47,11 @@
 #' @rdname calc_variability
 #'
 #' @export
-calc_variability <- function(x, what, verbose) UseMethod("calc_variability")
+calc_variability <- function(x, what, lag, verbose) UseMethod("calc_variability")
 
 #' @name calc_variability
 #' @export
-calc_variability.nutr_input <- function(x, what = NULL, verbose = TRUE) {
+calc_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = TRUE) {
 
   # pre-process values #
 
@@ -66,35 +69,119 @@ calc_variability.nutr_input <- function(x, what = NULL, verbose = TRUE) {
 
 #' @name calc_variability
 #' @export
-calc_variability.meta_rn <- function(x, what = "ag_biomass", verbose = TRUE) {
+calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = TRUE) {
 
-  # pre-process data #
 
-  # summarize values of each timestep
-  seafloor_sum <- lapply(X = x$seafloor, FUN = function(i) {
+  # calc CV for biomass
+  if (what == "biomass") {
 
-    # get all values until timestep and selected column
-    seafloor_temp <- subset(x = i, select = c("timestep", what))
+    # calculate variability for what parts
+    result <- lapply(c("bg_biomass", "ag_biomass"), function(j) {
 
-    # sum for each timestep
-    seafloor_temp <- stats::aggregate(x = seafloor_temp[, what],
-                                      by = list(timestep = seafloor_temp$timestep),
-                                      FUN = "sum")
+      # summarize values of each timestep
+      seafloor_sum <- lapply(X = x$seafloor, FUN = function(i) {
 
-    return(seafloor_temp[, 2])
+        # get all values until timestep and selected column
+        seafloor_temp <- subset(x = i, select = c("timestep", j))
 
-  })
+        # sum for each timestep
+        seafloor_temp <- stats::aggregate(x = seafloor_temp[, j],
+                                          by = list(timestep = seafloor_temp$timestep),
+                                          FUN = "sum")
 
-  # combine to matrix with local values
-  values_i <- do.call("cbind", seafloor_sum)
+        # timestep column is not needed
+        seafloor_temp[, -1]
 
-  # calculate sum of each timestep
-  values_m <- apply(X = values_i, MARGIN = 1, FUN = sum)
+      })
 
-  result_list <- calc_variability_internal(values_i = values_i, values_m = values_m)
+      # combine to matrix with local values
+      values_i <- do.call("cbind", seafloor_sum)
+
+      # calculate sum of each timestep
+      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum)
+
+      cbind(part = j, calc_variability_internal(values_i = values_i,
+                                                values_m = values_m))
+    })
+
+  # calc variability for production
+  } else if (what == "production") {
+
+    # calc turnover
+    production <- get_meta_production(result = x, lag = lag, turnover = FALSE)
+
+    # split into list using parts
+    production <- split(production, production$part)
+
+    # loop through list
+    result <- lapply(production, function(i){
+
+      # get only needed columns
+      values_i <- i[, c("meta", "timestep", "value")]
+
+      # reshape to wide for internal cv fun
+      values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
+                                 direction = "wide")[, -1]
+
+      # calculate sum of each timestep
+      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = TRUE)
+
+      # combine to final data.frame
+      cbind(part = unique(i$part), calc_variability_internal(values_i = values_i,
+                                                             values_m = values_m))
+
+    })
+
+  # calculate cv for turnover
+  } else if (what == "turnover") {
+
+    # calc turnover
+    turnover <- get_meta_production(result = x, lag = lag, turnover = TRUE)
+
+    # replace Inf values (no production) with NA
+    turnover[is.infinite(turnover$value), "value"] <- NA
+
+    # split into list using part
+    turnover <- split(turnover, turnover$part)
+
+    # loop through lists
+    result <- lapply(turnover, function(i) {
+
+      # get only needed columns
+      values_i <- i[, c("meta", "timestep", "value")]
+
+      # reshape to wide format used for internal cv fun
+      values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
+                                 direction = "wide")[, -1]
+
+      # calculate sum of each timestep
+      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = TRUE)
+
+      # create final data.frame
+      cbind(part = unique(i$part), calc_variability_internal(values_i = values_i,
+                                                             values_m = values_m))
+
+    })
+
+  # return error message
+  } else {
+
+    stop("Please select either 'biomass', 'production', or 'turnover' as 'what' argument.",
+         call. = FALSE)
+
+  }
+
+  # combine to one data.frame
+  result <- do.call(what = "rbind", args = result)
+
+  # remove rownames
+  row.names(result) <- 1:nrow(result)
+
+  # make sure bg comes first
+  result <- result[order(result$part, decreasing = TRUE), ]
 
   # return result list
-  return(result_list)
+  return(result)
 
 }
 
@@ -103,15 +190,15 @@ calc_variability_internal <- function(values_i, values_m) {
   # alpha scale #
 
   # calculate sd and mean of local ecosystems i
-  alpha_sd_i <- apply(X = values_i, MARGIN = 2, stats::sd)
+  alpha_sd_i <- apply(X = values_i, MARGIN = 2, stats::sd, na.rm = TRUE)
 
-  alpha_mean_i <- apply(X = values_i, MARGIN = 2, mean)
-
-  # calculate cv of local ecosystems i
-  alpha_cv_i <- unname(alpha_sd_i / alpha_mean_i)
+  # alpha_mean_i <- apply(X = values_i, MARGIN = 2, mean)
+  #
+  # # calculate cv of local ecosystems i
+  # alpha_cv_i <- unname(alpha_sd_i / alpha_mean_i)
 
   # calculate weighted mean CV on alpha scale
-  alpha_cv <- sum(alpha_sd_i) / mean(values_m)
+  alpha_cv <- sum(alpha_sd_i) / mean(values_m, na.rm = TRUE)
 
   # gamma scale #
 
@@ -137,9 +224,8 @@ calc_variability_internal <- function(values_i, values_m) {
   # final list #
 
   # combine to final result list
-  result_list <- list(alpha_i = data.frame(Meta = 1:ncol(values_i), cv_i = alpha_cv_i),
-                      alpha = alpha_cv, beta = beta_cv, gamma = gamma_cv,
-                      synchrony = synchrony)
+  result_df <- data.frame(measure = c("alpha", "beta", "gamma", "synchrony"),
+                          value = c(alpha_cv, beta_cv, gamma_cv, synchrony))
 
-  return(result_list)
+  return(result_df)
 }

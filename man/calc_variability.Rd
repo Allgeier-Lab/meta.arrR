@@ -6,16 +6,18 @@
 \alias{calc_variability.meta_rn}
 \title{calc_variability}
 \usage{
-calc_variability(x, what, verbose)
+calc_variability(x, what, lag, verbose)
 
-\method{calc_variability}{nutr_input}(x, what = NULL, verbose = TRUE)
+\method{calc_variability}{nutr_input}(x, what = NULL, lag = NULL, verbose = TRUE)
 
-\method{calc_variability}{meta_rn}(x, what = "ag_biomass", verbose = TRUE)
+\method{calc_variability}{meta_rn}(x, what = "biomass", lag = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
-\item{what}{String specifying which column us used for \code{meta_rn} object.}
+\item{what}{String specifying which measure to use to calculate variability.}
+
+\item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
 
 \item{verbose}{Logical if TRUE progress reports are printed.}
 }
@@ -29,6 +31,8 @@ Calculate variability
 Calculates coefficient of variation on alpha, beta and gamma scale, where \emph{i}
 refers to values on local scale and \emph{m} refers to the sum of all values
 in the metaecosystem.
+
+The 'what' argument can be either 'biomass', 'production' or 'turnover'.
 
 \deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
 

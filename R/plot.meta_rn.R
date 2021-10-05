@@ -70,7 +70,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
                      "nutrients_pool", "detritus_pool")
 
       # setup labels
-      y_labels <- c("Dry weight ag biomass [g/cell]", "Dry weight bg biomass [g/cell]",
+      y_labels <- c("Dry weight bg biomass [g/cell]", "Dry weight ag biomass [g/cell]",
                     "Nutrients pool [g/cell]", "Detritus pool [g/cell]")
 
     } else if (what == "fishpop") {
@@ -121,7 +121,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     # MH: check if limits are !is.null() and rename to top_left,...
 
     # setup names of list
-    names(result_aggr) <- c("meta", "timestep", "top_left", "top_right",
+    names(result_aggr) <- c("meta", "timestep", "top_right", "top_left",
                            "bottom_left", "bottom_right")
 
     # create plot
@@ -219,9 +219,9 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
       # create title
       title <- paste0("Timestep         : ", timestep_slctd, " iterations [",
-                           round(timestep_slctd * x$min_per_i / 60 / 24, 1), " days]",
-                           "\nFishpop (total) : ", sum(x$starting_values$pop_n),
-                           " indiv [Movement : ", x$movement, "]")
+                      round(timestep_slctd * x$min_per_i / 60 / 24, 1), " days]",
+                      "\nFishpop (total) : ", sum(x$starting_values$pop_n),
+                      " indiv [Movement : ", x$movement, "]")
 
       # create ggplot
       gg_all <- ggplot2::ggplot(data = seafloor) +
