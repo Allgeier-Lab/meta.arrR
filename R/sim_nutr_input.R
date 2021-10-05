@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-#' variability = c(1.0, 0.0))
+#' variability = c(1.0, 1.0))
 #'
 #' @aliases sim_nutr_input
 #' @rdname sim_nutr_input
@@ -51,7 +51,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   # init results
   values_input <- vector(mode = "list", length = n)
 
-  input_i <- vector(mode = "numeric", length = n)
+  amplitude_i <- vector(mode = "numeric", length = n)
 
   phase_i <- vector(mode = "numeric", length = n)
 
@@ -74,7 +74,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
     # save values for resulting object
     values_input[[i]] <- values_temp
 
-    input_i[i] <- amplitude_temp
+    amplitude_i[i] <- amplitude_temp
 
     phase_i[i] <- phase_temp
 
@@ -88,13 +88,13 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   # set names
   names(values_input) <- paste0("Meta_", 1:n)
 
-  names(input_i) <- paste0("Meta_", 1:n)
+  names(amplitude_i) <- paste0("Meta_", 1:n)
 
   names(phase_i) <- paste0("Meta_", 1:n)
 
   # store results in final list
-  result_list <- list(values = values_input, n = n, timesteps = timesteps, max_i = max_i,
-                      input_i = input_i, phase_i = phase_i, variability = variability)
+  result_list <- list(values = values_input, n = n, max_i = max_i, freq_mn = freq_mn,
+                      amplitude_i = amplitude_i, phase_i = phase_i, variability = variability)
 
   # specify class of list
   class(result_list) <- "nutr_input"

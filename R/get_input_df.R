@@ -28,7 +28,7 @@ get_input_df <- function(x, gamma = TRUE, long = FALSE) {
   input_df <- do.call("cbind", x$values)
 
   # convert to data.frame including timestep
-  input_df <- data.frame(Timestep = x$timesteps, input_df)
+  input_df <- data.frame(Timestep = 1:x$max_i, input_df)
 
   # calculate sum on regional/gamma scale
   if (gamma) {
