@@ -53,6 +53,13 @@ calc_variability <- function(x, what, lag, verbose) UseMethod("calc_variability"
 #' @export
 calc_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = TRUE) {
 
+  # warning for lag argument
+  if (!is.null(lag) && verbose) {
+
+    warning("'lag' is used for 'meta_rn' objects only.", call. = FALSE)
+
+  }
+
   # pre-process values #
 
   # convert to matrix
@@ -76,6 +83,14 @@ calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = 
 
   # calc CV for biomass
   if (what == "biomass") {
+
+    # check lag argument
+    if (lag && verbose) {
+
+      warning("'lag' is not used for biomass calculations due to negative numbers.",
+              call. = FALSE)
+
+    }
 
     # calculate variability for what parts
     result <- lapply(c("bg_biomass", "ag_biomass"), function(i) {

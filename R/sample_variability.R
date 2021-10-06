@@ -81,14 +81,6 @@ sample_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = 
 #' @export
 sample_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = TRUE) {
 
-  # check lag argument
-  if (lag && what == "biomass" && verbose) {
-
-    warning("'lag' is not used for biomass calculations due to negative numbers.",
-            call. = FALSE)
-
-  }
-
   # pre-process data #
 
   # shuffle id of metaecosystems
@@ -96,6 +88,14 @@ sample_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose 
 
   # sample CV for biomass
   if (what == "biomass") {
+
+    # check lag argument
+    if (lag && verbose) {
+
+      warning("'lag' is not used for biomass calculations due to negative numbers.",
+              call. = FALSE)
+
+    }
 
     # calculate variability for what parts
     result <- lapply(c("bg_biomass", "ag_biomass"), function(i) {
