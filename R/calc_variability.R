@@ -76,16 +76,16 @@ calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = 
   if (what == "biomass") {
 
     # calculate variability for what parts
-    result <- lapply(c("bg_biomass", "ag_biomass"), function(j) {
+    result <- lapply(c("bg_biomass", "ag_biomass"), function(i) {
 
       # summarize values of each timestep
-      seafloor_sum <- lapply(X = x$seafloor, FUN = function(i) {
+      seafloor_sum <- lapply(X = x$seafloor, FUN = function(j) {
 
         # get all values until timestep and selected column
-        seafloor_temp <- subset(x = i, select = c("timestep", j))
+        seafloor_temp <- subset(x = j, select = c("timestep", i))
 
         # sum for each timestep
-        seafloor_temp <- stats::aggregate(x = seafloor_temp[, j],
+        seafloor_temp <- stats::aggregate(x = seafloor_temp[, i],
                                           by = list(timestep = seafloor_temp$timestep),
                                           FUN = "sum")
 
@@ -100,7 +100,7 @@ calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = 
       # calculate sum of each timestep
       values_m <- apply(X = values_i, MARGIN = 1, FUN = sum)
 
-      cbind(part = j, calc_variability_internal(values_i = values_i,
+      cbind(part = i, calc_variability_internal(values_i = values_i,
                                                 values_m = values_m))
     })
 
@@ -192,18 +192,20 @@ calc_variability_internal <- function(values_i, values_m) {
   # calculate sd and mean of local ecosystems i
   alpha_sd_i <- apply(X = values_i, MARGIN = 2, stats::sd, na.rm = TRUE)
 
+  gamma_mean <- mean(values_m, na.rm = TRUE)
+
   # alpha_mean_i <- apply(X = values_i, MARGIN = 2, mean)
   #
   # # calculate cv of local ecosystems i
   # alpha_cv_i <- unname(alpha_sd_i / alpha_mean_i)
 
   # calculate weighted mean CV on alpha scale
-  alpha_cv <- sum(alpha_sd_i) / mean(values_m, na.rm = TRUE)
+  alpha_cv <- sum(alpha_sd_i) / gamma_mean
 
   # gamma scale #
 
   # calculate global gamma CV
-  gamma_cv <- stats::sd(values_m) / mean(values_m)
+  gamma_cv <- stats::sd(values_m) / gamma_mean
 
   # beta scale #
 
