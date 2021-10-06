@@ -61,10 +61,12 @@ calc_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = TR
   # calculate sum of each timestep
   values_m <- apply(X = values_i, MARGIN = 1, FUN = sum)
 
-  result_list <- calc_variability_internal(values_i = values_i, values_m = values_m)
+  # calc variability
+  result <- cbind(part = "input",
+                  calc_variability_internal(values_i = values_i, values_m = values_m))
 
   # return result list
-  return(result_list)
+  return(result)
 }
 
 #' @name calc_variability
@@ -174,11 +176,11 @@ calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = 
   # combine to one data.frame
   result <- do.call(what = "rbind", args = result)
 
+  # make sure bg comes first
+  result <- result[order(result$measure, result$part), ]
+
   # remove rownames
   row.names(result) <- 1:nrow(result)
-
-  # make sure bg comes first
-  result <- result[order(result$part, decreasing = TRUE), ]
 
   # return result list
   return(result)
@@ -205,7 +207,7 @@ calc_variability_internal <- function(values_i, values_m) {
   # gamma scale #
 
   # calculate global gamma CV
-  gamma_cv <- stats::sd(values_m) / gamma_mean
+  gamma_cv <- stats::sd(values_m, na.rm = TRUE) / gamma_mean
 
   # beta scale #
 
@@ -217,7 +219,7 @@ calc_variability_internal <- function(values_i, values_m) {
                     yes = beta_cv, no = 0)
 
   # synchrony #
-  synchrony <- stats::var(values_m) / sum(alpha_sd_i) ^ 2
+  synchrony <- stats::var(values_m, na.rm = TRUE) / sum(alpha_sd_i) ^ 2
 
   # check if NaN because division by zero
   synchrony <- ifelse(test = is.finite(synchrony),
