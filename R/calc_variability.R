@@ -192,7 +192,7 @@ calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = 
   result <- do.call(what = "rbind", args = result)
 
   # make sure bg comes first
-  result <- result[order(result$measure, result$part), ]
+  result <- result[order(result$part), ]
 
   # remove rownames
   row.names(result) <- 1:nrow(result)

@@ -188,7 +188,7 @@ sample_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose 
   result <- do.call(what = "rbind", args = result)
 
   # make sure bg comes first
-  result <- result[order(result$n, result$part), ]
+  result <- result[order(result$part, result$n), ]
 
   # remove rownames
   row.names(result) <- 1:nrow(result)
