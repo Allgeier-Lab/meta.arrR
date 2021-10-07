@@ -6,16 +6,18 @@
 \alias{sample_variability.meta_rn}
 \title{sample_variability}
 \usage{
-sample_variability(x, what, lag, verbose)
+sample_variability(x, what, itr, lag, verbose)
 
-\method{sample_variability}{nutr_input}(x, what = NULL, lag = NULL, verbose = TRUE)
+\method{sample_variability}{nutr_input}(x, what = NULL, itr = 1, lag = NULL, verbose = TRUE)
 
-\method{sample_variability}{meta_rn}(x, what = "biomass", lag = TRUE, verbose = TRUE)
+\method{sample_variability}{meta_rn}(x, what = "biomass", itr = 1, lag = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
 \item{what}{String specifying which column us used for \code{meta_rn} object.}
+
+\item{itr}{Integer with number of sample iterations.}
 
 \item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
 
@@ -29,7 +31,9 @@ Sample variability
 }
 \details{
 Samples coefficient of variation (on gamma scale) for increasing number of metaecosystems. For
-more information see \code{calc_variability}.
+more information see \code{calc_variability}. The \code{itr} arguments allows to
+resample the data n times to capture differences based on different orders in which
+the metaecosystems are sampled.
 }
 \examples{
 nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,

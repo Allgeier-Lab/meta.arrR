@@ -20,6 +20,7 @@ globalVariables(names = c(
   "bottom_right",
   "burn_in",
   "density",
+  "itr",
   "measure",
   "meta",
   "timestep",
