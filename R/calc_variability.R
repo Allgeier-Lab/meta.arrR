@@ -66,7 +66,7 @@ calc_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = TR
   values_i <- do.call("cbind", x$values)
 
   # calculate sum of each timestep
-  values_m <- apply(X = values_i, MARGIN = 1, FUN = sum)
+  values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
   # calc variability
   result <- cbind(part = "input",
@@ -115,7 +115,7 @@ calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = 
       values_i <- do.call("cbind", seafloor_sum)
 
       # calculate sum of each timestep
-      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum)
+      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
       cbind(part = i, calc_variability_internal(values_i = values_i,
                                                 values_m = values_m))
@@ -138,10 +138,10 @@ calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = 
 
       # reshape to wide for internal cv fun
       values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                                 direction = "wide")[, -1]
+                                 direction = "wide")[, -1, drop = FALSE]
 
       # calculate sum of each timestep
-      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = TRUE)
+      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
       # combine to final data.frame
       cbind(part = unique(i$part), calc_variability_internal(values_i = values_i,
@@ -169,10 +169,10 @@ calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = 
 
       # reshape to wide format used for internal cv fun
       values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                                 direction = "wide")[, -1]
+                                 direction = "wide")[, -1, drop = FALSE]
 
       # calculate sum of each timestep
-      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = TRUE)
+      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
       # create final data.frame
       cbind(part = unique(i$part), calc_variability_internal(values_i = values_i,

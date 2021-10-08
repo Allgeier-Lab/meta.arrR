@@ -70,7 +70,7 @@ sample_variability.nutr_input <- function(x, what = NULL, itr = 1, lag = NULL, v
       values_temp <- values_i[, n_sample[1:j], drop = FALSE]
 
       # calculate sum of each timestep
-      values_m <- apply(X = values_temp, MARGIN = 1, FUN = sum)
+      values_m <- apply(X = values_temp, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
       # calculate CV
       cv_temp <- calc_variability_internal(values_i = values_temp, values_m = values_m)
@@ -158,7 +158,7 @@ sample_variability.meta_rn <- function(x, what = "biomass", itr = 1, lag = TRUE,
 
       # reshape to wide for internal cv fun
       values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                                 direction = "wide")[, -1]
+                                 direction = "wide")[, -1, drop = FALSE]
 
       itr_sample_var_internal(values_i = values_i, part = unique(i$part),
                               n = x$n, itr = itr, verbose = verbose)
@@ -185,7 +185,7 @@ sample_variability.meta_rn <- function(x, what = "biomass", itr = 1, lag = TRUE,
 
       # reshape to wide for internal cv fun
       values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                                 direction = "wide")[, -1]
+                                 direction = "wide")[, -1, drop = FALSE]
 
       itr_sample_var_internal(values_i = values_i, part = unique(i$part),
                               n = x$n, itr = itr, verbose = verbose)
@@ -204,7 +204,7 @@ sample_variability.meta_rn <- function(x, what = "biomass", itr = 1, lag = TRUE,
   result <- do.call(what = "rbind", args = result)
 
   # make sure bg comes first
-  result <- result[order(result$stat, result$part, result$n), ]
+  result <- result[order(result$part, result$stat, result$n), ]
 
   # remove rownames
   row.names(result) <- 1:nrow(result)
@@ -263,7 +263,7 @@ sample_variability_internal <- function(values_i, n_total) {
     values_temp <- values_i[, n_total[1:i], drop = FALSE]
 
     # calculate sum of each timestep
-    values_m <- apply(X = values_temp, MARGIN = 1, FUN = sum)
+    values_m <- apply(X = values_temp, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
     # calculate CV
     cv_temp <- calc_variability_internal(values_i = values_temp, values_m = values_m)

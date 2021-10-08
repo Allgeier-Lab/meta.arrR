@@ -34,7 +34,7 @@ get_input_df <- function(x, gamma = TRUE, long = FALSE) {
   if (gamma) {
 
     # calculate total input
-    input_df$Gamma <- rowSums(input_df[, -1])
+    input_df$Gamma <- rowSums(input_df[, -1, drop = FALSE])
 
   }
 
@@ -42,11 +42,11 @@ get_input_df <- function(x, gamma = TRUE, long = FALSE) {
   if (long) {
 
     input_df <- stats::reshape(data = input_df, direction = "long",
-                   v.names = "Value", varying = list(names(input_df[, -1])),
-                   idvar = "Timestep", ids = input_df[, 1],
-                   timevar = "Meta", times = names(input_df[, -1]),
-                   new.row.names = seq(from = 1, to = nrow(input_df) *
-                                         (ncol(input_df) - 1)))
+                               v.names = "Value", varying = list(names(input_df[, -1])),
+                               idvar = "Timestep", ids = input_df[, 1],
+                               timevar = "Meta", times = names(input_df[, -1]),
+                               new.row.names = seq(from = 1, to = nrow(input_df) *
+                                                     (ncol(input_df) - 1)))
 
     # set factor levels (gamma always last even if not present)
     input_df$Meta <- factor(input_df$Meta,
