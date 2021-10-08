@@ -7,6 +7,7 @@
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param input_mn,freq_mn Numeric with mean input amount and frequency.
 #' @param variability Variability of nutrient input.
+#' @param amplitude_mod Numeric to modifiy amplituded (instead of random variability).
 #' @param verbose If TRUE, progress reports are printed.
 #'
 #' @details
@@ -29,7 +30,7 @@
 #'
 #' @export
 sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0),
-                           verbose = TRUE) {
+                           amplitude_mod = NULL, verbose = TRUE) {
 
   # create vector from 1 to max_i for nutrient input
   timesteps <- 1:max_i
@@ -37,7 +38,17 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   # check if only one variability parameter is provided
   if (length(variability) == 1) {
 
-    variability <- rep(variability, times = 2)
+    variability <- rep(x = variability, times = 2)
+
+  }
+
+  if (length(amplitude_mod) == 1 && n != 1) {
+
+    amplitude_mod <- rep(x = amplitude_mod, times = n)
+
+  } else if (!is.null(amplitude_mod) && length(amplitude_mod) != n) {
+
+    stop("'amplitude_mod' must have the same length as n.", call. = FALSE)
 
   }
 
@@ -61,8 +72,17 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   for (i in 1:n) {
 
     # sample random amplitude
-    amplitude_temp <- input_mn * (1 - stats::runif(n = 1, min = 0.0,
-                                                   max = variability[1]))
+    if (is.null(amplitude_mod)) {
+
+      amplitude_temp <- input_mn * (1 - stats::runif(n = 1, min = 0.0,
+                                                     max = variability[1]))
+
+    # use amplitude_mod
+    } else {
+
+      amplitude_temp <- input_mn * amplitude_mod[i]
+
+    }
 
     # sample random phase shift
     phase_temp <- stats::runif(n = 1, min = 0, max = max_i * variability[2])
@@ -83,6 +103,12 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
       warning("Negative input value created. Please check arguments.", call. = FALSE)
 
     }
+  }
+
+  if (!is.null(amplitude_mod) && variability[1] != 0 && verbose) {
+
+    warning("Using 'amplitude_mod' instead of variability.", call. = FALSE)
+
   }
 
   # set names
