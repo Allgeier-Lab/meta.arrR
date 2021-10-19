@@ -27,10 +27,10 @@
 #'
 #' @references
 #' Wang, S., Loreau, M., 2014. Ecosystem stability in space: α, β and γ
-#' variability. Ecol Lett 17, 891–901. \url{https://doi.org/10.1111/ele.12292}
+#' variability. Ecol Lett 17, 891–901. \doi{10.1111/ele.12292}
 #'
 #' Wang, S., Loreau, M., 2016. Biodiversity and ecosystem stability across scales
-#' in metacommunities. Ecol Lett 19, 510–518. \url{https://doi.org/10.1111/ele.12582}
+#' in metacommunities. Ecol Lett 19, 510–518. \doi{10.1111/ele.12582}
 #'
 #' @return list
 #'

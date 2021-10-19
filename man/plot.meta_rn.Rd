@@ -11,7 +11,7 @@
   fill = "ag_biomass",
   gamma = FALSE,
   limits = NULL,
-  burn_in = TRUE,
+  burn_in = FALSE,
   base_size = 10,
   viridis_option = "C",
   ...
