@@ -10,7 +10,6 @@
   summarize = FALSE,
   fill = "ag_biomass",
   gamma = FALSE,
-  timestep = x$max_i,
   limits = NULL,
   burn_in = TRUE,
   base_size = 10,
@@ -28,8 +27,6 @@
 \item{fill}{Character specifying which column to use for plotting.}
 
 \item{gamma}{Logical if TRUE gamma input line is added.}
-
-\item{timestep}{Numeric with time step to plot.}
 
 \item{limits}{Vector with minium and maximum value of \code{fill} values.}
 

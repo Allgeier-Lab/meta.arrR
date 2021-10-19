@@ -8,7 +8,6 @@
 #' @param summarize Logical if TRUE values over time steps are plotted.
 #' @param fill Character specifying which column to use for plotting.
 #' @param gamma Logical if TRUE gamma input line is added.
-#' @param timestep Numeric with time step to plot.
 #' @param limits Vector with minium and maximum value of \code{fill} values.
 #' @param burn_in If TRUE, line to indicate burn-in time is plotted.
 #' @param viridis_option Character with \code{viridis} color palette.
@@ -29,8 +28,7 @@
 #'
 #' @export
 plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_biomass", gamma = FALSE,
-                         timestep = x$max_i, limits = NULL,  burn_in = TRUE, base_size = 10,
-                         viridis_option = "C", ...) {
+                         limits = NULL, burn_in = FALSE, base_size = 10, viridis_option = "C", ...) {
 
   if (!what %in% c("seafloor", "fishpop")) {
 
@@ -46,7 +44,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     col_burn <- ifelse(test = burn_in, yes = "grey", no = NA)
 
     # get burn_in value for filtering
-    burn_in_itr <- x$burn_in
+    burn_in_itr <- ifelse(test = burn_in, yes = x$burn_in,
+                          no = min(x$seafloor[[1]]$timestep))
 
     # setup color scale
     if (gamma) {
@@ -93,7 +92,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
       cbind(meta = i, stats::aggregate(x = input_temp[[i]][, cols_temp],
                                        by = list(timestep = input_temp[[i]]$timestep),
-                                       FUN = "mean"))
+                                       FUN = "mean", na.rm = TRUE))
 
     })
 
@@ -106,7 +105,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       # calculate sum for each timestep
       result_aggr <- stats::aggregate(x = result_aggr[, c(3:6)],
                                       by = list(timestep = result_aggr$timestep),
-                                      FUN = "sum")
+                                      FUN = "sum", na.rm = TRUE)
 
       # add id col for plotting
       result_aggr <- cbind(meta = "Gamma", result_aggr)
@@ -191,25 +190,16 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
   } else {
 
-    # save timestep in different named object to filter
-    timestep_slctd <- timestep
-
-    # check if i can be divided by save_each without reminder
-    if (timestep_slctd %% x$save_each != 0 || timestep_slctd > x$max_i) {
-
-      stop("'timestep' was not saved during model run.",
-           call. = FALSE)
-
-    }
-
     if (what == "seafloor") {
+
+      max_i <- x$max_i
 
       # get data.frame with all seafloor values of selected timestep
       seafloor <- do.call(rbind, lapply(seq_along(x$seafloor), function(j) {
 
         id <- paste0("Metaecosystem ", j)
 
-        cbind(subset(x$seafloor[[j]], timestep == timestep_slctd,
+        cbind(subset(x$seafloor[[j]], timestep == max_i,
                      select = c("x", "y", fill)), id)
 
       }))
@@ -218,8 +208,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       names(seafloor) <- c("x", "y", "fill", "id")
 
       # create title
-      title <- paste0("Timestep         : ", timestep_slctd, " iterations [",
-                      round(timestep_slctd * x$min_per_i / 60 / 24, 1), " days]",
+      title <- paste0("Timestep         : ", x$max_i, " iterations [",
+                      round(x$max_i * x$min_per_i / 60 / 24, 1), " days]",
                       "\nFishpop (total) : ", sum(x$starting_values$pop_n),
                       " indiv [Movement : ", x$movement, "]")
 
@@ -239,7 +229,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     } else if (what == "fishpop") {
 
       # get density within each cell
-      densities <- get_meta_densities(result = x, timestep = timestep_slctd)
+      densities <- get_meta_densities(result = x)
 
       # get number of reefs
       no_reefs <- vapply(x$coords_reef, nrow, FUN.VALUE = numeric(1))
@@ -254,8 +244,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       names(coords_reef) <- c("cell", "x", "y", "id")
 
       # create title
-      title <- paste0("Timestep         : ", timestep_slctd, " iterations [",
-                      round(timestep_slctd * x$min_per_i / 60 / 24, 1), " days]",
+      title <- paste0("Timestep         : ", x$max_i, " iterations [",
+                      round(x$max_i * x$min_per_i / 60 / 24, 1), " days]",
                       "\nFishpop (total) : ", sum(x$starting_values$pop_n),
                       " indiv [Movement : ", x$movement, "]")
 

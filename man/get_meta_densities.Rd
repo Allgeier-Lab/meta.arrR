@@ -4,17 +4,10 @@
 \alias{get_meta_densities}
 \title{get_meta_densities}
 \usage{
-get_meta_densities(
-  result,
-  timestep = result$max_i,
-  normalize = FALSE,
-  verbose = TRUE
-)
+get_meta_densities(result, normalize = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{result}{List with \code{meta_rn} objects simulated with \code{sim_nutr_input_*}.}
-
-\item{timestep}{Numeric with time step to select}
 
 \item{normalize}{Logical if TRUE count is divided by time steps.}
 

@@ -27,5 +27,5 @@ globalVariables(names = c(
   "top_left",
   "top_right",
   "value",
-  "y"
+  "x", "y"
 ))

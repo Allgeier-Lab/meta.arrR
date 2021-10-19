@@ -4,14 +4,12 @@
 \alias{print.meta_rn}
 \title{print.meta_rn}
 \usage{
-\method{print}{meta_rn}(x, digits = 2, timestep = x$max_i, ...)
+\method{print}{meta_rn}(x, digits = 3, ...)
 }
 \arguments{
 \item{x}{\code{meta_rn} object simulated with \code{run_meta}.}
 
 \item{digits}{Numeric of decimal places (passed on to \code{round}).}
-
-\item{timestep}{Numeric with timestep to print.}
 
 \item{...}{Not used.}
 }

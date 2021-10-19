@@ -4,7 +4,6 @@
 #' Get metaecosystems densities
 #'
 #' @param result List with \code{meta_rn} objects simulated with \code{sim_nutr_input_*}.
-#' @param timestep Numeric with time step to select
 #' @param normalize Logical if TRUE count is divided by time steps.
 #' @param verbose Logical if warning messages should be printed.
 #'
@@ -22,8 +21,7 @@
 #' @rdname get_meta_densities
 #'
 #' @export
-get_meta_densities <- function(result, timestep = result$max_i, normalize = FALSE,
-                               verbose = TRUE) {
+get_meta_densities <- function(result, normalize = FALSE, verbose = TRUE) {
 
   # check input
   if (!inherits(x = result, what = "meta_rn")) {
@@ -32,7 +30,7 @@ get_meta_densities <- function(result, timestep = result$max_i, normalize = FALS
 
   }
 
-  # return warning if save_each != 1 because not all occurences are counted
+  # return warning if save_each != 1 because not all occurrences are counted
   if (result$save_each != 1 && verbose) {
 
     warning("Please be aware that 'true' density might be higher because 'save_each' is not one.",
@@ -43,27 +41,14 @@ get_meta_densities <- function(result, timestep = result$max_i, normalize = FALS
   # create flag if burin is present
   flag_burnin <- ifelse(test = result$burn_in > 0, yes = TRUE, no = FALSE)
 
-  # rename timestep for filtering
-  timestep_slctd <- timestep
-
-  # check if i can be divided by save_each without reminder
-  if (timestep_slctd %% result$save_each != 0) {
-
-    stop("'timestep' was not saved during model run.",
-         call. = FALSE)
-
-  }
-
   # create empty raster
-  density_tmp <- raster::raster(ext = result$extent,
-                                resolution = result$grain)
+  density_tmp <- raster::raster(ext = result$extent, resolution = result$grain)
 
   # count densities within cells
   density_full <- do.call(rbind, lapply(seq_along(result$fishpop), function(i) {
 
     # get current fishpop
-    fishpop_temp <- subset(result$fishpop[[i]],
-                           timestep <= timestep_slctd)
+    fishpop_temp <- result$fishpop[[i]]
 
     # remove burn_in
     if (flag_burnin) {
@@ -90,7 +75,7 @@ get_meta_densities <- function(result, timestep = result$max_i, normalize = FALS
   # normalize by i
   if (normalize) {
 
-    density_full$density <- density_full$density / timestep_slctd
+    density_full$density <- density_full$density / x$max_i
 
   }
 
