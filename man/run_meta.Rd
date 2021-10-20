@@ -23,7 +23,7 @@ run_meta(
 
 \item{parameters}{List with all model parameters.}
 
-\item{nutr_input}{List with nutrient input vectors.}
+\item{nutr_input}{\code{nutr_input} with nutrient inputs}
 
 \item{movement}{String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.}
 

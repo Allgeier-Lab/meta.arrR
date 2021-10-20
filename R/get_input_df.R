@@ -25,10 +25,10 @@
 get_input_df <- function(x, gamma = TRUE, long = FALSE) {
 
   # cbind all local ecosystems
-  input_df <- do.call("cbind", x$values)
+  input_df <- do.call("cbind", lapply(X = x$values, function(i) i[, 2]))
 
   # convert to data.frame including timestep
-  input_df <- data.frame(Timestep = 1:x$max_i, input_df)
+  input_df <- data.frame(timestep = x$values[[1]]$timestep, input_df)
 
   # calculate sum on regional/gamma scale
   if (gamma) {

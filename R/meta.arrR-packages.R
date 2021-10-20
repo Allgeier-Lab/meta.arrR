@@ -23,6 +23,7 @@ globalVariables(names = c(
   "itr",
   "measure",
   "meta",
+  "n",
   "timestep",
   "top_left",
   "top_right",

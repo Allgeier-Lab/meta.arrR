@@ -92,19 +92,21 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
     values_temp <- amplitude_temp * sin(period * (timesteps + phase_temp)) + input_mn
 
     # save values for resulting object
-    values_input[[i]] <- values_temp
+    values_input[[i]] <- data.frame(timestep = timesteps,
+                                    input = values_temp)
 
     amplitude_i[i] <- amplitude_temp
 
     phase_i[i] <- phase_temp
 
-    if (any(values_temp < 0)) {
+    if (any(values_temp < 0) && verbose) {
 
       warning("Negative input value created. Please check arguments.", call. = FALSE)
 
     }
   }
 
+  # print warning
   if (!is.null(amplitude_mod) && variability[1] != 0 && verbose) {
 
     warning("Using 'amplitude_mod' instead of variability.", call. = FALSE)

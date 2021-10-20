@@ -63,7 +63,7 @@ calc_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = TR
   # pre-process values #
 
   # convert to matrix
-  values_i <- do.call("cbind", x$values)
+  values_i <- get_input_df(x = x, gamma = FALSE)[, -1]
 
   # calculate sum of each timestep
   values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)

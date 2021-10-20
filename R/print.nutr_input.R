@@ -22,13 +22,13 @@
 print.nutr_input <- function(x, digits = NULL, ...) {
 
   # convert to matrix
-  values_mat <- do.call("cbind", x$values)
+  values_mat <- get_input_df(x = x, gamma = FALSE)[, -1]
 
   # no digits argument present
   if (is.null(digits)) {
 
     # try to estimate number of digits
-    digits <- abs(floor(log10(max(x$values[[1]]))) + 1) + 1
+    digits <- abs(floor(log10(max(values_mat))) + 1) + 1
 
   }
 

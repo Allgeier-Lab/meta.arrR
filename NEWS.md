@@ -8,6 +8,7 @@
 * Add `get_meta_production()` and `plot_meta_production()`
 * Add `filter_metarn()`
 * Remove `timestep` argument from many functions
+* Combined `filter_nutr_input` and `filter_metarn` to `filter_meta`
 
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions

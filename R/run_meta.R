@@ -5,7 +5,7 @@
 #'
 #' @param metasyst \code{meta_syst} object created with \code{setup_meta}.
 #' @param parameters List with all model parameters.
-#' @param nutr_input List with nutrient input vectors.
+#' @param nutr_input \code{nutr_input} with nutrient inputs
 #' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param min_per_i Integer to specify minutes per i.
@@ -150,6 +150,20 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
     }
 
+    # check length of nutrient input
+    if (!all(vapply(X = nutr_input$values, nrow, FUN.VALUE = integer(1)) == max_i)) {
+
+      stop("There must be a nutrient input value for each timestep.", call. = FALSE)
+
+    }
+
+    # check meta n of input
+    if (nutr_input$n != n) {
+
+      stop("There must be nutrient input values for each local ecosystem.", call. = FALSE)
+
+    }
+
     # set nutrient flag to save results later
     flag_nutr_input <- TRUE
 
@@ -163,6 +177,9 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
     flag_nutr_input <- FALSE
 
   }
+
+  # get list of input values
+  nutr_input_list <- lapply(X = nutr_input$values, function(i) i[, 2])
 
   # setup seafloor #
 
@@ -234,7 +251,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
                 parameters = parameters, movement = movement, max_dist = max_dist,
                 n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
                 fishpop_attributes = metasyst$fishpop_attributes,
-                nutr_input = nutr_input$values, coords_reef = coords_reef, cell_adj = cell_adj,
+                nutr_input = nutr_input_list, coords_reef = coords_reef, cell_adj = cell_adj,
                 extent = extent, dimensions = dimensions,
                 max_i = max_i, min_per_i = min_per_i, save_each = save_each,
                 seagrass_each = seagrass_each, burn_in = burn_in,
