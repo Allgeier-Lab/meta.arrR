@@ -158,7 +158,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
     }
 
     # check meta n of input
-    if (nutr_input$n != n) {
+    if (nutr_input$n != metasyst$n) {
 
       stop("There must be nutrient input values for each local ecosystem.", call. = FALSE)
 
