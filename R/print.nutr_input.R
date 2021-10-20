@@ -22,7 +22,7 @@
 print.nutr_input <- function(x, digits = NULL, ...) {
 
   # convert to matrix
-  values_mat <- get_input_df(x = x, gamma = FALSE)[, -1]
+  values_mat <- get_input_df(x = x, gamma = FALSE)[, -1, drop = FALSE]
 
   # no digits argument present
   if (is.null(digits)) {

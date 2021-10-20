@@ -44,7 +44,7 @@ sample_variability.nutr_input <- function(x, what = NULL, itr = 1, lag = NULL, v
   }
 
   # convert to matrix
-  values_i <- get_input_df(x = x, gamma = FALSE)[, -1]
+  values_i <- get_input_df(x = x, gamma = FALSE)[, -1, drop = FALSE]
 
   # loop through all iterations
   result <- lapply(1:itr, function(i) {
