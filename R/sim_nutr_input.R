@@ -7,7 +7,8 @@
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param input_mn,freq_mn Numeric with mean input amount and frequency.
 #' @param variability Variability of nutrient input.
-#' @param amplitude_mod Numeric to modifiy amplituded (instead of random variability).
+#' @param amplitude_mod Numeric to modify amplituded (instead of random variability).
+#' @param phase_mod Numeric to modify phase (instead of random variability).
 #' @param verbose If TRUE, progress reports are printed.
 #'
 #' @details
@@ -30,7 +31,7 @@
 #'
 #' @export
 sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0),
-                           amplitude_mod = NULL, verbose = TRUE) {
+                           amplitude_mod = NULL, phase_mod = NULL, verbose = TRUE) {
 
   # create vector from 1 to max_i for nutrient input
   timesteps <- 1:max_i
@@ -42,6 +43,7 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
 
   }
 
+  # check length of amplitude modifier
   if (length(amplitude_mod) == 1 && n != 1) {
 
     amplitude_mod <- rep(x = amplitude_mod, times = n)
@@ -49,6 +51,17 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   } else if (!is.null(amplitude_mod) && length(amplitude_mod) != n) {
 
     stop("'amplitude_mod' must have the same length as n.", call. = FALSE)
+
+  }
+
+  # check length of phase modifier
+  if (length(phase_mod) == 1 && n != 1) {
+
+    phase_mod <- rep(x = phase_mod, times = n)
+
+  } else if (!is.null(phase_mod) && length(phase_mod) != n) {
+
+    stop("'phase_mod' must have the same length as n.", call. = FALSE)
 
   }
 
@@ -84,8 +97,18 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
 
     }
 
-    # sample random phase shift
-    phase_temp <- stats::runif(n = 1, min = 0, max = max_i * variability[2])
+    # sample random phase
+    if (is.null(phase_mod)) {
+
+      # sample random phase shift
+      phase_temp <- stats::runif(n = 1, min = 0, max = max_i * variability[2])
+
+      # use amplitude_mod
+    } else {
+
+      phase_temp <- max_i * phase_mod[i]
+
+    }
 
     # calculate sine curve; vertical shift to make sure x > 0
     # amplitude * sin(period * (x + phase)) + vertical
@@ -110,6 +133,21 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   if (!is.null(amplitude_mod) && variability[1] != 0 && verbose) {
 
     warning("Using 'amplitude_mod' instead of variability.", call. = FALSE)
+
+  }
+
+  # print warning
+  if (!is.null(phase_mod) && variability[2] != 0 && verbose) {
+
+    warning("Using 'phase_mod' instead of variability.", call. = FALSE)
+
+  }
+
+  # print warning
+  if (any(c(amplitude_mod, phase_mod) > 1.0) || any(c(amplitude_mod, phase_mod) < 0.0)) {
+
+    warning("'amplitude_mod' and 'phase_mod' values should be 0 <= x <= 1.",
+            call. = FALSE)
 
   }
 
