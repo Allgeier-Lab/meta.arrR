@@ -37,6 +37,13 @@ filter_meta <- function(x, filter, verbose) UseMethod("filter_meta")
 #' @export
 filter_meta.nutr_input <- function(x, filter, verbose = TRUE) {
 
+  # repeat filter
+  if (length(filter == 1)) {
+
+    filter <- rep(x = filter, times = 2)
+
+  }
+
   # check if all timesteps are integer
   if (!is.integer(filter)) {
 
@@ -75,14 +82,7 @@ filter_meta.nutr_input <- function(x, filter, verbose = TRUE) {
 
 #' @name filter_meta
 #' @export
-filter_meta.meta_rn <- function(x, filter, verbose = NULL) {
-
-  # check if mdl_rn is provided
-  if (!inherits(x = x, what = "meta_rn")) {
-
-    stop("Please provide 'meta_rn' object created with 'run_simulation'.", call. = FALSE)
-
-  }
+filter_meta.meta_rn <- function(x, filter, verbose = TRUE) {
 
   # repeat filter
   if (length(filter == 1)) {
@@ -91,13 +91,20 @@ filter_meta.meta_rn <- function(x, filter, verbose = NULL) {
 
   }
 
-  # # check if i can be divided by save_each without reminder
-  # if (timestep_slctd %% x$save_each != 0 || timestep_slctd > x$max_i) {
-  #
-  #   stop("'timestep' was not saved during model run.",
-  #        call. = FALSE)
-  #
-  # }
+  # check if all timesteps are integer
+  if (!is.integer(filter)) {
+
+    # convert to integer removing all digits
+    filter <- as.integer(filter)
+
+    # print warning
+    if (verbose) {
+
+      warning("'timesteps' are no integer values. All values will be truncated.",
+              call. = FALSE)
+
+    }
+  }
 
   for (i in 1:x$n) {
 
@@ -117,8 +124,12 @@ filter_meta.meta_rn <- function(x, filter, verbose = NULL) {
 
   }
 
+  # filter input
+  x$nutr_input <- filter_meta.nutr_input(x = x$nutr_input, filter = filter,
+                                         verbose = FALSE)
+
   # replace elements
-  x$max_i <- filter[2]
+  x$max_i <- max(filter)
 
   return(x)
 }
