@@ -25,19 +25,25 @@ print.meta_rn <- function(x, digits = 3, ...) {
   # calc biomass values
   biomass <- lapply(x$seafloor, function(seafloor_temp) {
 
+    # filter max_i timestep
+    seafloor_maxi <- seafloor_temp[seafloor_temp$timestep == x$max_i, ]
+
     # calculate total values
-    c(bg = round(mean(seafloor_temp$bg_biomass, na.rm = TRUE), digits = digits),
-      ag = round(mean(seafloor_temp$ag_biomass, na.rm = TRUE), digits = digits),
-      nutr = round(mean(seafloor_temp$nutrients_pool), digits = digits),
-      detr = round(mean(seafloor_temp$detritus_pool), digits = digits))
+    c(bg = round(mean(seafloor_maxi$bg_biomass, na.rm = TRUE), digits = digits),
+      ag = round(mean(seafloor_maxi$ag_biomass, na.rm = TRUE), digits = digits),
+      nutr = round(mean(seafloor_maxi$nutrients_pool), digits = digits),
+      detr = round(mean(seafloor_maxi$detritus_pool), digits = digits))
 
   })
 
   # get number of reefs
   no_reefs <- vapply(x$seafloor, function(seafloor_temp) {
 
+    # filter max_i timestep
+    seafloor_maxi <- seafloor_temp[seafloor_temp$timestep == x$max_i, ]
+
     # get number of rows in which reef = 1
-    nrow(seafloor_temp[seafloor_temp$reef == 1, ])
+    nrow(seafloor_maxi[seafloor_maxi$reef == 1, ])
 
   }, FUN.VALUE = numeric(1))
 
@@ -55,9 +61,12 @@ print.meta_rn <- function(x, digits = 3, ...) {
     # calculate number of fish, mean length and mortality
     } else {
 
-      c(no = length(fish_temp$id),
-        length = round(mean(fish_temp$length), digits = digits),
-        mort = round(mean(fish_temp$died_background + fish_temp$died_consumption),
+      # filter max_i timestep
+      fishpop_maxi <- fish_temp[fish_temp$timestep == x$max_i, ]
+
+      c(no = length(fishpop_maxi$id),
+        length = round(mean(fishpop_maxi$length), digits = digits),
+        mort = round(mean(fishpop_maxi$died_background + fishpop_maxi$died_consumption),
                      digits = digits))
 
     }

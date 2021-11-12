@@ -10,7 +10,7 @@ filter_meta(x, filter, verbose)
 
 \method{filter_meta}{nutr_input}(x, filter, verbose = TRUE)
 
-\method{filter_meta}{meta_rn}(x, filter, verbose = NULL)
+\method{filter_meta}{meta_rn}(x, filter, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
