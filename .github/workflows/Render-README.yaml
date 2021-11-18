@@ -23,9 +23,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          extra-packages: |
-            rcmdcheck
-            Allgeier-Lab/arrR
+          extra-packages: allgeier-lab/arrR, rmarkdown
 
       - name: Render README files
         run: Rscript -e 'rmarkdown::render("README.Rmd")'
