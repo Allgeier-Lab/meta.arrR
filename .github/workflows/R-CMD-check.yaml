@@ -42,9 +42,6 @@ jobs:
         with:
           extra-packages: allgeier-lab/arrR, rcmdcheck
 
-      - name: Install GitHub setup-r-dependencies
-        run: Rscript -e 'remotes::install_github(repo = "Allgeier-Lab/arrR", ref = "development")'
-
       - uses: r-lib/actions/check-r-package@v1
 
       - name: Show testthat output
