@@ -40,7 +40,10 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          extra-packages: rcmdcheck, remotes
+          extra-packages: |
+            rcmdcheck
+            remotes
+          exclude: arrR
 
       - name: Install GitHub setup-r-dependencies
         run: Rscript -e 'remotes::install_github(repo = "Allgeier-Lab/arrR", ref = "development")'
