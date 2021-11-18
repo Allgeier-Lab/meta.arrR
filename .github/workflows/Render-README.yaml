@@ -23,7 +23,10 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          extra-packages: allgeier-lab/arrR, rmarkdown
+          extra-packages: rmarkdown, remotes
+
+      - name: Install dependencies
+        run: Rscript -e 'remotes::install_github(repo = "Allgeier-Lab/arrR")'
 
       - name: Render README files
         run: Rscript -e 'rmarkdown::render("README.Rmd")'
