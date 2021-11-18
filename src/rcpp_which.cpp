@@ -21,7 +21,7 @@ using namespace Rcpp;
 //' @aliases rcpp_which
 //' @rdname rcpp_which
 //'
-//' @keywords export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::IntegerVector rcpp_which(Rcpp::IntegerVector x, Rcpp::IntegerVector y) {
 

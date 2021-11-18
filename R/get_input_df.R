@@ -14,14 +14,16 @@
 #' @return data.frame
 #'
 #' @examples
+#' \dontrun{
 #' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)
 #' get_input_df(nutr_input)
+#' }
 #'
 #' @aliases get_input_df
 #' @rdname get_input_df
 #'
-#' @export
+#' @keywords internal
 get_input_df <- function(x, gamma = TRUE, long = FALSE) {
 
   # cbind all local ecosystems

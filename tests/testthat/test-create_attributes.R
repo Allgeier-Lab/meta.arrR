@@ -10,7 +10,7 @@ fishpop <- lapply(1:n, function(i)
                       parameters = parameters, verbose = FALSE))
 
 # create attributes
-attributes_matrix <- meta.arrR::create_attributes(fishpop = fishpop, parameters = parameters)
+attributes_matrix <- create_attributes(fishpop = fishpop, parameters = parameters)
 
 test_that("create_attributes returns matrix", {
 

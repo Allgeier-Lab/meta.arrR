@@ -22,4 +22,4 @@ Returns index of all elements of \code{y} vector within \code{x} vector.
 The index of the first element is 0. If element is not present within  \code{x} vector
 \code{NA} is returned.
 }
-\keyword{export}
+\keyword{internal}
