@@ -25,11 +25,7 @@ jobs:
         with:
           extra-packages: |
             rcmdcheck
-            remotes
-          exclude: arrR
-
-      - name: Install GitHub setup-r-dependencies
-        run: Rscript -e 'remotes::install_github(repo = "Allgeier-Lab/arrR", ref = "development")'
+            Allgeier-Lab/arrR
 
       - name: Render README files
         run: Rscript -e 'rmarkdown::render("README.Rmd")'
