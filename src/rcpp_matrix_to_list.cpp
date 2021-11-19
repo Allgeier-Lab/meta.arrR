@@ -21,7 +21,7 @@ using namespace Rcpp;
 //' @aliases rcpp_matrix_to_list
 //' @rdname rcpp_matrix_to_list
 //'
-//' @keywords export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
 
@@ -88,7 +88,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
     colnames(fishpop_temp) = Rcpp::CharacterVector::create("id", "age", "x", "y", "heading",
              "length", "weight", "activity", "respiration", "reserves", "reserves_max",
              "behavior", "consumption", "excretion", "died_consumption", "died_background",
-             "stationary");
+             "residence");
 
     // return result
     result[i] = fishpop_temp;

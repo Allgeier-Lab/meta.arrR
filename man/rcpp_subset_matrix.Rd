@@ -20,4 +20,4 @@ Rcpp subset matrix.
 \details{
 Returns matrix with only subset of rows of \code{fishpop} specified by \code{rows}.
 }
-\keyword{export}
+\keyword{internal}

@@ -7,7 +7,7 @@
 \method{print}{nutr_input}(x, digits = NULL, ...)
 }
 \arguments{
-\item{x}{\code{nutr_input} object simulated with \code{simulate_nutr_input}.}
+\item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
 
 \item{digits}{Numeric of decimal places (passed on to \code{round}).}
 
@@ -17,11 +17,11 @@
 Printing method for nutr_input object.
 }
 \details{
-Printing method for \code{nutr_input} created with \code{simulate_nutr_input}.
+Printing method for \code{nutr_input} created with \code{sim_nutr_input_*}.
 }
 \examples{
-\dontrun{
+nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+variability = 0.5)
 print(nutr_input)
-}
 
 }

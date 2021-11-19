@@ -21,7 +21,7 @@ using namespace Rcpp;
 //' @aliases rcpp_list_to_matrix
 //' @rdname rcpp_list_to_matrix
 //'
-//' @keywords export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool id) {
 
@@ -33,7 +33,7 @@ Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool 
   Rcpp::CharacterVector col_names = Rcpp::CharacterVector::create("id", "age", "x", "y",
     "heading", "length", "weight", "activity", "respiration", "reserves", "reserves_max",
     "behavior", "consumption", "excretion", "died_consumption", "died_background",
-    "stationary");
+    "residence");
 
   // one more col needed for id
   if (id) {

@@ -20,4 +20,4 @@ Rcpp matrix to list.
 \details{
 Converts individual matrix to a list split by metaecosystems.
 }
-\keyword{export}
+\keyword{internal}

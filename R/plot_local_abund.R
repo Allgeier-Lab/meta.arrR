@@ -3,9 +3,8 @@
 #' @description
 #' Plot local abundance.
 #'
-#' @param x \code{meta_rn} object simulated with \code{run_meta}.
+#' @param result \code{meta_rn} object simulated with \code{run_meta}.
 #' @param base_size Numeric to specify base font size.
-#' @param ... Not used.
 #'
 #' @details
 #' The resulting plot describes the number of individuals within each local metaecosystem
@@ -14,17 +13,17 @@
 #'
 #' @examples
 #' \dontrun{
-#' plot_local_abund(x = result_attr)
+#' plot_local_abund(result = result_rand)
 #' }
 #'
 #' @aliases plot_local_abund
 #' @rdname plot_local_abund
 #'
 #' @export
-plot_local_abund <- function(x, base_size = 10, ...) {
+plot_local_abund <- function(result, base_size = 10) {
 
   # get abundance of all metaecosystems
-  abundance <- get_abundance(result = x)
+  abundance <- get_abundance(result = result)
 
   # get min and max values
   abundance_max <- max(abundance$abundance)
@@ -37,8 +36,12 @@ plot_local_abund <- function(x, base_size = 10, ...) {
                      data.frame(timestep = unique(abundance$timestep),
                                 value = abundance_max, measure = "Max"),
                      data.frame(timestep = unique(abundance$timestep),
-                                value = mean(x$starting_values$pop_n),
+                                value = mean(result$starting_values$pop_n),
                                 measure = "Mean"))
+
+  # create title
+  title <- paste0("Fishpop (total) : ", sum(result$starting_values$pop_n),
+                  " indiv [Movement : ", result$movement, "]")
 
   # create plot
   gg_input <- ggplot2::ggplot(data = abundance) +
@@ -51,7 +54,7 @@ plot_local_abund <- function(x, base_size = 10, ...) {
     ggplot2::scale_linetype_manual(name = "", values = c("Min" = 2, "Max" = 2, "Mean" = 1)) +
     ggplot2::scale_y_continuous(limits = c(0, abundance_max + abundance_min),
                                 breaks = 0:(abundance_max + abundance_min)) +
-    ggplot2::labs(x = "Timestep", y = "Local abundance ") +
+    ggplot2::labs(x = "Timestep", y = "Local abundance", title = title) +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
                    legend.position = "bottom")

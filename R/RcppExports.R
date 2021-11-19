@@ -17,7 +17,7 @@
 #' @aliases rcpp_get_table
 #' @rdname rcpp_get_table
 #'
-#' @keywords export
+#' @keywords internal
 rcpp_get_table <- function(x, n) {
     .Call(`_meta_arrR_rcpp_get_table`, x, n)
 }
@@ -40,7 +40,7 @@ rcpp_get_table <- function(x, n) {
 #' @aliases rcpp_list_to_matrix
 #' @rdname rcpp_list_to_matrix
 #'
-#' @keywords export
+#' @keywords internal
 rcpp_list_to_matrix <- function(fishpop, pop_n_sum, id) {
     .Call(`_meta_arrR_rcpp_list_to_matrix`, fishpop, pop_n_sum, id)
 }
@@ -61,12 +61,40 @@ rcpp_list_to_matrix <- function(fishpop, pop_n_sum, id) {
 #' @aliases rcpp_matrix_to_list
 #' @rdname rcpp_matrix_to_list
 #'
-#' @keywords export
+#' @keywords internal
 rcpp_matrix_to_list <- function(fishpop, n) {
     .Call(`_meta_arrR_rcpp_matrix_to_list`, fishpop, n)
 }
 
-#' rcpp_meta_processes
+#' rcpp_move_meta
+#'
+#' @description
+#' Rcpp move meta.
+#'
+#' @param fishpop List with fish population.
+#' @param n,pop_n_sum Integer with total number of local metaecosystems and individuals.
+#' @param id_attr Vector with unique id of fishpop attributes matrix.
+#' @param residence_values Vector with residence values.
+#' @param id_meta Vector with metaecosystem ids.
+#' @param extent Spatial extent of the seafloor raster.
+#'
+#' @details
+#' Simulate movement across local metaecosystem. Individuals move to a new local
+#' metaecosystem with a certain probability each timestep. The probability increases
+#' depending on the residence value and how long individuals already stayed on local
+#' metaecosystem. To avoid this movement set \code{parameters$move_residence = 0}.
+#'
+#' @return list
+#'
+#' @aliases rcpp_move_meta
+#' @rdname rcpp_move_meta
+#'
+#' @keywords export
+rcpp_move_meta <- function(fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent)
+}
+
+#' rcpp_sim_meta
 #'
 #' @description
 #' Rcpp run simulation of metaecosystems processes.
@@ -78,7 +106,7 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @param max_dist Double with maximum movement distance.
 #' @param n Integer with number of metaecosystems.
 #' @param pop_n Vector with number of individuals.
-#' @param fishpop_attributes Matrix with stationary and reserves_thres values for each individual
+#' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual
 #' @param nutr_input List with amount of nutrient input each timestep.
 #' @param coords_reef List with ID and coords of reef cells.
 #' @param cell_adj Matrix with cell adjacencies.
@@ -101,8 +129,8 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' individuals, (vii) growth of individuals, (viii) mortality of individuals,
 #' (ix) diffusion of nutrients/detritus, and (x) nutrient output (all inner loop).
 #'
-#' For a detailed describtion of all sub-processes (with exception of (i)), see the
-#' \code{arrR} package.
+#' For a detailed description of all sub-processes (with exception of (i)), see the
+#' \pkg{arrR} package.
 #'
 #' @references
 #' For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
@@ -112,40 +140,12 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #'
 #' @return void
 #'
-#' @aliases rcpp_meta_processes
-#' @rdname rcpp_meta_processes
+#' @aliases rcpp_sim_meta
+#' @rdname rcpp_sim_meta
 #'
 #' @export
-rcpp_meta_processes <- function(seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
-    invisible(.Call(`_meta_arrR_rcpp_meta_processes`, seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
-}
-
-#' rcpp_move_meta
-#'
-#' @description
-#' Rcpp move meta.
-#'
-#' @param fishpop List with fish population.
-#' @param pop_n_sum Integer with total number of individuals.
-#' @param id_attr Vector with unique id of fishpop attributes matrix.
-#' @param stationary_values Vector with stationary values.
-#' @param id_meta Vector with metaecosystem ids.
-#' @param extent Spatial extent of the seafloor raster.
-#'
-#' @details
-#' Simulate movement across local metaecosystem. Individuals move to a new local
-#' metaecosystem with a certain probability each timestep. The probability increases
-#' depending on the stationary value and how long individuals already stayed on local
-#' metaecosystem. To avoid this movement set \code{parameters$move_stationary = 0}.
-#'
-#' @return list
-#'
-#' @aliases rcpp_move_meta
-#' @rdname rcpp_move_meta
-#'
-#' @keywords export
-rcpp_move_meta <- function(fishpop, stationary_values, pop_n_sum, id_attr, id_meta, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, stationary_values, pop_n_sum, id_attr, id_meta, extent)
+rcpp_sim_meta <- function(seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
+    invisible(.Call(`_meta_arrR_rcpp_sim_meta`, seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutr_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
 }
 
 #' rcpp_subset_matrix
@@ -164,7 +164,7 @@ rcpp_move_meta <- function(fishpop, stationary_values, pop_n_sum, id_attr, id_me
 #' @aliases rcpp_subset_matrix
 #' @rdname rcpp_subset_matrix
 #'
-#' @keywords export
+#' @keywords internal
 rcpp_subset_matrix <- function(fishpop, rows) {
     .Call(`_meta_arrR_rcpp_subset_matrix`, fishpop, rows)
 }
@@ -187,7 +187,7 @@ rcpp_subset_matrix <- function(fishpop, rows) {
 #' @aliases rcpp_which
 #' @rdname rcpp_which
 #'
-#' @keywords export
+#' @keywords internal
 rcpp_which <- function(x, y) {
     .Call(`_meta_arrR_rcpp_which`, x, y)
 }

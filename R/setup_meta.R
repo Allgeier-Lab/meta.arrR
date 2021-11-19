@@ -4,6 +4,7 @@
 #' Setup metaecosystems.
 #'
 #' @param n Integer with number of metaecosystems to setup.
+#' @param max_i Integer with maximum number of simulation time steps.
 #' @param dimensions Vector with number of rows and columns (spatial dimensions).
 #' @param grain Vector with size of cells in x- and y-direction (spatial grain).
 #' @param reefs 2-Column matrix with coordinates of artificial reefs.
@@ -21,18 +22,15 @@
 #' @return meta_syst
 #'
 #' @examples
-#' \dontrun{
-#' metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,
-#' starting_values = starting_values, parameters = parameters)
-#' }
+#' metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
+#' starting_values = meta.arrR_starting_values, parameters = meta.arrR_parameters)
 #'
 #' @aliases setup_meta
 #' @rdname setup_meta
 #'
 #' @export
-setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_values, parameters,
-                       random = 0, use_log = TRUE,
-                       verbose = TRUE, ...) {
+setup_meta <- function(n, max_i, dimensions, grain = c(1, 1), reefs = NULL, starting_values, parameters,
+                       random = 0, use_log = TRUE, verbose = TRUE, ...) {
 
   # print some information on console
   if (verbose) {
@@ -41,53 +39,65 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
 
     message("> ...Creating seafloor with ", dimensions[1], " rows x ", dimensions[2], " cols...")
 
-    # reefs are present
-    if (!is.null(reefs)) {
+  }
 
-      # reefs are list, i.e., different across local metaecosystems
-      if (inherits(x = reefs, what = "list")) {
+  # reefs are present
+  if (!is.null(reefs)) {
 
-        # must be same length as number of local metaecosystems
-        if (length(reefs) != n) {
+    # reefs are list, i.e., different across local metaecosystems
+    if (inherits(x = reefs, what = "list")) {
 
-          stop("'reefs' must be matrix or list with reef coordinates.", call. = FALSE)
-
-        }
-
-      # reefs are matrix, i.e., the same for each local metaecosystem
-      } else if (inherits(x = reefs, what = "matrix")) {
-
-        reefs <- rep(x = list(reefs), each = n)
-
-      # reef argument is wrong
-      } else {
+      # must be same length as number of local metaecosystems
+      if (length(reefs) != n) {
 
         stop("'reefs' must be matrix or list with reef coordinates.", call. = FALSE)
 
       }
 
-      # get number of reefs for each local metaecosystem
-      no_reefs <- paste(c(vapply(reefs, FUN = function(i) {
+    # reefs are matrix, i.e., the same for each local metaecosystem
+    } else if (inherits(x = reefs, what = "matrix")) {
 
-        ifelse(test = is.null(i), yes = 0, no = nrow(i))
+      reefs <- rep(x = list(reefs), each = n)
 
-      }, FUN.VALUE = numeric(1))),  collapse = ", ")
+    # reef argument is wrong
+    } else {
 
+      stop("'reefs' must be matrix or list with reef coordinates.", call. = FALSE)
+
+    }
+
+    # get number of reefs for each local metaecosystem
+    no_reefs <- paste(c(vapply(reefs, FUN = function(i) {
+
+      ifelse(test = is.null(i), yes = 0, no = nrow(i))
+
+    }, FUN.VALUE = numeric(1))),  collapse = ", ")
+
+    if (verbose) {
 
       message("> ...Creating ", no_reefs, " artifical reef cells...")
 
-    # no reefs present
-    } else {
+    }
+
+  # no reefs present
+  } else {
+
+    if (verbose) {
 
       message("> ...No artifical reefs present...")
 
-      reefs <- rep(x = list(NULL), each = n)
-
     }
+
+    reefs <- rep(x = list(NULL), each = n)
+
+  }
+
+  if (verbose) {
 
     message("> ...Creating ", paste(starting_values$pop_n, collapse = ", "), " individuals...")
 
   }
+
 
   # make sure grain is vector xy dimension
   if (length(grain) == 1) {
@@ -148,8 +158,8 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
 
       fishpop[1, ] <- NA
 
-      # add stationary col
-      fishpop$stationary <- NA
+      # add residence col
+      fishpop$residence <- NA
 
     } else {
 
@@ -159,8 +169,8 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
       # create unique id; first number identifies metaecosystem
       fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
 
-      # add stationary col
-      fishpop$stationary <- 0
+      # add initial residence column
+      fishpop$residence <- 0
 
     }
 
@@ -172,9 +182,11 @@ setup_meta <- function(n, dimensions, grain = c(1, 1), reefs = NULL, starting_va
   # get extent
   extent <- raster::extent(x = seafloor_list[[1]])
 
-  # create look-up table for stationary value
+  # create look-up table for residence value
   fishpop_attributes <- create_attributes(fishpop = fishpop_list,
-                                          parameters = parameters)
+                                          parameters = parameters,
+                                          max_i = max_i)
+
 
   # combine everything to one list
   result_list <- list(seafloor = seafloor_list, fishpop = fishpop_list,

@@ -1,34 +1,21 @@
-# get parameters
-parameters <- meta.arrR::meta.arrR_parameters
+# create plot
+result_gg <- plot(result_rand)
+result_gg_sum <- plot(result_rand, summarize = TRUE)
 
-starting_values <- meta.arrR::meta.arrR_starting_values
+# create plot
+result_gg_fish <- plot(result_rand, what = "fishpop")
+result_gg_sum_fish <- plot(result_rand, summarize = TRUE, what = "fishpop")
 
-# set number of metaecosystems
-n <- 3
+test_that("plot.meta_rn returns ggplot for seafloor", {
 
-# setup extent and grain
-dimensions <- c(100, 100)
-grain <- 1
+  expect_s3_class(object = result_gg, class = "ggplot")
+  expect_s3_class(object = result_gg_sum, class = "ggplot")
 
-# set time per iterations
-min_per_i <- 120
+})
 
-# setup metaecosystems
-metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = NULL,
-                       starting_values = starting_values, parameters = parameters)
+test_that("plot.meta_rn returns ggplot for fishpop", {
 
-# set max_i and save_each
-max_i <- 10
-
-save_each <- 2
-
-result <- run_meta(metasyst = metasyst, parameters = parameters,
-                   max_i = max_i, min_per_i = 120, save_each = save_each)
-
-result_gg <- plot(result)
-
-test_that("plot.meta_rn returns ggplot", {
-
-  expect_is(object = result_gg, class = "ggplot")
+  expect_s3_class(object = result_gg_fish, class = "ggplot")
+  expect_s3_class(object = result_gg_sum_fish, class = "ggplot")
 
 })

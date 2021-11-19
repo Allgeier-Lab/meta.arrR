@@ -7,7 +7,7 @@
 get_abundance(result)
 }
 \arguments{
-\item{result}{\code{meta_rn} object simulated with \code{simulate_meta}.}
+\item{result}{\code{meta_rn} object simulated with \code{run_meta}.}
 }
 \value{
 data.frame
@@ -21,7 +21,7 @@ created with \code{run_meta}.
 }
 \examples{
 \dontrun{
-get_abundance(result = result_attr)
+get_abundance(result = result_rand)
 }
 
 }

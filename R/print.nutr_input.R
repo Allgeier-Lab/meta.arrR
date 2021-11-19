@@ -3,17 +3,17 @@
 #' @description
 #' Printing method for nutr_input object.
 #'
-#' @param x \code{nutr_input} object simulated with \code{simulate_nutr_input}.
+#' @param x \code{nutr_input} object simulated with \code{sim_nutr_input_*}.
 #' @param digits Numeric of decimal places (passed on to \code{round}).
 #' @param ... Not used.
 #'
 #' @details
-#' Printing method for \code{nutr_input} created with \code{simulate_nutr_input}.
+#' Printing method for \code{nutr_input} created with \code{sim_nutr_input_*}.
 #'
 #' @examples
-#' \dontrun{
+#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+#' variability = 0.5)
 #' print(nutr_input)
-#' }
 #'
 #' @aliases print.nutr_input
 #' @rdname print.nutr_input
@@ -21,31 +21,28 @@
 #' @export
 print.nutr_input <- function(x, digits = NULL, ...) {
 
-  # get number of metaecosystems
-  n <- length(x)
-
-  # get maximum timesteps
-  n_input <- unique(vapply(x, FUN = length, FUN.VALUE = numeric(1)))
+  # convert to matrix
+  values_mat <- get_input_df(x = x, gamma = FALSE)[, -1, drop = FALSE]
 
   # no digits argument present
   if (is.null(digits)) {
 
     # try to estimate number of digits
-    digits <- abs(floor(log10(max(x[[1]]))) + 1) + 1
+    digits <- abs(floor(log10(max(values_mat))) + 1) + 1
 
   }
 
   # get min input
-  min_input <- vapply(x, FUN = function(x) round(min(x), digits = digits),
-                      FUN.VALUE = numeric(1))
+  min_input <- apply(X = values_mat, MARGIN = 2,
+                     FUN = function(i) round(min(i), digits = digits))
 
   # get mean input
-  mean_input <- vapply(x, FUN = function(x) round(mean(x), digits = digits),
-                       FUN.VALUE = numeric(1))
+  mean_input <- apply(X = values_mat, MARGIN = 2,
+                      FUN = function(i) round(mean(i), digits = digits))
 
   # get max input
-  max_input <- vapply(x, FUN = function(x) round(max(x), digits = digits),
-                      FUN.VALUE = numeric(1))
+  max_input <- apply(X = values_mat, MARGIN = 2,
+                     FUN = function(i) round(max(i), digits = digits))
 
   if (all(mean_input == 0)) {
 
@@ -55,9 +52,9 @@ print.nutr_input <- function(x, digits = NULL, ...) {
 
   # print message
   cat(paste0(
-    "Metaecosystems : ", n, "\n",
-    "Total inputs   : ", n_input, " timesteps\n",
+    "Metaecosystems : ", x$n, "\n",
+    "Max timesteps  : ", x$max_i, " [Freq: ", x$freq_mn, "]\n",
     "Min input      : ", paste(min_input, collapse = ", "), "\n",
-    "Mean input     : ", paste(mean_input, collapse = ", "),  "\n",
-    "Max input      : ", paste(max_input, collapse = ", ")))
+    "Mean input     : ", paste(mean_input, collapse = ", "), "\n",
+    "Max input      : ", paste(max_input, collapse = ", "), "\n"))
 }

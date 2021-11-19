@@ -4,12 +4,14 @@
 \alias{create_attributes}
 \title{create_attributes}
 \usage{
-create_attributes(fishpop, parameters)
+create_attributes(fishpop, parameters, max_i)
 }
 \arguments{
 \item{fishpop}{List with fish population}
 
 \item{parameters}{List with parameters}
+
+\item{max_i}{Integer with maximum number of simulation time steps.}
 }
 \value{
 matrix
@@ -18,12 +20,13 @@ matrix
 Create attribute values.
 }
 \details{
-Creates matrix with id, stationary, and reserves threshold value for each
+Creates matrix with id, residence, and reserves threshold value for each
 individual of fish population.
 }
 \examples{
 \dontrun{
-create_attributes(fishpop = fishpop_list, parameters = parameters)
+create_attributes(fishpop = fishpop_list, parameters = parameters, max_i = 4380)
 }
 
 }
+\keyword{internal}

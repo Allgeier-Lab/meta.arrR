@@ -11,8 +11,9 @@
 #' Printing method for metaecosystem created with \code{setup_meta}.
 #'
 #' @examples
-#' nutr_input <- simulate_nutr_input(n = 3, max_i = 4380, freq_mn = 3, freq_sd = 0.1,
-#' input_max = 0.1, input_sd = 0.25)
+#' metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
+#' starting_values = meta.arrR_starting_values, parameters = meta.arrR_parameters)
+#' print(metasyst)
 #'
 #' @aliases print.meta_sys
 #' @rdname print.meta_syst
@@ -28,7 +29,11 @@ print.meta_syst <- function(x, digits = 3, ...) {
   }, FUN.VALUE = numeric(1))),  collapse = ", ")
 
   # get number of individuals
-  no_fish <- paste(c(vapply(x$fishpop, FUN = nrow, FUN.VALUE = numeric(1))),  collapse = ", ")
+  no_fish <- paste(c(vapply(x$fishpop, FUN = function(i) {
+
+    ifelse(test = all(is.na(i)), yes = 0, no = nrow(i))
+
+  } , FUN.VALUE = numeric(1))),  collapse = ", ")
 
   # get extent
   extent <- raster::extent(x = x$seafloor[[1]])

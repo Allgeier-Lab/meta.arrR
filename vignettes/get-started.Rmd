@@ -55,17 +55,16 @@ save_each <- 1 # (24 / (min_per_i / 60)) * days
 
 max_i %% save_each
 
-parameters$move_stationary <- max_i / (5 * 4)
+parameters$move_residence <- max_i / (5 * 4)
 
-metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reef_matrix, 
-                       starting_values = starting_values, parameters = parameters)
+metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain, 
+                       reefs = reef_matrix, starting_values = starting_values, parameters = parameters)
 
-nutr_input <- simulate_nutr_input(n = n, max_i = max_i,
-                                  freq_mn = 5, freq_sd = 0.1,
-                                  input_max = starting_values$nutrients_pool,
-                                  input_sd = 0.1)
-
-plot(nutr_input)
+# nutr_input <- simulate_nutr_input(n = n, max_i = max_i,
+#                                   freq_mn = 3, freq_var = 0.1,
+#                                   input_max = starting_values$nutrients_pool, input_var = 0.1)
+# 
+# plot(nutr_input)
 ```
 
 ```{r run}
@@ -87,7 +86,7 @@ plot(nutr_input)
 
 # dplyr::bind_rows(result$fishpop) %>% 
 #   dplyr::filter(timestep != 0) %>% 
-#   dplyr::mutate(stat_class = dplyr::case_when(stationary == 0 ~ "moved", 
+#   dplyr::mutate(stat_class = dplyr::case_when(residence == 0 ~ "moved", 
 #                                               TRUE ~ "stayed")) %>%
 #   dplyr::group_by(id, stat_class) %>% 
 #   dplyr::summarise(n = dplyr::n()) %>% 

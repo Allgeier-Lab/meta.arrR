@@ -12,15 +12,21 @@
 "_PACKAGE"
 
 globalVariables(names = c(
+  "Facet",
+  "Meta",
+  "Timestep",
+  "Value",
   "bottom_left",
   "bottom_right",
-  "input",
+  "burn_in",
+  "density",
+  "itr",
   "measure",
   "meta",
+  "n",
   "timestep",
   "top_left",
   "top_right",
   "value",
-  "x",
-  "y"
+  "x", "y"
 ))

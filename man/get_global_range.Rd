@@ -4,14 +4,12 @@
 \alias{get_global_range}
 \title{get_global_range}
 \usage{
-get_global_range(result, value, timestep = NULL)
+get_global_range(result, value)
 }
 \arguments{
-\item{result}{List with \code{meta_rn} objects simulated with \code{simulate_nutr_input}.}
+\item{result}{List with \code{meta_rn} objects simulated with \code{sim_nutr_input_*}.}
 
 \item{value}{Character with coloumn of seafloor to summarize.}
-
-\item{timestep}{Numeric with time step to select}
 }
 \value{
 vector
@@ -25,7 +23,7 @@ created with \code{run_meta}.
 }
 \examples{
 \dontrun{
-get_global_range(result = result_attr)
+get_global_range(result = result_rand)
 }
 
 }

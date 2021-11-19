@@ -4,7 +4,7 @@
 #include <progress.hpp>
 #include <progress_bar.hpp>
 #include <arrR.h>
-#include "rcpp_meta_processes.h"
+#include "rcpp_sim_meta.h"
 #include "rcpp_list_to_matrix.h"
 #include "rcpp_move_meta.h"
 #include "rcpp_which.h"
@@ -12,7 +12,7 @@
 
 using namespace Rcpp;
 
-//' rcpp_meta_processes
+//' rcpp_sim_meta
 //'
 //' @description
 //' Rcpp run simulation of metaecosystems processes.
@@ -24,7 +24,7 @@ using namespace Rcpp;
 //' @param max_dist Double with maximum movement distance.
 //' @param n Integer with number of metaecosystems.
 //' @param pop_n Vector with number of individuals.
-//' @param fishpop_attributes Matrix with stationary and reserves_thres values for each individual
+//' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual
 //' @param nutr_input List with amount of nutrient input each timestep.
 //' @param coords_reef List with ID and coords of reef cells.
 //' @param cell_adj Matrix with cell adjacencies.
@@ -47,8 +47,8 @@ using namespace Rcpp;
 //' individuals, (vii) growth of individuals, (viii) mortality of individuals,
 //' (ix) diffusion of nutrients/detritus, and (x) nutrient output (all inner loop).
 //'
-//' For a detailed describtion of all sub-processes (with exception of (i)), see the
-//' \code{arrR} package.
+//' For a detailed description of all sub-processes (with exception of (i)), see the
+//' \pkg{arrR} package.
 //'
 //' @references
 //' For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
@@ -58,20 +58,19 @@ using namespace Rcpp;
 //'
 //' @return void
 //'
-//' @aliases rcpp_meta_processes
-//' @rdname rcpp_meta_processes
+//' @aliases rcpp_sim_meta
+//' @rdname rcpp_sim_meta
 //'
 //' @export
 // [[Rcpp::export]]
-void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
-                        Rcpp::List seafloor_track, Rcpp::List fishpop_track,
-                        Rcpp::List parameters, Rcpp::String movement, double max_dist,
-                        int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes,
-                        Rcpp::List nutr_input,
-                        Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj,
-                        Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions,
-                        int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in,
-                        bool verbose) {
+void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
+                   Rcpp::List seafloor_track, Rcpp::List fishpop_track,
+                   Rcpp::List parameters, Rcpp::String movement, double max_dist,
+                   int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes,
+                   Rcpp::List nutr_input, Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj,
+                   Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions,
+                   int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in,
+                   bool verbose) {
 
   // setup progress bar
   Progress progress(max_i, verbose);
@@ -82,7 +81,7 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
   bool flag_move = Rcpp::is_true(Rcpp::any(pop_n > 0));
 
   // set movement to false if parameter is 0.0
-  if (as<double>(parameters["move_stationary"]) <= 0.0) {
+  if (as<double>(parameters["move_residence"]) <= 0.0) {
 
     flag_move = FALSE;
 
@@ -94,7 +93,8 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
     (as<double>(parameters["detritus_fish_diffusion"])) > 0.0;
 
   // flag if nutrient output needs to be run
-  bool flag_output = as<double>(parameters["nutrients_output"]) > 0.0;
+  bool flag_output = (as<double>(parameters["nutrients_output"]) > 0.0) ||
+    (as<double>(parameters["detritus_output"]) > 0.0);
 
   // init fish population things //
 
@@ -108,8 +108,8 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
   // MH: This is not very elegant
   Rcpp::IntegerVector id_attr = as<Rcpp::IntegerVector>(id_attr_num);
 
-  // get stationary values
-  Rcpp::NumericVector stationary_values = fishpop_attributes(_, 1);
+  // get residence values
+  Rcpp::NumericVector residence_values = fishpop_attributes(_, 1);
 
   // get pop_reserves_thres values
   Rcpp::NumericVector pop_reserves_thres = fishpop_attributes(_, 2);
@@ -155,7 +155,7 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
     // check if individuals move between meta systems
     if (flag_move) {
 
-      fishpop = rcpp_move_meta(fishpop, stationary_values, pop_n_sum,
+      fishpop = rcpp_move_meta(fishpop, residence_values, n, pop_n_sum,
                                id_attr, id_meta, extent);
 
     }
@@ -259,7 +259,7 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
       // remove nutrients from cells if output parameter > 0
       if (flag_output) {
 
-        arrR::rcpp_nutr_output(seafloor[j], parameters["nutrients_output"]);
+        arrR::rcpp_nutr_output(seafloor[j], parameters["nutrients_output"], parameters["detritus_output"]);
 
       }
 
@@ -280,7 +280,7 @@ void rcpp_meta_processes(Rcpp::List seafloor, Rcpp::List fishpop,
 }
 
 /*** R
-rcpp_meta_processes(seafloor = seafloor, fishpop = fishpop,
+rcpp_sim_meta(seafloor = seafloor, fishpop = fishpop,
                    seafloor_track = seafloor_track, fishpop_track = fishpop_track,
                    parameters = parameters, movement = movement, max_dist = max_dist,
                    n = metasyst$n, pop_n = metasyst$starting_values$pop_n,

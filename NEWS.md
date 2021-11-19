@@ -1,8 +1,24 @@
+# meta.arrR 0.4
+* Don't export all functions and use internals
+
+# meta.arrR 0.3
+* Move only across neighboring ecosystems
+* Add `calc_variability()` and `sample_variability()` function
+* Add `sim_nutr_input()` function
+* Add `get_input_df()` function
+* Add `filter_nutr_input()` function
+* Simplified code for `plot.meta_rn()`
+* Add `get_meta_production()` and `plot_meta_production()`
+* Add `filter_metarn()`
+* Remove `timestep` argument from many functions
+* Combined `filter_nutr_input` and `filter_metarn` to `filter_meta`
+
 # meta.arrR 0.2.1
 * Adding `testthat` functions for all R functions
-* Renamed `simulate_meta` to `run_meta`
+* Renamed `simulate_meta()` to `run_meta()`
 * Adding plotting method for `summarize = FALSE`
-* Adding `get_global_range`
+* Adding `get_global_range()`
+* Renamed `stationary` to `residence`
 
 # meta.arrR 0.2.0
 * First running framework

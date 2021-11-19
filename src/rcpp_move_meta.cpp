@@ -12,17 +12,17 @@ using namespace Rcpp;
 //' Rcpp move meta.
 //'
 //' @param fishpop List with fish population.
-//' @param pop_n_sum Integer with total number of individuals.
+//' @param n,pop_n_sum Integer with total number of local metaecosystems and individuals.
 //' @param id_attr Vector with unique id of fishpop attributes matrix.
-//' @param stationary_values Vector with stationary values.
+//' @param residence_values Vector with residence values.
 //' @param id_meta Vector with metaecosystem ids.
 //' @param extent Spatial extent of the seafloor raster.
 //'
 //' @details
 //' Simulate movement across local metaecosystem. Individuals move to a new local
 //' metaecosystem with a certain probability each timestep. The probability increases
-//' depending on the stationary value and how long individuals already stayed on local
-//' metaecosystem. To avoid this movement set \code{parameters$move_stationary = 0}.
+//' depending on the residence value and how long individuals already stayed on local
+//' metaecosystem. To avoid this movement set \code{parameters$move_residence = 0}.
 //'
 //' @return list
 //'
@@ -31,8 +31,8 @@ using namespace Rcpp;
 //'
 //' @keywords export
 // [[Rcpp::export]]
-Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector stationary_values,
-                          int pop_n_sum, Rcpp::IntegerVector id_attr, Rcpp::IntegerVector id_meta,
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector residence_values,
+                          int n, int pop_n_sum, Rcpp::IntegerVector id_attr, Rcpp::IntegerVector id_meta,
                           Rcpp::NumericVector extent) {
 
   // convert list to matrix
@@ -45,7 +45,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector stationary_val
     Rcpp::IntegerVector id_fish_temp = rcpp_which(id_attr, Rcpp::IntegerVector::create(fishpop_mat(i, 0)));
 
     // prob_move
-    double prob_move = fishpop_mat(i, 16) / as<double>(stationary_values[id_fish_temp]);
+    double prob_move = fishpop_mat(i, 16) / as<double>(residence_values[id_fish_temp]);
 
     // get random number between 0 and 1
     double prob_random = runif(1, 0.0, 1.0)[0];
@@ -53,17 +53,47 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector stationary_val
     // move if probability is below random number
     if (prob_random < prob_move) {
 
-      // get current id
-      int id_meta_temp = fishpop_mat(i, 17);
+      // // get current id
+      // int id_meta_temp = fishpop_mat(i, 17);
 
-      // get all id not currently in
-      Rcpp::IntegerVector id_new = id_meta[id_meta != id_meta_temp];
+      // draw random number again
+      prob_random = runif(1, 0.0, 1.0)[0];
 
-      // sample new random id
-      int id_random = Rcpp::sample(id_new, 1)[0];
+      // move to left metaecosystem
+      if (prob_random < 0.5) {
 
-      // update meta id
-      fishpop_mat(i, 17) = id_random;
+        // update meta id
+        fishpop_mat(i, 17) -= 1;
+
+        // check if torus translate left
+        if (fishpop_mat(i, 17) == 0) {
+
+          fishpop_mat(i, 17) = n;
+
+        }
+
+      // move to right metaecosystem
+      } else {
+
+        // update meta id
+        fishpop_mat(i, 17) += 1;
+
+        // check if torus translate right
+        if (fishpop_mat(i, 17) > n) {
+
+        fishpop_mat(i, 17) = 1;
+
+        }
+      }
+
+      // // get all id not currently in
+      // Rcpp::IntegerVector id_new = id_meta[id_meta != id_meta_temp];
+      //
+      // // sample new random id
+      // int id_random = Rcpp::sample(id_new, 1)[0];
+      //
+      // // update meta id
+      // fishpop_mat(i, 17) = id_random;
 
       // random x coord
       fishpop_mat(i, 2) = Rcpp::runif(1, extent[0], extent[1])[0];
@@ -71,13 +101,13 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector stationary_val
       // random y coord
       fishpop_mat(i, 3) = Rcpp::runif(1, extent[2], extent[3])[0];
 
-      // set stationary to zero
+      // set residence to zero
       fishpop_mat(i, 16) = 0;
 
     // fish stay in current metasyst
     } else {
 
-      // increase stationary by one
+      // increase residence by one
       fishpop_mat(i, 16) += 1;
 
     }

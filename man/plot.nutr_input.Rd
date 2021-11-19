@@ -4,12 +4,16 @@
 \alias{plot.nutr_input}
 \title{plot.nutr_input}
 \usage{
-\method{plot}{nutr_input}(x, base_size = 10, ...)
+\method{plot}{nutr_input}(x, alpha = TRUE, gamma = TRUE, base_size = 10, viridis_option = "C", ...)
 }
 \arguments{
-\item{x}{\code{nutr_input} object simulated with \code{simulate_nutr_input}.}
+\item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
+
+\item{alpha, gamma}{Logical if TRUE alpha and/or gamma are plotted.}
 
 \item{base_size}{Numeric to specify base font size.}
+
+\item{viridis_option}{Character with option of viridis color option.}
 
 \item{...}{Not used.}
 }
@@ -17,11 +21,12 @@
 Plotting method for nutr_input object.
 }
 \details{
-Ploting method for metaecosystem created with \code{setup_meta}.
+Plotting method for metaecosystem created with \code{setup_meta}. If \code{gamma = TRUE}
+the sum of all local metaecosystems is plotted additionally.
 }
 \examples{
-nutr_input <- simulate_nutr_input(n = 3, max_i = 4380, freq_mn = 3, freq_sd = 0.1,
-input_max = 0.1, input_sd = 0.25)
+nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+variability = 0.5)
 plot(nutr_input)
 
 }
