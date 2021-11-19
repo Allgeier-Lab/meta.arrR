@@ -120,7 +120,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
     # sample from lognorm to get maximum distance
     max_dist <- vapply(X = 1:1000000, FUN = function(i) {
-      arrR:::rcpp_rlognorm(mean = mean_temp, sd = sqrt(var_temp), min = 0.0, max = Inf)},
+      arrR::rcpp_rlognorm(mean = mean_temp, sd = sqrt(var_temp), min = 0.0, max = Inf)},
       FUN.VALUE = numeric(1))
 
     # set maximum distance to 95%
@@ -197,7 +197,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
                                            ncol = 3))
 
   # get neighboring cells for each focal cell using torus
-  cell_adj <- arrR:::get_neighbors(x = metasyst$seafloor[[1]], direction = 8, cpp = TRUE)
+  cell_adj <- arrR::get_neighbors(x = metasyst$seafloor[[1]], direction = 8, cpp = TRUE)
 
   # get extent of environment
   extent <- as.vector(metasyst$extent)

@@ -1,6 +1,3 @@
-# meta.arrR 0.4
-* Don't export all functions and use internals
-
 # meta.arrR 0.3
 * Move only across neighboring ecosystems
 * Add `calc_variability()` and `sample_variability()` function

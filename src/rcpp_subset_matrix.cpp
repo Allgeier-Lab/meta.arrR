@@ -19,7 +19,7 @@ using namespace Rcpp;
 //' @aliases rcpp_subset_matrix
 //' @rdname rcpp_subset_matrix
 //'
-//' @keywords internal
+//' @export
 // [[Rcpp::export]]
 Rcpp::NumericMatrix rcpp_subset_matrix(Rcpp::NumericMatrix fishpop, Rcpp::IntegerVector rows) {
 

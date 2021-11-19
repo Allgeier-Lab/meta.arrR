@@ -21,7 +21,7 @@
 #' @aliases create_attributes
 #' @rdname create_attributes
 #'
-#' @keywords internal
+#' @export
 create_attributes <- function(fishpop, parameters, max_i) {
 
   # loop through all metaecosystems
@@ -43,9 +43,9 @@ create_attributes <- function(fishpop, parameters, max_i) {
 
         # draw from rlognorm with Inf maximum
         residence <- vapply(1:pop_n, function(i)
-          arrR:::rcpp_rlognorm(mean = parameters$move_residence,
-                               sd = parameters$move_residence * parameters$move_residence_var,
-                               min = 0, max = max_i),
+          arrR::rcpp_rlognorm(mean = parameters$move_residence,
+                              sd = parameters$move_residence * parameters$move_residence_var,
+                              min = 0, max = max_i),
           FUN.VALUE = numeric(1))
 
       }
