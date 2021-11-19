@@ -44,9 +44,15 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Install arrR
+        run: |
+          install.packages("remotes")
+          remotes::install_github(repo = "Allgeier-Lab/arrR", ref = "development")
+        shell: Rscript {0}
+
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          extra-packages: rcmdcheck, Allgeier-Lab/arrR
+          extra-packages: rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v1
 
