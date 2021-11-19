@@ -32,7 +32,7 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v1
 
-      - name: Install spatial dependencie
+      - name: Install spatial dependencies
         if: runner.os == 'macOS'
         run: |
           brew install gdal
@@ -44,15 +44,9 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install arrR
-        run: |
-          install.packages("remotes")
-          remotes::install_github(repo = "Allgeier-Lab/arrR", ref = "development")
-        shell: Rscript {0}
-
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
-          extra-packages: rcmdcheck
+          extra-packages: rcmdcheck, Allgeier-Lab/arrR
 
       - uses: r-lib/actions/check-r-package@v1
 
