@@ -16,7 +16,7 @@ v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/li
 
 <img src="man/figures/logo.png" align="right" width="150" />
 
-The goal of **meta.arrR** is to simulate metaecosystems of artifical
+The goal of **meta.arrR** is to simulate metaecosystems of artificial
 reefs.
 
 ## Installation
