@@ -183,8 +183,7 @@ setup_meta <- function(n, max_i, dimensions, grain = c(1, 1), reefs = NULL, star
   extent <- raster::extent(x = seafloor_list[[1]])
 
   # create look-up table for residence value
-  fishpop_attributes <- create_attributes(fishpop = fishpop_list,
-                                          parameters = parameters,
+  fishpop_attributes <- create_attributes(fishpop = fishpop_list, parameters = parameters,
                                           max_i = max_i)
 
 
