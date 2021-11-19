@@ -40,7 +40,7 @@ devtools::install_github("Allgeier-Lab/meta.arrR")
 ```
 ## Example
 
-Please see `vignette("get-started")` to see how to use `meta.arrR`.
+Please see `vignette("get-started")` to see how to use **meta.arrR**.
 
 ## Code of Conduct
   
