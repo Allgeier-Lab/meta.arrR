@@ -89,7 +89,7 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @aliases rcpp_move_meta
 #' @rdname rcpp_move_meta
 #'
-#' @keywords export
+#' @export
 rcpp_move_meta <- function(fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent) {
     .Call(`_meta_arrR_rcpp_move_meta`, fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent)
 }
