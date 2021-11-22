@@ -23,7 +23,7 @@
 #' @aliases get_input_df
 #' @rdname get_input_df
 #'
-#' @keywords internal
+#' @export
 get_input_df <- function(x, gamma = TRUE, long = FALSE) {
 
   # cbind all local ecosystems

@@ -29,7 +29,7 @@ using namespace Rcpp;
 //' @aliases rcpp_move_meta
 //' @rdname rcpp_move_meta
 //'
-//' @keywords export
+//' @export
 // [[Rcpp::export]]
 Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericVector residence_values,
                           int n, int pop_n_sum, Rcpp::IntegerVector id_attr, Rcpp::IntegerVector id_meta,

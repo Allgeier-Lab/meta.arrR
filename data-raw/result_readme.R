@@ -12,7 +12,7 @@ parameters <- meta.arrR::meta.arrR_parameters
 n <- 5
 
 # change values
-starting_values$pop_n <- rep(x = 6, times = n)
+starting_values$pop_n <- rep(x = 5, n = n)
 
 # create 5 reef cells in center of seafloor
 reefs <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), ncol = 2, byrow = TRUE)
@@ -29,10 +29,8 @@ years <- 5
 max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every m days
-days <- 125
-save_each <- max_i # (24 / (min_per_i / 60)) * days
-
-max_i %% save_each
+days <- 73 # which(max_i %% ((24 / (min_per_i / 60)) * (1:365)) == 0)
+save_each <- (24 / (min_per_i / 60)) * days
 
 parameters$nutrients_output <- 0.1
 
@@ -48,10 +46,8 @@ starting_values$detritus_pool <- stable_vals$detritus_pool
 metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain,
                        reefs = reefs, starting_values = starting_values, parameters = parameters)
 
-input_mn <- starting_values$nutrients_pool * 0.1
-
-nutr_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = input_mn, freq_mn = 5,
-                             variability = 0.1)
+nutr_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_pool,
+                             freq_mn = 5, variability = 0.1)
 
 result_readme <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
                           parameters = parameters, movement = "attr",

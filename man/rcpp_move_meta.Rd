@@ -39,4 +39,3 @@ metaecosystem with a certain probability each timestep. The probability increase
 depending on the residence value and how long individuals already stayed on local
 metaecosystem. To avoid this movement set \code{parameters$move_residence = 0}.
 }
-\keyword{export}

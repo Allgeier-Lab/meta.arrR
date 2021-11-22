@@ -17,7 +17,7 @@
 #' @aliases rcpp_get_table
 #' @rdname rcpp_get_table
 #'
-#' @keywords internal
+#' @export
 rcpp_get_table <- function(x, n) {
     .Call(`_meta_arrR_rcpp_get_table`, x, n)
 }
@@ -40,7 +40,7 @@ rcpp_get_table <- function(x, n) {
 #' @aliases rcpp_list_to_matrix
 #' @rdname rcpp_list_to_matrix
 #'
-#' @keywords internal
+#' @export
 rcpp_list_to_matrix <- function(fishpop, pop_n_sum, id) {
     .Call(`_meta_arrR_rcpp_list_to_matrix`, fishpop, pop_n_sum, id)
 }
@@ -61,7 +61,7 @@ rcpp_list_to_matrix <- function(fishpop, pop_n_sum, id) {
 #' @aliases rcpp_matrix_to_list
 #' @rdname rcpp_matrix_to_list
 #'
-#' @keywords internal
+#' @export
 rcpp_matrix_to_list <- function(fishpop, n) {
     .Call(`_meta_arrR_rcpp_matrix_to_list`, fishpop, n)
 }
@@ -89,7 +89,7 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @aliases rcpp_move_meta
 #' @rdname rcpp_move_meta
 #'
-#' @keywords export
+#' @export
 rcpp_move_meta <- function(fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent) {
     .Call(`_meta_arrR_rcpp_move_meta`, fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent)
 }
@@ -164,7 +164,7 @@ rcpp_sim_meta <- function(seafloor, fishpop, seafloor_track, fishpop_track, para
 #' @aliases rcpp_subset_matrix
 #' @rdname rcpp_subset_matrix
 #'
-#' @keywords internal
+#' @export
 rcpp_subset_matrix <- function(fishpop, rows) {
     .Call(`_meta_arrR_rcpp_subset_matrix`, fishpop, rows)
 }
@@ -187,7 +187,7 @@ rcpp_subset_matrix <- function(fishpop, rows) {
 #' @aliases rcpp_which
 #' @rdname rcpp_which
 #'
-#' @keywords internal
+#' @export
 rcpp_which <- function(x, y) {
     .Call(`_meta_arrR_rcpp_which`, x, y)
 }

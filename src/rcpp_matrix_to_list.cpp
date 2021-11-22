@@ -21,7 +21,7 @@ using namespace Rcpp;
 //' @aliases rcpp_matrix_to_list
 //' @rdname rcpp_matrix_to_list
 //'
-//' @keywords internal
+//' @export
 // [[Rcpp::export]]
 Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
 

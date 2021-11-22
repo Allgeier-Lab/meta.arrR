@@ -29,8 +29,9 @@
 #' @rdname setup_meta
 #'
 #' @export
-setup_meta <- function(n, max_i, dimensions, grain = c(1, 1), reefs = NULL, starting_values, parameters,
-                       random = 0, use_log = TRUE, verbose = TRUE, ...) {
+setup_meta <- function(n, max_i, dimensions, grain = c(1, 1), reefs = NULL,
+                       starting_values, parameters, random = 0, use_log = TRUE,
+                       verbose = TRUE, ...) {
 
   # print some information on console
   if (verbose) {
