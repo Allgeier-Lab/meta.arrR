@@ -16,31 +16,22 @@ knitr::opts_chunk$set(
 )
 ```
 
+## How to use **meta.arrR**
+
 ```{r setup}
 library(meta.arrR)
 
 ```
 
-```{r}
+### 1. Load parameters
+
+```{r load_parameters}
 
 # get starting values
 starting_values <- meta.arrR::meta.arrR_starting_values
 
 # get parameters
 parameters <- meta.arrR::meta.arrR_parameters
-
-n <- 5
-
-starting_values$pop_n <- rep(x = 5, n = n)
-
-# create 5 reef cells in center of seafloor
-reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
-                      ncol = 2, byrow = TRUE)
-
-# setup extent and grain
-dimensions <- c(100, 100)
-
-grain <- c(1, 1)
 
 # set time per iterations
 min_per_i <- 120
@@ -51,71 +42,57 @@ max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every m days
 days <- 5
-save_each <- 1 # (24 / (min_per_i / 60)) * days
+save_each <- (24 / (min_per_i / 60)) * days
 
-max_i %% save_each
+n <- 5
+
+starting_values$pop_n <- rep(x = 5, n = n)
 
 parameters$move_residence <- max_i / (5 * 4)
+```
+
+### 2. Setup simulation enviroment
+
+```{r setup_envirnment}
+# create 5 reef cells in center of seafloor
+reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
+                      ncol = 2, byrow = TRUE)
+
+# setup extent and grain
+dimensions <- c(100, 100)
+
+grain <- c(1, 1)
+
+stable_vals <- arrR::get_stable_values(starting_values = starting_values,
+                                       parameters = parameters)
+
+starting_values$nutrients_pool <- stable_vals$nutrients_pool
+
+starting_values$detritus_pool <- stable_vals$detritus_pool
 
 metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain, 
                        reefs = reef_matrix, starting_values = starting_values, parameters = parameters)
 
-# nutr_input <- simulate_nutr_input(n = n, max_i = max_i,
-#                                   freq_mn = 3, freq_var = 0.1,
-#                                   input_max = starting_values$nutrients_pool, input_var = 0.1)
-# 
-# plot(nutr_input)
+nutr_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_pool,
+                             freq_mn = 5, variability = 0.1)
 ```
 
-```{r run}
-
-# result <- run_meta(metasyst = metasyst, nutr_input = NULL,
-#                    parameters = parameters, reef_attraction = TRUE,
-#                    max_i = max_i, save_each = save_each, min_per_i = min_per_i, 
-#                    verbose = TRUE)
-
+```{r run_dummy, echo = FALSE}
+result <- meta.arrR:::result_readme
 ```
 
-```{r stuff}
+```{r run_model, eval = FALSE}
+result <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
+                   parameters = parameters, reef_attraction = TRUE,
+                   max_i = max_i, save_each = save_each, min_per_i = min_per_i)
+```
 
-# plot(result, what = "seafloor")
+### 3. Analyze results
 
-# plot_local_abund(result)
+```{r analyze_results, eval = FALSE}
+plot(result, what = "seafloor")
 
-# get_abundance(result)
+plot_local_abund(result)
 
-# dplyr::bind_rows(result$fishpop) %>% 
-#   dplyr::filter(timestep != 0) %>% 
-#   dplyr::mutate(stat_class = dplyr::case_when(residence == 0 ~ "moved", 
-#                                               TRUE ~ "stayed")) %>%
-#   dplyr::group_by(id, stat_class) %>% 
-#   dplyr::summarise(n = dplyr::n()) %>% 
-#   dplyr::filter(!is.na(id)) %>% 
-#   dplyr::left_join(data.frame(result$fishpop_stationary), by = "id") %>% 
-#   dplyr::arrange(-n)
-
-# library(ggplot2)
-# library(patchwork)
-# library(dplyr)
-# 
-# ii <- 3
-# 
-# gg_ag <- result$seafloor[[ii]] %>% 
-#   dplyr::filter(timestep == max(timestep)) %>% 
-#   ggplot() + 
-#   geom_raster(aes(x = x, y = y, fill = ag_biomass)) + 
-#   coord_equal() + 
-#   scale_fill_viridis_c() + 
-#   theme_classic()
-# 
-# gg_bg <- result$seafloor[[ii]] %>% 
-#   dplyr::filter(timestep == max(timestep)) %>% 
-#   ggplot() + 
-#   geom_raster(aes(x = x, y = y, fill = bg_biomass)) + 
-#   coord_equal() + 
-#   scale_fill_viridis_c() + 
-#   theme_classic()
-# 
-# gg_ag + gg_bg
-
+get_abundance(result)
 ```
