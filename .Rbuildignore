@@ -9,3 +9,4 @@
 ^pkgdown$
 ^codemeta\.json$
 ^data-raw$
+^vignettes/articles$
