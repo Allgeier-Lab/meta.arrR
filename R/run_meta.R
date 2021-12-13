@@ -61,6 +61,13 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
                      max_i, min_per_i, burn_in = 0, seagrass_each = 1, save_each = 1,
                      return_burnin = TRUE, verbose = TRUE) {
 
+  # get time at beginning for final print
+  if (verbose) {
+
+    t_start <- Sys.time()
+
+  }
+
   # check input and warnings #
 
   # MH: Check parameters?
@@ -91,13 +98,6 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   if (burn_in >= max_i || burn_in < 0) {
 
     warning("'burn_in' larger than or equal to 'max_i' or 'burn_in' < 0.", call. = FALSE)
-
-  }
-
-  # get time at beginning for final print
-  if (verbose) {
-
-    t_start <- Sys.time()
 
   }
 
@@ -226,6 +226,8 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   # print some basic information about model run
   if (verbose) {
 
+    message("> ...Starting simulation at <", t_start, ">...")
+
     message("> Metaecosystem with ", metasyst$n, " local ecosystems.")
 
     message("> Seafloors with ", dimensions[1], " rows x ", dimensions[2], " cols; ",
@@ -238,8 +240,6 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
     message("> Saving each ", save_each, " iterations.")
 
     message("> One iteration equals ", min_per_i, " minutes.")
-
-    message("> ...Starting simulation...")
 
     message("")
 
@@ -348,11 +348,9 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   if (verbose) {
 
     # get time at end
-    t_diff <- round(Sys.time() - t_start, digits = 1)
+    t_end <- Sys.time()
 
-    message("")
-
-    message("> All done (Runtime: ", t_diff," ", units(t_diff), ").")
+    message("> All done at <", t_end, ">")
 
   }
 
