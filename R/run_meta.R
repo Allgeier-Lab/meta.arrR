@@ -228,6 +228,8 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
     message("> ...Starting simulation at <", t_start, ">...")
 
+    message("")
+
     message("> Metaecosystem with ", metasyst$n, " local ecosystems.")
 
     message("> Seafloors with ", dimensions[1], " rows x ", dimensions[2], " cols; ",
@@ -349,6 +351,8 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
     # get time at end
     t_end <- Sys.time()
+
+    message("")
 
     message("> All done at <", t_end, ">")
 
