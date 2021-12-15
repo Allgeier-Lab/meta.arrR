@@ -10,7 +10,7 @@ calc_variability(x, what, lag, verbose)
 
 \method{calc_variability}{nutr_input}(x, what = NULL, lag = NULL, verbose = TRUE)
 
-\method{calc_variability}{meta_rn}(x, what = "biomass", lag = TRUE, verbose = TRUE)
+\method{calc_variability}{meta_rn}(x, what = "biomass", lag = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
@@ -31,8 +31,6 @@ Calculate variability
 Calculates coefficient of variation on alpha, beta and gamma scale, where \emph{i}
 refers to values on local scale and \emph{m} refers to the sum of all values
 in the metaecosystem.
-
-The 'what' argument can be either 'biomass', 'production' or 'turnover'.
 
 \deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
 

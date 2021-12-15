@@ -13,8 +13,6 @@
 #' refers to values on local scale and \emph{m} refers to the sum of all values
 #' in the metaecosystem.
 #'
-#' The 'what' argument can be either 'biomass', 'production' or 'turnover'.
-#'
 #' \deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
 #'
 #' \deqn{\alpha = sum(mean(x_{i}) / mean(x_{m}) * \alpha_{i})}
@@ -78,124 +76,37 @@ calc_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = TR
 
 #' @name calc_variability
 #' @export
-calc_variability.meta_rn <- function(x, what = "biomass", lag = TRUE, verbose = TRUE) {
+calc_variability.meta_rn <- function(x, what = "biomass", lag = FALSE , verbose = TRUE) {
 
+  # get sum of total local ecosystems
+  result_sum <- summarize_meta(result  = x, what = what, fun = "sum",
+                               lag = lag, return_df = TRUE)[[what]]
 
-  # calc CV for biomass
-  if (what == "biomass") {
+  # get names of summarized parts
+  parts <- names(result_sum[, -c(1:2)])
 
-    # check lag argument
-    if (lag && verbose) {
+  # loop through bg, ag, ttl biomass/prod
+  result <- lapply(parts, function(i) {
 
-      warning("'lag' is not used for biomass calculations due to negative numbers.",
-              call. = FALSE)
+    # get only needed cols
+    values_i <- result_sum[, c("meta", "timestep", i)]
 
-    }
+    # reshape to wide for internal cv fun
+    values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
+                               direction = "wide")[, -1, drop = FALSE]
 
-    # calculate variability for what parts
-    result <- lapply(c("bg_biomass", "ag_biomass"), function(i) {
+    # calculate sum of each timestep
+    values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
-      # summarize values of each timestep
-      seafloor_sum <- lapply(X = x$seafloor, FUN = function(j) {
+    cbind(part = i, calc_variability_internal(values_i = values_i, values_m = values_m))
 
-        # get all values until timestep and selected column
-        seafloor_temp <- subset(x = j, select = c("timestep", i))
-
-        # sum for each timestep
-        seafloor_temp <- stats::aggregate(x = seafloor_temp[, i],
-                                          by = list(timestep = seafloor_temp$timestep),
-                                          FUN = "sum")
-
-        # timestep column is not needed
-        seafloor_temp[, -1]
-
-      })
-
-      # combine to matrix with local values
-      values_i <- do.call("cbind", seafloor_sum)
-
-      # calculate sum of each timestep
-      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
-
-      cbind(part = i, calc_variability_internal(values_i = values_i,
-                                                values_m = values_m))
-    })
-
-  # calc variability for production
-  } else if (what == "production") {
-
-    # calc turnover
-    production <- get_meta_production(result = x, lag = lag, turnover = FALSE)
-
-    # split into list using parts
-    production <- split(production, production$part)
-
-    # loop through list
-    result <- lapply(production, function(i){
-
-      # get only needed columns
-      values_i <- i[, c("meta", "timestep", "value")]
-
-      # reshape to wide for internal cv fun
-      values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                                 direction = "wide")[, -1, drop = FALSE]
-
-      # calculate sum of each timestep
-      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
-
-      # combine to final data.frame
-      cbind(part = unique(i$part), calc_variability_internal(values_i = values_i,
-                                                             values_m = values_m))
-
-    })
-
-  # calculate cv for turnover
-  } else if (what == "turnover") {
-
-    # calc turnover
-    turnover <- get_meta_production(result = x, lag = lag, turnover = TRUE)
-
-    # replace Inf values (no production) with NA
-    turnover[is.infinite(turnover$value), "value"] <- NA
-
-    # split into list using part
-    turnover <- split(turnover, turnover$part)
-
-    # loop through lists
-    result <- lapply(turnover, function(i) {
-
-      # get only needed columns
-      values_i <- i[, c("meta", "timestep", "value")]
-
-      # reshape to wide format used for internal cv fun
-      values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                                 direction = "wide")[, -1, drop = FALSE]
-
-      # calculate sum of each timestep
-      values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
-
-      # create final data.frame
-      cbind(part = unique(i$part), calc_variability_internal(values_i = values_i,
-                                                             values_m = values_m))
-
-    })
-
-  # return error message
-  } else {
-
-    stop("Please select either 'biomass', 'production', or 'turnover' as 'what' argument.",
-         call. = FALSE)
-
-  }
+  })
 
   # combine to one data.frame
   result <- do.call(what = "rbind", args = result)
 
   # make sure bg comes first
   result <- result[order(result$part), ]
-
-  # remove rownames
-  row.names(result) <- 1:nrow(result)
 
   # return result list
   return(result)
@@ -230,8 +141,7 @@ calc_variability_internal <- function(values_i, values_m) {
   beta_cv <- alpha_cv / gamma_cv
 
   # check if NaN because division by zero
-  beta_cv <- ifelse(test = is.finite(beta_cv),
-                    yes = beta_cv, no = 0)
+  beta_cv <- ifelse(test = is.finite(beta_cv), yes = beta_cv, no = 0)
 
   # synchrony #
   synchrony <- stats::var(values_m, na.rm = TRUE) / sum(alpha_sd_i) ^ 2

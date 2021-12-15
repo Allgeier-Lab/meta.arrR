@@ -10,7 +10,7 @@ sample_variability(x, what, itr, lag, verbose)
 
 \method{sample_variability}{nutr_input}(x, what = NULL, itr = 1, lag = NULL, verbose = TRUE)
 
-\method{sample_variability}{meta_rn}(x, what = "biomass", itr = 1, lag = TRUE, verbose = TRUE)
+\method{sample_variability}{meta_rn}(x, what = "biomass", itr = 1, lag = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}

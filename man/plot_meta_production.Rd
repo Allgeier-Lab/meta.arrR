@@ -4,14 +4,12 @@
 \alias{plot_meta_production}
 \title{plot_meta_production}
 \usage{
-plot_meta_production(result, lag = TRUE, turnover = FALSE, base_size = 10)
+plot_meta_production(result, lag = TRUE, base_size = 10)
 }
 \arguments{
 \item{result}{\code{meta_rn} object simulated with \code{run_meta}.}
 
 \item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
-
-\item{turnover}{Logical if TRUE, the turnover is returned.}
 
 \item{base_size}{Numeric to specify base font size.}
 }
@@ -20,9 +18,6 @@ Plot local abundance.
 }
 \details{
 Plot the production per meta ecosystem.
-
-If \code{turnover = TRUE}, the turnover is calculated defined as
-turnover = biomass / production.
 }
 \examples{
 \dontrun{
