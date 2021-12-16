@@ -4,9 +4,10 @@
 #' Sample variability
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
-#' @param what String specifying which column us used for \code{meta_rn} object.
 #' @param itr Integer with number of sample iterations.
-#' @param lag Logical if TRUE, the difference to the previous timestep is returned.
+#' @param biomass,production Logical to specifiy if biomass and/or production is summarize.d
+#' @param lag Vector with logical. If TRUE, the difference to the previous timestep is returned.
+#' The first element refers to biomass, the second element to production.
 #' @param verbose Logical if TRUE, progress reports are printed.
 #'
 #' @details
@@ -30,19 +31,20 @@
 #' @rdname sample_variability
 #'
 #' @export
-sample_variability <- function(x, what, itr, lag, verbose) UseMethod("sample_variability")
+sample_variability <- function(x, itr, biomass, production, lag, verbose) UseMethod("sample_variability")
 
 #' @name sample_variability
 #' @export
-sample_variability.nutr_input <- function(x, what = NULL, itr = 1, lag = NULL, verbose = TRUE) {
+sample_variability.nutr_input <- function(x, itr = 1, biomass = NULL, production = NULL,
+                                          lag = NULL, verbose = TRUE) {
 
   # warning for lag argument
-  if (!is.null(lag) && verbose) {
+  if ((!is.null(biomass) || !is.null(production) || !is.null(lag)) && verbose) {
 
-    warning("'lag' is used for 'meta_rn' objects only.", call. = FALSE)
+    warning("'biomass', 'production' or 'lag' are used for 'meta_rn' objects only.",
+            call. = FALSE)
 
   }
-
   # convert to matrix
   values_i <- get_input_df(x = x, gamma = FALSE)[, -1, drop = FALSE]
 
@@ -101,35 +103,48 @@ sample_variability.nutr_input <- function(x, what = NULL, itr = 1, lag = NULL, v
 
 #' @name sample_variability
 #' @export
-sample_variability.meta_rn <- function(x, what = "biomass", itr = 1, lag = FALSE, verbose = TRUE) {
+sample_variability.meta_rn <- function(x, itr = 1, biomass = TRUE, production = TRUE,
+                                       lag = c(FALSE, FALSE), verbose = TRUE) {
 
   # get sum of total local ecosystems
-  result_sum <- summarize_meta(result  = x, what = what, fun = "sum",
-                               lag = lag, return_df = TRUE)[[what]]
-
-  # get names of summarized parts
-  parts <- names(result_sum[, -c(1:2)])
+  result_sum <- summarize_meta(result = x, biomass = biomass, production = production,
+                               lag = lag)
 
   # calculate variability for what parts
-  result <- lapply(parts, function(i) {
+  result <- lapply(result_sum, function(i) {
 
-    # get only needed cols
-    values_i <- result_sum[, c("meta", "timestep", i)]
+    # check if summarized is null
+    if (is.null(i)) {
 
-    # reshape to wide for internal cv fun
-    values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                               direction = "wide")[, -1, drop = FALSE]
+      return(NULL)
 
-    itr_sample_var_internal(values_i = values_i, part = i, n = x$n, itr = itr,
-                            verbose = verbose)
+      # calc variability
+    } else {
 
+      # get names of summarized parts
+      names_parts <- names(i[, -c(1:2)])
+
+      result_temp <- lapply(names_parts, function(j) {
+
+        # get only needed cols
+        values_i <- i[, c("meta", "timestep", j)]
+
+        # reshape to wide for internal cv fun
+        values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
+                                   direction = "wide")[, -1, drop = FALSE]
+
+        itr_sample_var_internal(values_i = values_i, part = j, n = x$n, itr = itr,
+                                verbose = verbose)
+      })
+
+      # combine to one data.frame
+      result_temp <- do.call(what = "rbind", args = result_temp)
+
+      # make sure bg comes first
+      result_temp[order(result_temp$part, result_temp$stat, result_temp$n), ]
+
+    }
   })
-
-  # combine to one data.frame
-  result <- do.call(what = "rbind", args = result)
-
-  # make sure bg comes first
-  result <- result[order(result$part, result$stat, result$n), ]
 
   # return result list
   return(result)

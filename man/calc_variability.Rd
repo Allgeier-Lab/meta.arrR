@@ -6,18 +6,31 @@
 \alias{calc_variability.meta_rn}
 \title{calc_variability}
 \usage{
-calc_variability(x, what, lag, verbose)
+calc_variability(x, biomass, production, lag, verbose)
 
-\method{calc_variability}{nutr_input}(x, what = NULL, lag = NULL, verbose = TRUE)
+\method{calc_variability}{nutr_input}(
+  x,
+  biomass = NULL,
+  production = NULL,
+  lag = NULL,
+  verbose = TRUE
+)
 
-\method{calc_variability}{meta_rn}(x, what = "biomass", lag = FALSE, verbose = TRUE)
+\method{calc_variability}{meta_rn}(
+  x,
+  biomass = TRUE,
+  production = TRUE,
+  lag = c(FALSE, FALSE),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
-\item{what}{String specifying which measure to use to calculate variability.}
+\item{biomass, production}{Logical to specifiy if biomass and/or production is summarize.d}
 
-\item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
+\item{lag}{Vector with logical. If TRUE, the difference to the previous timestep is returned.
+The first element refers to biomass, the second element to production.}
 
 \item{verbose}{Logical if TRUE progress reports are printed.}
 }

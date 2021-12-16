@@ -19,10 +19,10 @@
 #' @rdname plot_meta_production
 #'
 #' @export
-plot_meta_production <- function(result, lag = TRUE, base_size = 10) {
+plot_meta_production <- function(result, lag = c(FALSE, TRUE), base_size = 10) {
 
   # calculate production
-  production <- summarize_meta(result = result, what = "production",
+  production <- summarize_meta(result = result, biomass = FALSE, production = TRUE,
                                lag = lag)[["production"]]
 
   # remove NA rows (first row)

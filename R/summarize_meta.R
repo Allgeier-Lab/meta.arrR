@@ -4,10 +4,11 @@
 #' Summarize biomass and production values of each timestep
 #'
 #' @param result \code{meta_rn} object simulated \code{run_meta}.
-#' @param what Logical if TRUE, the difference to the previous timestep is returned.
+#' @param biomass,production Logical to specifiy if biomass and/or production is summarize.d
 #' @param fun Function to aggregate results. Passed on to \code{aggregate}.
 #' @param na.rm Logical passed on to \code{aggregate}.
-#' @param lag Logical if TRUE, the difference to the previous timestep is returned.
+#' @param lag Vector with logical. If TRUE, the difference to the previous timestep is returned.
+#' The first element refers to biomass, the second element to production.
 #' @param return_df Logical if TRUE, a data.frame is returned.
 #'
 #' @details
@@ -24,25 +25,14 @@
 #' @rdname summarize_meta
 #'
 #' @export
-summarize_meta <- function(result, what = c("biomass", "production"),
-                           fun = "sum", na.rm = TRUE, lag = FALSE, return_df = TRUE) {
+summarize_meta <- function(result, biomass = TRUE, production = TRUE,
+                           fun = "sum", na.rm = TRUE, lag = c(FALSE, FALSE), return_df = TRUE) {
 
   # create input with parts
-  parts <- list(biomass = c("bg_biomass", "ag_biomass"),
-                production = c("bg_production", "ag_production"))
-
-  # check if biomass and/or production needs to be calculated
-  if (!"biomass" %in% what) {
-
-    parts[[1]] <- NA
-
-  }
-
-  if (!"production" %in% what) {
-
-    parts[[2]] <- NA
-
-  }
+  parts <- list(biomass = ifelse(test = c(biomass, biomass),
+                                 yes = c("bg_biomass", "ag_biomass"), no = NA),
+                production = ifelse(test = c(production, production),
+                                    yes = c("bg_production", "ag_production"), no = NA))
 
   # loop through
   result_sum <- lapply(seq_along(parts), function(i) {
@@ -67,7 +57,7 @@ summarize_meta <- function(result, what = c("biomass", "production"),
                                           FUN = fun, na.rm = na.rm)
 
         # use difference to previous timestep
-        if (lag) {
+        if (lag[[i]]) {
 
           seafloor_temp <- calc_lag_internal(seafloor_temp)
 
@@ -105,13 +95,6 @@ summarize_meta <- function(result, what = c("biomass", "production"),
 
   # rename result list
   names(result_sum) <- names(parts)
-
-  # return error of NULL
-  if (is.null(result_sum[[1]]) && is.null(result_sum[[2]])) {
-
-    stop("'what' argument must be either 'biomass' and/or 'production'.", call. = FALSE)
-
-  }
 
   return(result_sum)
 }

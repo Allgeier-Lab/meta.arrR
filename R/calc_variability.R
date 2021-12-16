@@ -4,8 +4,9 @@
 #' Calculate variability
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
-#' @param what String specifying which measure to use to calculate variability.
-#' @param lag Logical if TRUE, the difference to the previous timestep is returned.
+#' @param biomass,production Logical to specifiy if biomass and/or production is summarize.d
+#' @param lag Vector with logical. If TRUE, the difference to the previous timestep is returned.
+#' The first element refers to biomass, the second element to production.
 #' @param verbose Logical if TRUE progress reports are printed.
 #'
 #' @details
@@ -45,16 +46,18 @@
 #' @rdname calc_variability
 #'
 #' @export
-calc_variability <- function(x, what, lag, verbose) UseMethod("calc_variability")
+calc_variability <- function(x, biomass, production, lag, verbose) UseMethod("calc_variability")
 
 #' @name calc_variability
 #' @export
-calc_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = TRUE) {
+calc_variability.nutr_input <- function(x, biomass = NULL, production = NULL, lag = NULL,
+                                        verbose = TRUE) {
 
   # warning for lag argument
-  if (!is.null(lag) && verbose) {
+  if ((!is.null(biomass) || !is.null(production) || !is.null(lag)) && verbose) {
 
-    warning("'lag' is used for 'meta_rn' objects only.", call. = FALSE)
+    warning("'biomass', 'production' or 'lag' are used for 'meta_rn' objects only.",
+            call. = FALSE)
 
   }
 
@@ -76,37 +79,51 @@ calc_variability.nutr_input <- function(x, what = NULL, lag = NULL, verbose = TR
 
 #' @name calc_variability
 #' @export
-calc_variability.meta_rn <- function(x, what = "biomass", lag = FALSE , verbose = TRUE) {
+calc_variability.meta_rn <- function(x, biomass = TRUE, production = TRUE, lag = c(FALSE, FALSE),
+                                     verbose = TRUE) {
 
   # get sum of total local ecosystems
-  result_sum <- summarize_meta(result  = x, what = what, fun = "sum",
-                               lag = lag, return_df = TRUE)[[what]]
-
-  # get names of summarized parts
-  parts <- names(result_sum[, -c(1:2)])
+  result_sum <- summarize_meta(result = x, biomass = biomass, production = production,
+                               lag = lag)
 
   # loop through bg, ag, ttl biomass/prod
-  result <- lapply(parts, function(i) {
+  result <- lapply(result_sum, function(i) {
 
-    # get only needed cols
-    values_i <- result_sum[, c("meta", "timestep", i)]
+    # check if summarized is null
+    if (is.null(i)) {
 
-    # reshape to wide for internal cv fun
-    values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                               direction = "wide")[, -1, drop = FALSE]
+      return(NULL)
 
-    # calculate sum of each timestep
-    values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
+    # calc variability
+    } else {
 
-    cbind(part = i, calc_variability_internal(values_i = values_i, values_m = values_m))
+      # get names of summarized parts
+      names_parts <- names(i[, -c(1:2)])
 
+      result_temp <- lapply(names_parts, function(j) {
+
+        # get only needed cols
+        values_i <- i[, c("meta", "timestep", j)]
+
+        # reshape to wide for internal cv fun
+        values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
+                                   direction = "wide")[, -1, drop = FALSE]
+
+        # calculate sum of each timestep
+        values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
+
+        cbind(part = j, calc_variability_internal(values_i = values_i, values_m = values_m))
+
+      })
+
+      # combine to one data.frame
+      result_temp <- do.call(what = "rbind", args = result_temp)
+
+      # make sure bg comes first
+      result_temp[order(result_temp$part), ]
+
+    }
   })
-
-  # combine to one data.frame
-  result <- do.call(what = "rbind", args = result)
-
-  # make sure bg comes first
-  result <- result[order(result$part), ]
 
   # return result list
   return(result)

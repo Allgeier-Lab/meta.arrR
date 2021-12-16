@@ -4,7 +4,7 @@
 \alias{plot_meta_production}
 \title{plot_meta_production}
 \usage{
-plot_meta_production(result, lag = TRUE, base_size = 10)
+plot_meta_production(result, lag = c(FALSE, TRUE), base_size = 10)
 }
 \arguments{
 \item{result}{\code{meta_rn} object simulated with \code{run_meta}.}

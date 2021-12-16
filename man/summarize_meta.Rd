@@ -6,23 +6,25 @@
 \usage{
 summarize_meta(
   result,
-  what = c("biomass", "production"),
+  biomass = TRUE,
+  production = TRUE,
   fun = "sum",
   na.rm = TRUE,
-  lag = FALSE,
+  lag = c(FALSE, FALSE),
   return_df = TRUE
 )
 }
 \arguments{
 \item{result}{\code{meta_rn} object simulated \code{run_meta}.}
 
-\item{what}{Logical if TRUE, the difference to the previous timestep is returned.}
+\item{biomass, production}{Logical to specifiy if biomass and/or production is summarize.d}
 
 \item{fun}{Function to aggregate results. Passed on to \code{aggregate}.}
 
 \item{na.rm}{Logical passed on to \code{aggregate}.}
 
-\item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
+\item{lag}{Vector with logical. If TRUE, the difference to the previous timestep is returned.
+The first element refers to biomass, the second element to production.}
 
 \item{return_df}{Logical if TRUE, a data.frame is returned.}
 }
