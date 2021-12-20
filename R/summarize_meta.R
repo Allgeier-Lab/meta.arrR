@@ -77,7 +77,8 @@ summarize_meta <- function(result, biomass = TRUE, production = TRUE,
         result_part <- do.call("rbind", result_part)
 
         # add meta id by repeating 1:n for each timestep
-        result_part$meta <- rep(x = 1:result$n, each = length(seq(from = 0, to = result$max_i,
+        result_part$meta <- rep(x = 1:result$n, each = length(seq(from = min(result_part$timestep),
+                                                                  to = max(result_part$timestep),
                                                                   by = result$save_each)))
 
         # reorder cols
