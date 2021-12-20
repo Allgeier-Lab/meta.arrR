@@ -6,17 +6,20 @@
 \alias{filter_meta.meta_rn}
 \title{filter_meta}
 \usage{
-filter_meta(x, filter, verbose)
+filter_meta(x, filter, reset, verbose)
 
-\method{filter_meta}{nutr_input}(x, filter, verbose = TRUE)
+\method{filter_meta}{nutr_input}(x, filter, reset = NULL, verbose = TRUE)
 
-\method{filter_meta}{meta_rn}(x, filter, verbose = TRUE)
+\method{filter_meta}{meta_rn}(x, filter, reset = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
 \item{filter}{Vector with timesteps (\code{nutr_input}) or
 min/max timesteps (\code{nutr_input}) to return.}
+
+\item{reset}{Logical if TRUE, cumulative seafloor values are reduced by value
+before filter minimum.}
 
 \item{verbose}{Logical if TRUE progress reports are printed.}
 }

@@ -6,6 +6,8 @@
 #' @param x \code{nutr_input} or \code{meta_rn} object.
 #' @param filter Vector with timesteps (\code{nutr_input}) or
 #' min/max timesteps (\code{nutr_input}) to return.
+#' @param reset Logical if TRUE, cumulative seafloor values are reduced by value
+#' before filter minimum.
 #' @param verbose Logical if TRUE progress reports are printed.
 #'
 #' @details
@@ -31,11 +33,11 @@
 #' @rdname filter_meta
 #'
 #' @export
-filter_meta <- function(x, filter, verbose) UseMethod("filter_meta")
+filter_meta <- function(x, filter, reset, verbose) UseMethod("filter_meta")
 
 #' @name filter_meta
 #' @export
-filter_meta.nutr_input <- function(x, filter, verbose = TRUE) {
+filter_meta.nutr_input <- function(x, filter, reset = NULL, verbose = TRUE) {
 
   # repeat filter
   if (length(filter == 1)) {
@@ -82,7 +84,7 @@ filter_meta.nutr_input <- function(x, filter, verbose = TRUE) {
 
 #' @name filter_meta
 #' @export
-filter_meta.meta_rn <- function(x, filter, verbose = TRUE) {
+filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
 
   # repeat filter
   if (length(filter == 1)) {
@@ -106,7 +108,43 @@ filter_meta.meta_rn <- function(x, filter, verbose = TRUE) {
     }
   }
 
+  # prepare some things for cols reset
+  if (reset && filter[1] > 0) {
+
+    # create vector with timesteps i
+    timestep_full <- seq(from = 0, to = x$max_i, by = x$save_each)
+
+    # get last timestep before filter
+    timestep_last <- timestep_full[max(which(timestep_full < filter[1]))]
+
+    # create vector with seafloor cols
+    cols_seafloor <- c("ag_production", "bg_production", "ag_slough", "bg_slough",
+                       "ag_uptake", "bg_uptake", "consumption", "excretion")
+
+    # create vector with fishpop cols
+    cols_fishpop <- c("id", "consumption", "excretion", "died_consumption", "died_background")
+
+    # create look up for fish at timestep last
+    fishpop_last <- do.call(what = "rbind", args = lapply(X = x$fishpop, function(i) {
+      i[i$timestep == timestep_last, cols_fishpop]}))
+
+  }
+
   for (i in 1:x$n) {
+
+    # get seafloor value at last timestep
+    if (reset && filter[1] > 0) {
+
+      # get values of last timestep
+      seafloor_last <- x$seafloor[[i]][x$seafloor[[i]]$timestep == timestep_last,
+                                       cols_seafloor]
+
+      # repeat values of last time steps as often as timestep above filter cutoff are present
+      seafloor_last <- do.call(what = "rbind",
+                               args = replicate(n = length(which(timestep_full >= filter[1])),
+                                                expr = seafloor_last, simplify = FALSE))
+
+    }
 
     # get row id if timesteps that are selected
     seafloor_id <- which(x$seafloor[[i]]$timestep >= filter[1] &
@@ -122,6 +160,19 @@ filter_meta.meta_rn <- function(x, filter, verbose = TRUE) {
     # subset data.frame
     x$fishpop[[i]] <- x$fishpop[[i]][fishpop_id, ]
 
+    # subtract all cumulative number until filter cutoff
+    if (reset && filter[1] > 0) {
+
+      # update cols seafloor
+      x$seafloor[[i]][, cols_seafloor] <- x$seafloor[[i]][, cols_seafloor] - seafloor_last
+
+      # rep each row in fishpop_last dependig on x$fishpop[[i]]$id
+      fishpop_rows <- sapply(X = x$fishpop[[i]]$id, function(i) which(i == fishpop_last$id))
+
+      # update cols fishpop
+      x$fishpop[[i]][, cols_fishpop[-1]] <- x$fishpop[[i]][, cols_fishpop[-1]] -
+        fishpop_last[fishpop_rows, cols_fishpop[-1] ]
+    }
   }
 
   # filter input
