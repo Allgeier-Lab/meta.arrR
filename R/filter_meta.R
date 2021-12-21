@@ -118,7 +118,7 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
     timestep_last <- timestep_full[max(which(timestep_full < filter[1]))]
 
     # create vector with seafloor cols
-    cols_seafloor <- c("ag_production", "bg_production", "ag_slough", "bg_slough",
+    cols_seafloor <- c("x", "y", "ag_production", "bg_production", "ag_slough", "bg_slough",
                        "ag_uptake", "bg_uptake", "consumption", "excretion")
 
     # create vector with fishpop cols
@@ -127,6 +127,9 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
     # create look up for fish at timestep last
     fishpop_last <- do.call(what = "rbind", args = lapply(X = x$fishpop, function(i) {
       i[i$timestep == timestep_last, cols_fishpop]}))
+
+    # order rows
+    fishpop_last <- fishpop_last[order(fishpop_last$id), ]
 
   }
 
@@ -139,10 +142,10 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
       seafloor_last <- x$seafloor[[i]][x$seafloor[[i]]$timestep == timestep_last,
                                        cols_seafloor]
 
-      # repeat values of last time steps as often as timestep above filter cutoff are present
-      seafloor_last <- do.call(what = "rbind",
-                               args = replicate(n = length(which(timestep_full >= filter[1])),
-                                                expr = seafloor_last, simplify = FALSE))
+      # # repeat values of last time steps as often as timestep above filter cutoff are present
+      # seafloor_last <- do.call(what = "rbind",
+      #                          args = replicate(n = length(which(timestep_full >= filter[1])),
+      #                                           expr = seafloor_last, simplify = FALSE))
 
     }
 
@@ -163,15 +166,22 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
     # subtract all cumulative number until filter cutoff
     if (reset && filter[1] > 0) {
 
-      # update cols seafloor
-      x$seafloor[[i]][, cols_seafloor] <- x$seafloor[[i]][, cols_seafloor] - seafloor_last
+      # get row ids where seafloor_last xy equals seafloor xy
+      seafloor_rows <- apply(X = x$seafloor[[i]][, c("x", "y")], MARGIN = 1,
+                             FUN = function(j) {which(j[1] == seafloor_last$x &
+                                                        j[2] == seafloor_last$y)})
 
-      # rep each row in fishpop_last dependig on x$fishpop[[i]]$id
-      fishpop_rows <- sapply(X = x$fishpop[[i]]$id, function(i) which(i == fishpop_last$id))
+      # get row ids where fishpop_last id equals fishop id
+      fishpop_rows <- sapply(X = x$fishpop[[i]]$id, function(j) which(j == fishpop_last$id))
+
+      # update cols seafloor
+      x$seafloor[[i]][, cols_seafloor[-c(1, 2)]] <- x$seafloor[[i]][, cols_seafloor[-c(1, 2)]] -
+        seafloor_last[seafloor_rows, cols_seafloor[-c(1, 2)]]
 
       # update cols fishpop
       x$fishpop[[i]][, cols_fishpop[-1]] <- x$fishpop[[i]][, cols_fishpop[-1]] -
-        fishpop_last[fishpop_rows, cols_fishpop[-1] ]
+        fishpop_last[fishpop_rows, cols_fishpop[-1]]
+
     }
   }
 
