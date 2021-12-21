@@ -53,4 +53,4 @@ result_readme <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
                           parameters = parameters, movement = "attr",
                           max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 
-usethis::use_data(result_readme, internal = TRUE, overwrite = TRUE)
+usethis::use_data(result_readme, internal = TRUE, overwrite = FALSE)

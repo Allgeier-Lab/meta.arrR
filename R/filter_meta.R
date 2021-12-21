@@ -121,16 +121,20 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
     cols_seafloor <- c("x", "y", "ag_production", "bg_production", "ag_slough", "bg_slough",
                        "ag_uptake", "bg_uptake", "consumption", "excretion")
 
-    # create vector with fishpop cols
-    cols_fishpop <- c("id", "consumption", "excretion", "died_consumption", "died_background")
+    # check if fishpop is present
+    if (any(x$starting_values$pop_n != 0)) {
 
-    # create look up for fish at timestep last
-    fishpop_last <- do.call(what = "rbind", args = lapply(X = x$fishpop, function(i) {
-      i[i$timestep == timestep_last, cols_fishpop]}))
+      # create vector with fishpop cols
+      cols_fishpop <- c("id", "consumption", "excretion", "died_consumption", "died_background")
 
-    # order rows
-    fishpop_last <- fishpop_last[order(fishpop_last$id), ]
+      # create look up for fish at timestep last
+      fishpop_last <- do.call(what = "rbind", args = lapply(X = x$fishpop, function(i) {
+        i[i$timestep == timestep_last, cols_fishpop]}))
 
+      # order rows
+      fishpop_last <- fishpop_last[order(fishpop_last$id), ]
+
+    }
   }
 
   for (i in 1:x$n) {
@@ -166,16 +170,28 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
                              FUN = function(j) {which(j[1] == seafloor_last$x &
                                                         j[2] == seafloor_last$y)})
 
-      # get row ids where fishpop_last id equals fishop id
-      fishpop_rows <- sapply(X = x$fishpop[[i]]$id, function(j) which(j == fishpop_last$id))
-
       # update cols seafloor
       x$seafloor[[i]][, cols_seafloor[-c(1, 2)]] <- x$seafloor[[i]][, cols_seafloor[-c(1, 2)]] -
         seafloor_last[seafloor_rows, cols_seafloor[-c(1, 2)]]
 
-      # update cols fishpop
-      x$fishpop[[i]][, cols_fishpop[-1]] <- x$fishpop[[i]][, cols_fishpop[-1]] -
-        fishpop_last[fishpop_rows, cols_fishpop[-1]]
+      # check if fishpop is present
+      if (any(x$starting_values$pop_n != 0)) {
+
+        # get row ids where fishpop_last id equals fishop id
+        fishpop_rows <- sapply(X = x$fishpop[[i]]$id, function(j) which(j == fishpop_last$id))
+
+        # update cols fishpop
+        x$fishpop[[i]][, cols_fishpop[-1]] <- x$fishpop[[i]][, cols_fishpop[-1]] -
+          fishpop_last[fishpop_rows, cols_fishpop[-1]]
+
+      }
+    }
+
+    # print progress
+    if (verbose) {
+
+      message("\r> Progress: ", round(x = i / x$n, digits = 2) * 100, "% \t \t",
+              appendLF = FALSE)
 
     }
   }
@@ -186,6 +202,13 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
 
   # replace elements
   x$max_i <- max(filter)
+
+  # print new line
+  if (verbose) {
+
+    message("")
+
+  }
 
   return(x)
 }
