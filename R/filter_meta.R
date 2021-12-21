@@ -142,11 +142,6 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
       seafloor_last <- x$seafloor[[i]][x$seafloor[[i]]$timestep == timestep_last,
                                        cols_seafloor]
 
-      # # repeat values of last time steps as often as timestep above filter cutoff are present
-      # seafloor_last <- do.call(what = "rbind",
-      #                          args = replicate(n = length(which(timestep_full >= filter[1])),
-      #                                           expr = seafloor_last, simplify = FALSE))
-
     }
 
     # get row id if timesteps that are selected
