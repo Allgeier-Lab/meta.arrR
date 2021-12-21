@@ -23,10 +23,10 @@
 #' @examples
 #' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)
-#' filter_meta(nutr_input, filter = seq(from = 4380 / 2, to = 4380, by = 20))
+#' filter_meta(x = nutr_input, filter = seq(from = 4380 / 2, to = 4380, by = 20))
 #'
 #' \dontrun{
-#' filter_metarn(result = result_rand, filter = c(4380 / 2, 4380))
+#' filter_meta(x = result_rand, filter = c(4380 / 2, 4380))
 #' }
 #'
 #' @aliases filter_meta
@@ -121,6 +121,10 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
     cols_seafloor <- c("x", "y", "ag_production", "bg_production", "ag_slough", "bg_slough",
                        "ag_uptake", "bg_uptake", "consumption", "excretion")
 
+    # get row ids where seafloor_last xy equals seafloor xy
+    seafloor_rows <- rep(x = seq(from = 1, to = prod(x$dimensions)),
+                         times = length(which(timestep_full >= filter[1])))
+
     # check if fishpop is present
     if (any(x$starting_values$pop_n != 0)) {
 
@@ -165,11 +169,6 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
     # subtract all cumulative number until filter cutoff
     if (reset && filter[1] > 0) {
 
-      # get row ids where seafloor_last xy equals seafloor xy
-      seafloor_rows <- apply(X = x$seafloor[[i]][, c("x", "y")], MARGIN = 1,
-                             FUN = function(j) {which(j[1] == seafloor_last$x &
-                                                        j[2] == seafloor_last$y)})
-
       # update cols seafloor
       x$seafloor[[i]][, cols_seafloor[-c(1, 2)]] <- x$seafloor[[i]][, cols_seafloor[-c(1, 2)]] -
         seafloor_last[seafloor_rows, cols_seafloor[-c(1, 2)]]
@@ -178,7 +177,15 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
       if (any(x$starting_values$pop_n != 0)) {
 
         # get row ids where fishpop_last id equals fishop id
-        fishpop_rows <- sapply(X = x$fishpop[[i]]$id, function(j) which(j == fishpop_last$id))
+        fishpop_rows <- sapply(X = x$fishpop[[i]]$id, function(j) {
+
+          # returns numeric(0) if row is NA
+          row_temp <- which(j == fishpop_last$id)
+
+          # return NA if numeric(0)
+          ifelse(test = length(row_temp) == 0, yes = NA, no = row_temp)
+
+        })
 
         # update cols fishpop
         x$fishpop[[i]][, cols_fishpop[-1]] <- x$fishpop[[i]][, cols_fishpop[-1]] -
@@ -190,7 +197,7 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
     # print progress
     if (verbose) {
 
-      message("\r> Progress: ", round(x = i / x$n, digits = 2) * 100, "% \t \t",
+      message("\r> Progress: ", round(x = i / x$n * 100, digits = 2), "% \t \t",
               appendLF = FALSE)
 
     }

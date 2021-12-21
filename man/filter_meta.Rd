@@ -40,10 +40,10 @@ to be returned needs to be provided.
 \examples{
 nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 variability = 0.5)
-filter_meta(nutr_input, filter = seq(from = 4380 / 2, to = 4380, by = 20))
+filter_meta(x = nutr_input, filter = seq(from = 4380 / 2, to = 4380, by = 20))
 
 \dontrun{
-filter_metarn(result = result_rand, filter = c(4380 / 2, 4380))
+filter_meta(x = result_rand, filter = c(4380 / 2, 4380))
 }
 
 }
