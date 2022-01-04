@@ -20,7 +20,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(meta.arrR)
-
 ```
 
 ### 1. Load parameters
@@ -83,7 +82,7 @@ result <- meta.arrR:::result_readme
 
 ```{r run_model, eval = FALSE}
 result <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
-                   parameters = parameters, reef_attraction = TRUE,
+                   parameters = parameters, movement = "rand",
                    max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 ```
 

@@ -40,8 +40,8 @@ print.meta_syst <- function(x, digits = 3, ...) {
 
   # print result
   cat(paste0("Metaecosystems    : ", x$n, "\n",
-             "Local extent      : ", extent, "\n",
-             "Local AR cells    : ", no_reefs, "\n",
-             "Local individuals : ", no_fish, "\n"))
+             "Environment       : ", extent, "\n",
+             "ARs               : ", no_reefs, "\n",
+             "Individuals       : ", no_fish, "\n"))
 
 }

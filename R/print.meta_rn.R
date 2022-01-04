@@ -82,10 +82,11 @@ print.meta_rn <- function(x, digits = 3, ...) {
   # calculate save_each timesteps
   save_time <- round(x$save_each * x$min_per_i / 60 / 24, digits = 2)
 
-  cat(paste0("Total time : ", paste0(c(min_time, x$max_i), collapse = "-"), " iterations (", total_time, " days) [Burn-in: ", x$burn_in, " iter.]\n",
-             "Saved each : ", x$save_each, " iterations (", save_time, " days)\n",
-             "Seafloor   : ", x$extent, "\n",
-             "ARs        : ", no_reefs, " cells (movement: ", x$movement, ")\n\n"))
+  cat(paste0("Total time     : ", paste0(c(min_time, x$max_i), collapse = "-"), " iterations (", total_time, " days) [Burn-in: ", x$burn_in, " iter.]\n",
+             "Saved each     : ", x$save_each, " iterations (", save_time, " days)\n",
+             "Metaecosystems : ", x$n, "\n",
+             "Environment    : ", x$extent, "\n",
+             "ARs            : ", no_reefs, " cells [movement: ", x$movement, "]\n\n"))
 
   cat("Local metaecosystems:\n")
   cat(paste0("ID\tBG\tAG\tNutr\tDetr\tFish\tLength\tMort\n"))

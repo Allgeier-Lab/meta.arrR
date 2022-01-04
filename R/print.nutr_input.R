@@ -50,10 +50,14 @@ print.nutr_input <- function(x, digits = NULL, ...) {
 
   }
 
+  # get minimum timestep
+  min_time <- unique(vapply(X = x$values, function(i) min(i$timestep),
+                            FUN.VALUE = numeric(1)))
+
   # print message
   cat(paste0(
+    "Total time     : ", paste0(c(min_time, x$max_i), collapse = "-"), " iterations [Freq: ", x$freq_mn, "]\n",
     "Metaecosystems : ", x$n, "\n",
-    "Max timesteps  : ", x$max_i, " [Freq: ", x$freq_mn, "]\n",
     "Min input      : ", paste(min_input, collapse = ", "), "\n",
     "Mean input     : ", paste(mean_input, collapse = ", "), "\n",
     "Max input      : ", paste(max_input, collapse = ", "), "\n"))

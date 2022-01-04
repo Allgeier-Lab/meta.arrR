@@ -40,7 +40,7 @@ filter_meta <- function(x, filter, reset, verbose) UseMethod("filter_meta")
 filter_meta.nutr_input <- function(x, filter, reset = NULL, verbose = TRUE) {
 
   # repeat filter
-  if (length(filter == 1)) {
+  if (length(filter) == 1) {
 
     filter <- rep(x = filter, times = 2)
 
@@ -55,29 +55,34 @@ filter_meta.nutr_input <- function(x, filter, reset = NULL, verbose = TRUE) {
     # print warning
     if (verbose) {
 
-      warning("'timesteps' are no integer values. All values will be truncated.",
+      warning("'filter' are no integer values. All values will be truncated.",
               call. = FALSE)
 
     }
   }
 
   # check if all timesteps are within boundaries
-  if (any(filter <= 0) || any(filter > x$max_i)) {
+  if (any(filter < 0) || any(filter > x$max_i)) {
 
-    stop("'timesteps' is not within 0 <= x < max_i.", call. = FALSE)
+    stop("'filter' is not within 0 <= x <= max_i.", call. = FALSE)
 
   }
 
   # loop through all metaecosystems
   for (i in 1:x$n) {
 
+    # get row id if timesteps that are selected
+    nutrient_id <- which(x$values[[i]]$timestep >= filter[1] &
+                           x$values[[i]]$timestep <= filter[2])
+
     # filter values and replace
-    x$values[[i]] <- x$values[[i]][filter ,]
+    x$values[[i]] <- x$values[[i]][nutrient_id ,]
 
   }
 
   # replace maximum value
-  x$max_i <- max(filter)
+  x$max_i <- unique(vapply(X = x$values, FUN = function(i) max(i$timestep),
+                           FUN.VALUE = numeric(1)))
 
   return(x)
 }
@@ -87,7 +92,7 @@ filter_meta.nutr_input <- function(x, filter, reset = NULL, verbose = TRUE) {
 filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
 
   # repeat filter
-  if (length(filter == 1)) {
+  if (length(filter) == 1) {
 
     filter <- rep(x = filter, times = 2)
 
@@ -111,46 +116,38 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
   # prepare some things for cols reset
   if (reset && filter[1] > 0) {
 
+    # create vector with seafloor cols
+    cols_seafloor <- c("x", "y", "ag_production", "bg_production", "ag_slough", "bg_slough",
+                       "ag_uptake", "bg_uptake", "consumption", "excretion")
+
+    # create vector with fishpop cols
+    cols_fishpop <- c("id", "consumption", "excretion", "died_consumption", "died_background")
+
     # create vector with timesteps i
     timestep_full <- seq(from = 0, to = x$max_i, by = x$save_each)
 
     # get last timestep before filter
     timestep_last <- timestep_full[max(which(timestep_full < filter[1]))]
 
-    # create vector with seafloor cols
-    cols_seafloor <- c("x", "y", "ag_production", "bg_production", "ag_slough", "bg_slough",
-                       "ag_uptake", "bg_uptake", "consumption", "excretion")
-
     # get row ids where seafloor_last xy equals seafloor xy
     seafloor_rows <- rep(x = seq(from = 1, to = prod(x$dimensions)),
-                         times = length(which(timestep_full >= filter[1])))
+                         times = length(which(timestep_full >= filter[1] &
+                                                timestep_full <= filter[2])))
 
-    # check if fishpop is present
-    if (any(x$starting_values$pop_n != 0)) {
+    # get values of last timestep
+    seafloor_last <- lapply(X = x$seafloor, function(i)
+      i[i$timestep == timestep_last, cols_seafloor])
 
-      # create vector with fishpop cols
-      cols_fishpop <- c("id", "consumption", "excretion", "died_consumption", "died_background")
+    # create look up for fish at timestep last
+    fishpop_last <- do.call(what = "rbind", args = lapply(X = x$fishpop, function(i) {
+      i[i$timestep == timestep_last, cols_fishpop]}))
 
-      # create look up for fish at timestep last
-      fishpop_last <- do.call(what = "rbind", args = lapply(X = x$fishpop, function(i) {
-        i[i$timestep == timestep_last, cols_fishpop]}))
+    # order rows
+    fishpop_last <- fishpop_last[order(fishpop_last$id), ]
 
-      # order rows
-      fishpop_last <- fishpop_last[order(fishpop_last$id), ]
-
-    }
   }
 
   for (i in 1:x$n) {
-
-    # get seafloor value at last timestep
-    if (reset && filter[1] > 0) {
-
-      # get values of last timestep
-      seafloor_last <- x$seafloor[[i]][x$seafloor[[i]]$timestep == timestep_last,
-                                       cols_seafloor]
-
-    }
 
     # get row id if timesteps that are selected
     seafloor_id <- which(x$seafloor[[i]]$timestep >= filter[1] &
@@ -171,33 +168,29 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
 
       # update cols seafloor
       x$seafloor[[i]][, cols_seafloor[-c(1, 2)]] <- x$seafloor[[i]][, cols_seafloor[-c(1, 2)]] -
-        seafloor_last[seafloor_rows, cols_seafloor[-c(1, 2)]]
+        seafloor_last[[i]][seafloor_rows, -c(1, 2)]
 
-      # check if fishpop is present
-      if (any(x$starting_values$pop_n != 0)) {
+      # get row ids where fishpop_last id equals fishop id
+      fishpop_rows <- sapply(X = x$fishpop[[i]]$id, function(j) {
 
-        # get row ids where fishpop_last id equals fishop id
-        fishpop_rows <- sapply(X = x$fishpop[[i]]$id, function(j) {
+        # returns numeric(0) if row is NA
+        row_temp <- which(j == fishpop_last$id)
 
-          # returns numeric(0) if row is NA
-          row_temp <- which(j == fishpop_last$id)
+        # return NA if numeric(0)
+        ifelse(test = length(row_temp) == 0, yes = NA, no = row_temp)
 
-          # return NA if numeric(0)
-          ifelse(test = length(row_temp) == 0, yes = NA, no = row_temp)
+      })
 
-        })
+      # update cols fishpop
+      x$fishpop[[i]][, cols_fishpop[-1]] <- x$fishpop[[i]][, cols_fishpop[-1]] -
+        fishpop_last[fishpop_rows, cols_fishpop[-1]]
 
-        # update cols fishpop
-        x$fishpop[[i]][, cols_fishpop[-1]] <- x$fishpop[[i]][, cols_fishpop[-1]] -
-          fishpop_last[fishpop_rows, cols_fishpop[-1]]
-
-      }
     }
 
     # print progress
     if (verbose) {
 
-      message("\r> Progress: ", round(x = i / x$n * 100, digits = 2), "% \t \t",
+      message("\r> Progress filtering: ", round(x = i / x$n * 100, digits = 2), "% \t \t",
               appendLF = FALSE)
 
     }
@@ -208,7 +201,8 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
                                          verbose = FALSE)
 
   # replace elements
-  x$max_i <- max(filter)
+  x$max_i <- unique(vapply(X = x$seafloor, FUN = function(i) max(i$timestep),
+                           FUN.VALUE = numeric(1)))
 
   # print new line
   if (verbose) {

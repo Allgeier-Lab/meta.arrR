@@ -131,6 +131,14 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
     max_dist <- 0.0
 
+    # check if no fishpop is present but movement not rand
+    if (movement %in% c("attr", "behav")) {
+
+      movement <- "rand"
+
+      warning("No fishpop present. Setting 'movement' to 'rand'.", call. = FALSE)
+
+    }
   }
 
   fishpop_track <- vector(mode = "list", length = metasyst$n)
