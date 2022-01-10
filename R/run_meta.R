@@ -234,7 +234,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   # print some basic information about model run
   if (verbose) {
 
-    message("> ...Starting simulation at <", t_start, ">...")
+    message("> ...Starting at <", t_start, ">...")
 
     message("")
 
@@ -362,7 +362,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
     message("")
 
-    message("> All done at <", t_end, ">")
+    message("> ...All done at <", t_end, ">...")
 
   }
 
