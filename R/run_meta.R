@@ -193,7 +193,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
   # convert seafloor to matrix
   seafloor <- lapply(metasyst$seafloor, function(i)
-    as.matrix(raster::as.data.frame(i, xy = TRUE)))
+    as.matrix(terra::as.data.frame(i, xy = TRUE, na.rm = FALSE)))
 
   # get cell id of reef cells (needs matrix input)
   cells_reef <- lapply(seafloor, function(i) which(i[, 16] == 1))
@@ -208,7 +208,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   cell_adj <- arrR::get_neighbors(x = metasyst$seafloor[[1]], direction = 8, cpp = TRUE)
 
   # get extent of environment
-  extent <- as.vector(metasyst$extent)
+  extent <- metasyst$extent
 
   # get dimensions of environment (nrow, ncol)
   dimensions <- metasyst$dimensions
@@ -288,7 +288,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
     # add timestep to  seafloor/fishpop counter
     seafloor_track[[i]]$timestep <- rep(x = seq(from = 0, to = max_i, by = save_each),
-                                        each = raster::ncell(metasyst$seafloor[[i]]))
+                                        each = terra::ncell(metasyst$seafloor[[i]]))
 
     # add burn_in col
     seafloor_track[[i]]$burn_in <- ifelse(test = seafloor_track[[i]]$timestep < burn_in,
@@ -347,7 +347,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
                  fishpop_attributes = metasyst$fishpop_attributes, movement = movement,
                  starting_values = metasyst$starting_values, parameters = parameters,
                  max_dist = max_dist, nutr_input = nutr_input, coords_reef = coords_reef,
-                 extent = raster::extent(extent), grain = raster::res(metasyst$seafloor[[1]]),
+                 extent = extent, grain = terra::res(metasyst$seafloor[[1]]),
                  dimensions = dimensions, max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  seagrass_each = seagrass_each, save_each = save_each)
 

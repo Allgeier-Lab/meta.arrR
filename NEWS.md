@@ -1,3 +1,6 @@
+# meta.arrR 0.4
+* Use `terra` instead of `raster`
+
 # meta.arrR 0.3
 * Move only across neighboring ecosystems
 * Add `calc_variability()` and `sample_variability()` function

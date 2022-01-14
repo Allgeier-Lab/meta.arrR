@@ -34,8 +34,8 @@ test_that("run_meta returns correct information", {
 
   expect_equal(object = result_rand$n, expected = n)
 
-  expect_equal(object = result_rand$extent,
-               expected = raster::extent(metasyst$seafloor[[1]]))
+  expect_equal(object = terra::ext(result_rand$extent),
+               expected = terra::ext(metasyst$seafloor[[1]]))
 
   expect_equal(object = result_rand$grain, expected = c(grain, grain))
 
