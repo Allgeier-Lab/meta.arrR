@@ -159,7 +159,8 @@ run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "r
     }
 
     # check length of nutrient input
-    if (!all(vapply(X = nutrients_input$values, nrow, FUN.VALUE = integer(1)) == max_i)) {
+    if (!all(vapply(X = nutrients_input$values, function(i) nrow(i),
+                    FUN.VALUE = integer(1)) == (max_i / seagrass_each))) {
 
       stop("There must be a nutrient input value for each timestep.", call. = FALSE)
 
@@ -178,8 +179,8 @@ run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "r
   # create nutrient input if not present
   } else {
 
-    nutrients_input <- sim_nutr_input(n = metasyst$n, max_i = max_i, input_mn = 0, freq_mn = 0,
-                                      verbose = FALSE)
+    nutrients_input <- sim_nutr_input(n = metasyst$n, max_i = max_i, seagrass_each = seagrass_each,
+                                      input_mn = 0.0, freq_mn = 0.0, verbose = FALSE)
 
     # set nutrient flag to save results later
     flag_nutr_input <- FALSE
