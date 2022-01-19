@@ -25,7 +25,7 @@ using namespace Rcpp;
 //' @param n Integer with number of metaecosystems.
 //' @param pop_n Vector with number of individuals.
 //' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual
-//' @param nutr_input List with amount of nutrient input each timestep.
+//' @param nutrients_input List with amount of nutrient input each timestep.
 //' @param coords_reef List with ID and coords of reef cells.
 //' @param cell_adj Matrix with cell adjacencies.
 //' @param extent Vector with extent (xmin,xmax,ymin,ymax).
@@ -67,7 +67,7 @@ void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
                    Rcpp::List seafloor_track, Rcpp::List fishpop_track,
                    Rcpp::List parameters, Rcpp::String movement, double max_dist,
                    int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes,
-                   Rcpp::List nutr_input, Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj,
+                   Rcpp::List nutrients_input, Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj,
                    Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions,
                    int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in,
                    bool verbose) {
@@ -92,9 +92,13 @@ void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
     (as<double>(parameters["detritus_diffusion"]) > 0.0) ||
     (as<double>(parameters["detritus_fish_diffusion"])) > 0.0;
 
+  // get input flag
+  // MH: nutrients_input is a list and not a vector!
+  // bool flag_input = Rcpp::sum(nutrients_input) > 0.0;
+
   // flag if nutrient output needs to be run
-  bool flag_output = (as<double>(parameters["nutrients_output"]) > 0.0) ||
-    (as<double>(parameters["detritus_output"]) > 0.0);
+  bool flag_output = (as<double>(parameters["nutrients_loss"]) > 0.0) ||
+    (as<double>(parameters["detritus_loss"]) > 0.0);
 
   // init fish population things //
 
@@ -177,10 +181,10 @@ void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
       }
 
       // simulate nutrient input if present
-      if (as<Rcpp::NumericVector>(nutr_input[j])(i - 1) > 0.0) {
+      if (as<Rcpp::NumericVector>(nutrients_input[j])(i - 1) > 0.0) {
 
         // simulate nutrient input
-        arrR::rcpp_nutr_input(seafloor[j], as<Rcpp::NumericVector>(nutr_input[j])(i - 1));
+        arrR::rcpp_nutr_input(seafloor[j], as<Rcpp::NumericVector>(nutrients_input[j])(i - 1));
 
       }
 
@@ -259,7 +263,7 @@ void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
       // remove nutrients from cells if output parameter > 0
       if (flag_output) {
 
-        arrR::rcpp_nutr_output(seafloor[j], parameters["nutrients_output"], parameters["detritus_output"]);
+        arrR::rcpp_nutr_output(seafloor[j], parameters["nutrients_loss"], parameters["detritus_loss"]);
 
       }
 
@@ -281,13 +285,13 @@ void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
 
 /*** R
 rcpp_sim_meta(seafloor = seafloor, fishpop = fishpop,
-                   seafloor_track = seafloor_track, fishpop_track = fishpop_track,
-                   parameters = parameters, movement = movement, max_dist = max_dist,
-                   n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
-                   fishpop_attributes = metasyst$fishpop_attributes,
-                   nutr_input = nutr_input, max_i = max_i, min_per_i = min_per_i,
-                   coords_reef = coords_reef, cell_adj = cell_adj,
-                   extent = extent, dimensions = dimensions,
-                   save_each = save_each, seagrass_each = seagrass_each, burn_in = burn_in,
-                   verbose = verbose)
+              seafloor_track = seafloor_track, fishpop_track = fishpop_track,
+              parameters = parameters, movement = movement, max_dist = max_dist,
+              n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
+              fishpop_attributes = metasyst$fishpop_attributes,
+              nutrients_input = nutrients_input, max_i = max_i, min_per_i = min_per_i,
+              coords_reef = coords_reef, cell_adj = cell_adj,
+              extent = extent, dimensions = dimensions,
+              save_each = save_each, seagrass_each = seagrass_each, burn_in = burn_in,
+              verbose = verbose)
 */

@@ -21,9 +21,9 @@
 #' @return nutr_input, meta_rn
 #'
 #' @examples
-#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)
-#' filter_meta(x = nutr_input, filter = seq(from = 4380 / 2, to = 4380, by = 20))
+#' filter_meta(x = nutrients_input, filter = seq(from = 4380 / 2, to = 4380, by = 20))
 #'
 #' \dontrun{
 #' filter_meta(x = result_rand, filter = c(4380 / 2, 4380))
@@ -197,8 +197,8 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
   }
 
   # filter input
-  x$nutr_input <- filter_meta.nutr_input(x = x$nutr_input, filter = filter,
-                                         verbose = FALSE)
+  x$nutrients_input <- filter_meta.nutr_input(x = x$nutr_input, filter = filter,
+                                              verbose = FALSE)
 
   # replace elements
   x$max_i <- unique(vapply(X = x$seafloor, FUN = function(i) max(i$timestep),

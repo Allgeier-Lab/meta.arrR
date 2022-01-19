@@ -1,5 +1,8 @@
 # meta.arrR 0.4
 * Use `terra` instead of `raster`
+* Rename `nutr_input` to `nutrients_input`
+* Rename `nutrients_output` to `nutrients_loss`
+* Rename `detritus_output` to `detritus_loss`
 
 # meta.arrR 0.3
 * Move only across neighboring ecosystems

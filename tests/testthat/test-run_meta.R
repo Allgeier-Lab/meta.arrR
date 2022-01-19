@@ -1,6 +1,6 @@
 # create vector with names
 present_names <- c("seafloor", "fishpop", "n", "fishpop_attributes", "movement",
-                   "starting_values", "parameters", "max_dist", "nutr_input",
+                   "starting_values", "parameters", "max_dist", "nutrients_input",
                    "coords_reef", "extent",  "grain", "dimensions",
                    "max_i" , "min_per_i", "burn_in", "seagrass_each", "save_each")
 

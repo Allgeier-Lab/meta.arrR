@@ -14,9 +14,9 @@
 #' the sum of all local metaecosystems is plotted additionally.
 #'
 #' @examples
-#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)
-#' plot(nutr_input)
+#' plot(nutrients_input)
 #'
 #' @aliases plot.nutr_input
 #' @rdname plot.nutr_input

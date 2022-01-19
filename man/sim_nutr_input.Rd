@@ -46,7 +46,7 @@ If two \code{variability} parameters are provided, the first one is used for \co
 the second one for \code{freq_mn}.
 }
 \examples{
-nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 variability = c(1.0, 1.0))
 
 }

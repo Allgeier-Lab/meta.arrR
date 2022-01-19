@@ -15,9 +15,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)
-#' get_input_df(nutr_input)
+#' get_input_df(nutrients_input)
 #' }
 #'
 #' @aliases get_input_df

@@ -5,7 +5,7 @@
 #'
 #' @param metasyst \code{meta_syst} object created with \code{setup_meta}.
 #' @param parameters List with all model parameters.
-#' @param nutr_input \code{nutr_input} with nutrient inputs
+#' @param nutrients_input \code{nutr_input} with nutrient inputs
 #' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param min_per_i Integer to specify minutes per i.
@@ -33,8 +33,8 @@
 #' attracted movement towards the artificial reef of individuals or a movement behavior based
 #' on their biosenergetics.
 #'
-#' If \code{nutr_input} is \code{NULL}, no nutrient input is simulated. To also simulate no
-#' nutrient output, set the \code{nutrients_output} parameter to zero.
+#' If \code{nutrients_input} is \code{NULL}, no nutrient input is simulated. To also simulate no
+#' nutrient output, set the \code{nutrients_loss} parameter to zero.
 #'
 #' If \code{save_each > 1}, not all iterations are saved in the final \code{meta_rn} object,
 #' but only each timestep specified by the object. However, \code{max_i} must be dividable by
@@ -48,7 +48,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' result_rand <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
+#' result_rand <- run_meta(metasyst = metasyst, nutrients_input = nutrients_input,
 #' parameters = parameters, movement = "rand", max_i = max_i, seagrass_each = seagrass_each,
 #' min_per_i = min_per_i, save_each = save_each, verbose = TRUE)
 #' }
@@ -57,7 +57,7 @@
 #' @rdname run_meta
 #'
 #' @export
-run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
+run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "rand",
                      max_i, min_per_i, burn_in = 0, seagrass_each = 1, save_each = 1,
                      return_burnin = TRUE, verbose = TRUE) {
 
@@ -148,25 +148,25 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
 
   # setup nutrient input #
 
-  # check if nutr_input has value for each iteration
-  if (!is.null(nutr_input)) {
+  # check if nutrients_input has value for each iteration
+  if (!is.null(nutrients_input)) {
 
-    # check if nutr_input is correct class
-    if (!inherits(x = nutr_input, what = "nutr_input")) {
+    # check if nutrients_input is correct class
+    if (!inherits(x = nutrients_input, what = "nutr_input")) {
 
-      stop("The nutrient input must be of class 'nutr_input'.", call. = FALSE)
+      stop("The nutrients input must be of class 'nutr_input'.", call. = FALSE)
 
     }
 
     # check length of nutrient input
-    if (!all(vapply(X = nutr_input$values, nrow, FUN.VALUE = integer(1)) == max_i)) {
+    if (!all(vapply(X = nutrients_input$values, nrow, FUN.VALUE = integer(1)) == max_i)) {
 
       stop("There must be a nutrient input value for each timestep.", call. = FALSE)
 
     }
 
     # check meta n of input
-    if (nutr_input$n != metasyst$n) {
+    if (nutrients_input$n != metasyst$n) {
 
       stop("There must be nutrient input values for each local ecosystem.", call. = FALSE)
 
@@ -178,8 +178,8 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   # create nutrient input if not present
   } else {
 
-    nutr_input <- sim_nutr_input(n = metasyst$n, max_i = max_i, input_mn = 0, freq_mn = 0,
-                                 verbose = FALSE)
+    nutrients_input <- sim_nutr_input(n = metasyst$n, max_i = max_i, input_mn = 0, freq_mn = 0,
+                                      verbose = FALSE)
 
     # set nutrient flag to save results later
     flag_nutr_input <- FALSE
@@ -187,7 +187,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   }
 
   # get list of input values
-  nutr_input_list <- lapply(X = nutr_input$values, function(i) i[, 2])
+  nutr_input_list <- lapply(X = nutrients_input$values, function(i) i[, 2])
 
   # setup seafloor #
 
@@ -261,7 +261,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
                 parameters = parameters, movement = movement, max_dist = max_dist,
                 n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
                 fishpop_attributes = metasyst$fishpop_attributes,
-                nutr_input = nutr_input_list, coords_reef = coords_reef, cell_adj = cell_adj,
+                nutrients_input = nutr_input_list, coords_reef = coords_reef, cell_adj = cell_adj,
                 extent = extent, dimensions = dimensions,
                 max_i = max_i, min_per_i = min_per_i, save_each = save_each,
                 seagrass_each = seagrass_each, burn_in = burn_in,
@@ -333,7 +333,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   # no nutrient input was provided; return NA
   if (!flag_nutr_input) {
 
-    nutr_input <- NA
+    nutrients_input <- NA
 
   }
 
@@ -346,7 +346,7 @@ run_meta <- function(metasyst, parameters, nutr_input = NULL, movement = "rand",
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track, n = metasyst$n,
                  fishpop_attributes = metasyst$fishpop_attributes, movement = movement,
                  starting_values = metasyst$starting_values, parameters = parameters,
-                 max_dist = max_dist, nutr_input = nutr_input, coords_reef = coords_reef,
+                 max_dist = max_dist, nutrients_input = nutrients_input, coords_reef = coords_reef,
                  extent = extent, grain = terra::res(metasyst$seafloor[[1]]),
                  dimensions = dimensions, max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  seagrass_each = seagrass_each, save_each = save_each)
