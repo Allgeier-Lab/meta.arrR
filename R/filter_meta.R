@@ -4,8 +4,7 @@
 #' Filter meta objects
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
-#' @param filter Vector with timesteps (\code{nutr_input}) or
-#' min/max timesteps (\code{nutr_input}) to return.
+#' @param filter Integer with one or vector with min/max timestep(s) to filter.
 #' @param reset Logical if TRUE, cumulative seafloor values are reduced by value
 #' before filter minimum.
 #' @param verbose Logical if TRUE progress reports are printed.
@@ -15,15 +14,12 @@
 #' specified by the corresponding function argument. This can be important, if during
 #' the model run not all timesteps are returned in resulting object.
 #'
-#' To filter a simulated metaecosystem object, the minimum and maximum of the timesteps
-#' to be returned needs to be provided.
-#'
 #' @return nutr_input, meta_rn
 #'
 #' @examples
 #' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-#' variability = 0.5)
-#' filter_meta(x = nutrients_input, filter = seq(from = 4380 / 2, to = 4380, by = 20))
+#' variability = 0.5, seagrass_each = 12)
+#' filter_meta(x = nutrients_input, filter = c(4380 / 2, 4380))
 #'
 #' \dontrun{
 #' filter_meta(x = result_rand, filter = c(4380 / 2, 4380))
@@ -44,6 +40,10 @@ filter_meta.nutr_input <- function(x, filter, reset = NULL, verbose = TRUE) {
 
     filter <- rep(x = filter, times = 2)
 
+  } else if (length(filter) != 2) {
+
+    stop("'filter' must be either one timestep or min/max timesteps.", call. = FALSE)
+
   }
 
   # check if all timesteps are integer
@@ -62,7 +62,7 @@ filter_meta.nutr_input <- function(x, filter, reset = NULL, verbose = TRUE) {
   }
 
   # check if all timesteps are within boundaries
-  if (any(filter < 0) || any(filter > x$max_i)) {
+  if ((filter[1] < 0) || (filter[2] > x$max_i)) {
 
     stop("'filter' is not within 0 <= x <= max_i.", call. = FALSE)
 
@@ -80,7 +80,6 @@ filter_meta.nutr_input <- function(x, filter, reset = NULL, verbose = TRUE) {
 
   }
 
-  # replace maximum value
   x$max_i <- unique(vapply(X = x$values, FUN = function(i) max(i$timestep),
                            FUN.VALUE = numeric(1)))
 
@@ -95,6 +94,10 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
   if (length(filter) == 1) {
 
     filter <- rep(x = filter, times = 2)
+
+  } else if (length(filter) != 2) {
+
+    stop("'filter' must be either one timestep or min/max timesteps.", call. = FALSE)
 
   }
 
@@ -111,6 +114,13 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
               call. = FALSE)
 
     }
+  }
+
+  # check if all timesteps are within boundaries
+  if ((filter[1] < 0) || (filter[2] > x$max_i)) {
+
+    stop("'filter' is not within 0 <= x <= max_i.", call. = FALSE)
+
   }
 
   # prepare some things for cols reset
@@ -197,7 +207,7 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
   }
 
   # filter input
-  x$nutrients_input <- filter_meta.nutr_input(x = x$nutr_input, filter = filter,
+  x$nutrients_input <- filter_meta.nutr_input(x = x$nutrients_input, filter = filter,
                                               verbose = FALSE)
 
   # replace elements

@@ -15,8 +15,7 @@ filter_meta(x, filter, reset, verbose)
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
-\item{filter}{Vector with timesteps (\code{nutr_input}) or
-min/max timesteps (\code{nutr_input}) to return.}
+\item{filter}{Integer with one or vector with min/max timestep(s) to filter.}
 
 \item{reset}{Logical if TRUE, cumulative seafloor values are reduced by value
 before filter minimum.}
@@ -33,14 +32,11 @@ Filter meta objects
 Filter the nutrient input of each local metaecosystem to only include timesteps
 specified by the corresponding function argument. This can be important, if during
 the model run not all timesteps are returned in resulting object.
-
-To filter a simulated metaecosystem object, the minimum and maximum of the timesteps
-to be returned needs to be provided.
 }
 \examples{
 nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-variability = 0.5)
-filter_meta(x = nutrients_input, filter = seq(from = 4380 / 2, to = 4380, by = 20))
+variability = 0.5, seagrass_each = 12)
+filter_meta(x = nutrients_input, filter = c(4380 / 2, 4380))
 
 \dontrun{
 filter_meta(x = result_rand, filter = c(4380 / 2, 4380))
