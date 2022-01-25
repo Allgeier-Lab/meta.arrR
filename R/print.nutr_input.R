@@ -11,9 +11,9 @@
 #' Printing method for \code{nutr_input} created with \code{sim_nutr_input_*}.
 #'
 #' @examples
-#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)
-#' print(nutr_input)
+#' print(nutrients_input)
 #'
 #' @aliases print.nutr_input
 #' @rdname print.nutr_input

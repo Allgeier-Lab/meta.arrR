@@ -15,7 +15,7 @@ rcpp_sim_meta(
   n,
   pop_n,
   fishpop_attributes,
-  nutr_input,
+  nutrients_input,
   coords_reef,
   cell_adj,
   extent,
@@ -45,7 +45,7 @@ rcpp_sim_meta(
 
 \item{fishpop_attributes}{Matrix with residence and reserves_thres values for each individual}
 
-\item{nutr_input}{List with amount of nutrient input each timestep.}
+\item{nutrients_input}{List with amount of nutrient input each timestep.}
 
 \item{coords_reef}{List with ID and coords of reef cells.}
 

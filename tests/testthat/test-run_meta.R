@@ -1,6 +1,6 @@
 # create vector with names
 present_names <- c("seafloor", "fishpop", "n", "fishpop_attributes", "movement",
-                   "starting_values", "parameters", "max_dist", "nutr_input",
+                   "starting_values", "parameters", "max_dist", "nutrients_input",
                    "coords_reef", "extent",  "grain", "dimensions",
                    "max_i" , "min_per_i", "burn_in", "seagrass_each", "save_each")
 
@@ -34,8 +34,8 @@ test_that("run_meta returns correct information", {
 
   expect_equal(object = result_rand$n, expected = n)
 
-  expect_equal(object = result_rand$extent,
-               expected = raster::extent(metasyst$seafloor[[1]]))
+  expect_equal(object = terra::ext(result_rand$extent),
+               expected = terra::ext(metasyst$seafloor[[1]]))
 
   expect_equal(object = result_rand$grain, expected = c(grain, grain))
 

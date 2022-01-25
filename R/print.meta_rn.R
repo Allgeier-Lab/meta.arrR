@@ -85,8 +85,8 @@ print.meta_rn <- function(x, digits = 3, ...) {
   cat(paste0("Total time     : ", paste0(c(min_time, x$max_i), collapse = "-"), " iterations (", total_time, " days) [Burn-in: ", x$burn_in, " iter.]\n",
              "Saved each     : ", x$save_each, " iterations (", save_time, " days)\n",
              "Metaecosystems : ", x$n, "\n",
-             "Environment    : ", x$extent, "\n",
-             "ARs            : ", no_reefs, " cells [movement: ", x$movement, "]\n\n"))
+             "Environment    : ", paste(x$extent, collapse = ", "), " (xmin, xmax, ymin, ymax)\n",
+             "ARs            : ", no_reefs, " cell(s) [movement: ", x$movement, "]\n\n"))
 
   cat("Local metaecosystems:\n")
   cat(paste0("ID\tBG\tAG\tNutr\tDetr\tFish\tLength\tMort\n"))

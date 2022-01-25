@@ -33,7 +33,7 @@ get_meta_densities <- function(result, normalize = FALSE, verbose = TRUE) {
   # return warning if save_each != 1 because not all occurrences are counted
   if (result$save_each != 1 && verbose) {
 
-    warning("Please be aware that 'true' density might be higher because 'save_each' is not one.",
+    warning("Please be aware that 'true' density might be higher because 'save_each' != 1",
             call. = FALSE)
 
   }
@@ -42,7 +42,8 @@ get_meta_densities <- function(result, normalize = FALSE, verbose = TRUE) {
   flag_burnin <- ifelse(test = result$burn_in > 0, yes = TRUE, no = FALSE)
 
   # create empty raster
-  density_tmp <- raster::raster(ext = result$extent, resolution = result$grain)
+  density_tmp <- terra::rast(ext = terra::ext(result$extent), resolution = result$grain,
+                             crs = "", vals = 0.0, names = "density")
 
   # count densities within cells
   density_full <- do.call(rbind, lapply(seq_along(result$fishpop), function(i) {
@@ -57,13 +58,14 @@ get_meta_densities <- function(result, normalize = FALSE, verbose = TRUE) {
 
     }
 
+    fishpop_temp <- as.matrix(fishpop_temp[, c("x", "y")], ncol = 2)
+
     # count fish within each cell
-    density_ras <- raster::rasterize(x = fishpop_temp[, c("x", "y")],
-                                     y = density_tmp,
-                                     fun = "count", background = 0)
+    density_ras <- terra::rasterize(x = terra::vect(fishpop_temp, crs = ""),
+                                    y = density_tmp, fun = "length", background = 0)
 
     # # convert to data frame
-    density_df <- raster::as.data.frame(density_ras, xy = TRUE)
+    density_df <- terra::as.data.frame(density_ras, xy = TRUE, na.rm = FALSE)
 
     # add id
     density_df$id <- i

@@ -22,7 +22,7 @@
 print.meta_syst <- function(x, digits = 3, ...) {
 
   # get number of reef cells
-  no_reefs <- paste(c(vapply(x$reefs, FUN = function(i) {
+  no_reefs <- paste(c(vapply(x$reef, FUN = function(i) {
 
     ifelse(test = is.null(i), yes = 0, no = nrow(i))
 
@@ -36,11 +36,11 @@ print.meta_syst <- function(x, digits = 3, ...) {
   } , FUN.VALUE = numeric(1))),  collapse = ", ")
 
   # get extent
-  extent <- raster::extent(x = x$seafloor[[1]])
+  extent <- paste(as.vector(terra::ext(x = x$seafloor[[1]])), collapse = ", ")
 
   # print result
   cat(paste0("Metaecosystems    : ", x$n, "\n",
-             "Environment       : ", extent, "\n",
+             "Environment       : ", extent, " (xmin, xmax, ymin, ymax)\n",
              "ARs               : ", no_reefs, "\n",
              "Individuals       : ", no_fish, "\n"))
 

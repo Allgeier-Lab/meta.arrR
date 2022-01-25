@@ -1,6 +1,6 @@
 library(arrR)
 library(dplyr)
-library(raster)
+library(terra)
 
 # get parameters
 parameters <- meta.arrR_parameters
@@ -15,8 +15,8 @@ starting_values$pop_n <- c(2, 4, 8)
 n <- 3
 
 # create 5 reef cells in center of seafloor
-reefs <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0),
-                ncol = 2, byrow = TRUE)
+reef <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0),
+               ncol = 2, byrow = TRUE)
 
 # setup extent and grain
 dimensions <- c(100, 100)
@@ -36,16 +36,16 @@ seagrass_each <- 12
 save_each <- 2
 
 # simulate nutrient input
-nutr_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = 1, freq_mn = 3,
-                             variability = 0.5)
+nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = 1, freq_mn = 3,
+                                  variability = 0.5)
 
 # setup metaecosystems
-metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,
+metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reef = reef,
                        starting_values = starting_values, parameters = parameters,
                        verbose = FALSE)
 
 # setup metaecosystems
-metasyst_nr <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = NULL,
+metasyst_nr <- setup_meta(n = n, dimensions = dimensions, grain = grain, reef = NULL,
                           starting_values = starting_values, parameters = parameters,
                           verbose = FALSE)
 

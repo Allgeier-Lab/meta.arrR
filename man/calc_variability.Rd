@@ -56,9 +56,9 @@ in the metaecosystem.
 \deqn{synchrony = var(x_{m}) / (sum(\alpha_{i}) ^ 2)}
 }
 \examples{
-nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 variability = 0.5)
-calc_variability(nutr_input)
+calc_variability(nutrients_input)
 
 \dontrun{
 calc_variability(result)

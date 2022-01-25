@@ -7,6 +7,7 @@
 sim_nutr_input(
   n,
   max_i,
+  seagrass_each = 1,
   input_mn,
   freq_mn,
   variability = c(0, 0),
@@ -19,6 +20,8 @@ sim_nutr_input(
 \item{n}{Integer with number of metaecosystems to setup.}
 
 \item{max_i}{Integer with maximum number of simulation time steps.}
+
+\item{seagrass_each}{Integer how often (each i * x) seagrass dynamics will be simulated.}
 
 \item{input_mn, freq_mn}{Numeric with mean input amount and frequency.}
 
@@ -46,7 +49,7 @@ If two \code{variability} parameters are provided, the first one is used for \co
 the second one for \code{freq_mn}.
 }
 \examples{
-nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
+nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 variability = c(1.0, 1.0))
 
 }

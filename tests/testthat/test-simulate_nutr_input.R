@@ -1,19 +1,15 @@
-# simulate nutrient input
-nutr_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = 1, freq_mn = 3,
-                             variability = 0.5, verbose = FALSE)
-
 # extract values only
-values <- vapply(nutr_input$values, FUN = nrow, FUN.VALUE = numeric(1))
+values <- vapply(nutrients_input$values, FUN = nrow, FUN.VALUE = numeric(1))
 
 test_that("simulate_nutr_input returns meta_rn", {
 
-  expect_is(object = nutr_input, class = "nutr_input")
+  expect_is(object = nutrients_input, class = "nutr_input")
 
 })
 
 test_that("simulate_nutr_input returns input for each n", {
 
-  expect_length(object = nutr_input$values, n = n)
+  expect_length(object = nutrients_input$values, n = n)
 
 })
 

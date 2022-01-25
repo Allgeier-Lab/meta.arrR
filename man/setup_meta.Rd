@@ -9,7 +9,7 @@ setup_meta(
   max_i,
   dimensions,
   grain = c(1, 1),
-  reefs = NULL,
+  reef = NULL,
   starting_values,
   parameters,
   random = 0,
@@ -27,7 +27,7 @@ setup_meta(
 
 \item{grain}{Vector with size of cells in x- and y-direction (spatial grain).}
 
-\item{reefs}{2-Column matrix with coordinates of artificial reefs.}
+\item{reef}{2-Column matrix with coordinates of artificial reefs.}
 
 \item{starting_values}{List with all starting value.}
 
@@ -39,7 +39,7 @@ setup_meta(
 
 \item{verbose}{If TRUE, progress reports are printed.}
 
-\item{...}{Additional arguments passed on to \code{raster}.}
+\item{...}{Additional arguments passed on to \code{rast}.}
 }
 \value{
 meta_syst

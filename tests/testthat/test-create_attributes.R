@@ -1,5 +1,5 @@
 # setup seafloor and fishpop
-seafloor <- arrR::setup_seafloor(dimensions = dimensions, grain = grain, reefs = NULL,
+seafloor <- arrR::setup_seafloor(dimensions = dimensions, grain = grain, reef = NULL,
                                  starting_values = starting_values, verbose = FALSE)
 
 starting_values$pop_n <- 8

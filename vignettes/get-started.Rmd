@@ -62,7 +62,8 @@ dimensions <- c(100, 100)
 
 grain <- c(1, 1)
 
-stable_vals <- arrR::get_stable_values(starting_values = starting_values,
+stable_vals <- arrR::get_stable_values(bg_biomass = starting_values$bg_biomass,
+                                       ag_biomass = starting_values$ag_biomass,
                                        parameters = parameters)
 
 starting_values$nutrients_pool <- stable_vals$nutrients_pool
@@ -70,10 +71,10 @@ starting_values$nutrients_pool <- stable_vals$nutrients_pool
 starting_values$detritus_pool <- stable_vals$detritus_pool
 
 metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain, 
-                       reefs = reef_matrix, starting_values = starting_values, parameters = parameters)
+                       reef = reef_matrix, starting_values = starting_values, parameters = parameters)
 
-nutr_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_pool,
-                             freq_mn = 5, variability = 0.1)
+nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_pool,
+                                  freq_mn = 5, variability = 0.1)
 ```
 
 ```{r run_dummy, echo = FALSE}
@@ -81,7 +82,7 @@ result <- meta.arrR:::result_readme
 ```
 
 ```{r run_model, eval = FALSE}
-result <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
+result <- run_meta(metasyst = metasyst, nutrients_input = nutrients_input,
                    parameters = parameters, movement = "rand",
                    max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 ```

@@ -7,7 +7,7 @@
 run_meta(
   metasyst,
   parameters,
-  nutr_input = NULL,
+  nutrients_input = NULL,
   movement = "rand",
   max_i,
   min_per_i,
@@ -23,7 +23,7 @@ run_meta(
 
 \item{parameters}{List with all model parameters.}
 
-\item{nutr_input}{\code{nutr_input} with nutrient inputs}
+\item{nutrients_input}{\code{nutr_input} with nutrient inputs}
 
 \item{movement}{String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.}
 
@@ -65,8 +65,8 @@ The \code{movement} argument allows to either specify random movement of individ
 attracted movement towards the artificial reef of individuals or a movement behavior based
 on their biosenergetics.
 
-If \code{nutr_input} is \code{NULL}, no nutrient input is simulated. To also simulate no
-nutrient output, set the \code{nutrients_output} parameter to zero.
+If \code{nutrients_input} is \code{NULL}, no nutrient input is simulated. To also simulate no
+nutrient output, set the \code{nutrients_loss} parameter to zero.
 
 If \code{save_each > 1}, not all iterations are saved in the final \code{meta_rn} object,
 but only each timestep specified by the object. However, \code{max_i} must be dividable by
@@ -78,7 +78,7 @@ before this timestep is reached.
 }
 \examples{
 \dontrun{
-result_rand <- run_meta(metasyst = metasyst, nutr_input = nutr_input,
+result_rand <- run_meta(metasyst = metasyst, nutrients_input = nutrients_input,
 parameters = parameters, movement = "rand", max_i = max_i, seagrass_each = seagrass_each,
 min_per_i = min_per_i, save_each = save_each, verbose = TRUE)
 }
