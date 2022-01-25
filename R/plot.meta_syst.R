@@ -1,0 +1,98 @@
+#' plot.meta_syst
+#'
+#' @description
+#' Plotting method for meta_syst object.
+#'
+#' @param x \code{meta_syst} object simulated with \code{setup_meta}.
+#' @param lambda Distance decay parameter.
+#' @param base_size Numeric to specify base font size.
+#' @param viridis_option Character with \code{viridis} color palette.
+#' @param ... Not used.
+#'
+#' @details
+#' Plotting method for metaecosystem created with \code{setup_meta}.
+#'
+#' @return ggplot
+#'
+#' @examples
+#' \dontrun{
+#' plot(metasyst)
+#' }
+#'
+#' @aliases plot.meta_syst
+#' @rdname plot.meta_syst
+#'
+#' @export
+plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", ...) {
+
+  # create data.frame with polygon coordinates
+  poly_xy <- data.frame(x = c(-1, 1, 1, -1), y = c(-1, -1, 1, 1))
+
+  # convert coordinates of ecosystems to data.frame
+  local_xy <- as.data.frame(x$seafloor_xy)
+
+  # calculate probabilities
+  local_prob <- data.frame(id_local = 1:x$n, id_source = calc_probability(metasyst = x, lambda = lambda))
+
+  # reshape long
+  local_prob <- stats::reshape(data = local_prob, direction = "long",
+                               v.names = "probability", varying = list(names(local_prob[, -1])),
+                               idvar = "id_local", ids = local_prob[, 1], timevar = "id_source",
+                               times = 1:x$n, new.row.names = seq(from = 1, to = x$n ^ 2))
+
+  # replace all self-references with NA
+  local_prob[local_prob$id_local == local_prob$id_source, "probability"] <- NA
+
+  # back-calculate distance
+  local_prob$distance <- -log(local_prob$probability) / lambda
+
+  # create color scale
+  col_viridis <- viridis::viridis(n = x$n, option = viridis_option)
+
+  gg_map <- ggplot2::ggplot(data = local_xy) +
+    ggplot2::geom_polygon(data = poly_xy, ggplot2::aes(x = x, y = y),
+                          fill = NA, col = "black") +
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y, color = factor(id)), shape = 15,
+                        size = 5, alpha = 1/4) +
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y, color = factor(id)), shape = 0, size = 5) +
+    ggplot2::geom_point(aes(x = 0.0, y = 0.0), shape = 3, col = "black") +
+    ggplot2::geom_text(aes(x = x, y = y, label = factor(id)), col = "black") +
+    ggplot2::coord_equal() +
+    ggplot2::scale_color_manual(name = "Ecosystem", values = col_viridis) +
+    ggplot2::labs(x = "x coordinate", y = "y coordinate") +
+    ggplot2::theme_void(base_size = base_size) +
+    ggplot2::theme(legend.position = "bottom", axis.title = element_text(),
+                   axis.title.y = element_text(angle = 90))
+
+  gg_raster <- ggplot2::ggplot(data = local_prob) +
+    ggplot2::geom_tile(ggplot2::aes(x = factor(id_local), y = factor(id_source),
+                                    fill = probability)) +
+    ggplot2::geom_tile(ggplot2::aes(x = factor(id_local), y = factor(id_source)),
+                       fill = NA, colour = "black", size = 0.75) +
+    ggplot2::coord_equal() +
+    ggplot2::scale_fill_gradientn(name = "Probability", limits = c(0, 1), breaks = c(0, 0.5, 1),
+                         colors = viridis::viridis(n = 255, option = viridis_option),
+                         na.value = "white") +
+    ggplot2::labs(x = "Ecosystem origin", y = "Ecosystem reach") +
+    ggplot2::theme_classic() +
+    ggplot2::theme(legend.position = "bottom")
+
+  gg_function <- ggplot2::ggplot(data = local_prob) +
+    ggplot2::geom_line(ggplot2::aes(x = distance, y = probability, col = factor(id_local)),
+                       alpha = 1/4) +
+    ggplot2::geom_point(ggplot2::aes(x = distance, y = probability, col = factor(id_local)),
+                        shape = 1, size = 2) +
+    ggplot2::scale_color_manual(name = "Ecoystem", values = col_viridis) +
+    ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 3, by = 0.5), limits = c(0, 3)) +
+    ggplot2::scale_y_continuous(limits = c(0, 1)) +
+    ggplot2::labs(x = "Distance", y = "Probability") +
+    ggplot2::theme_classic() +
+    ggplot2::theme(legend.position = "bottom")
+
+  # combine to one grid
+
+  suppressWarnings(gg_all <- cowplot::plot_grid(gg_map, gg_raster, gg_function, ncol = 3))
+
+  return(gg_all)
+
+}

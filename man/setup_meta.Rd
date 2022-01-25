@@ -10,6 +10,7 @@ setup_meta(
   dimensions,
   grain = c(1, 1),
   reef = NULL,
+  seafloor_xy = NULL,
   starting_values,
   parameters,
   random = 0,
@@ -28,6 +29,8 @@ setup_meta(
 \item{grain}{Vector with size of cells in x- and y-direction (spatial grain).}
 
 \item{reef}{2-Column matrix with coordinates of artificial reefs.}
+
+\item{seafloor_xy}{3-Column matrix with ID and x,y coordinates of local ecosystems.}
 
 \item{starting_values}{List with all starting value.}
 
@@ -48,8 +51,10 @@ meta_syst
 Setup metaecosystems.
 }
 \details{
-Function to setup the fish population. If no fish should be created, set
-\code{starting_values$pop_n = 0}.
+Function to create metaecosystem including environmental raster grids and fish
+populations.
+
+If \code{seafloor_xy = NULL}, coordiantes are simulated random (range: 0-1).
 }
 \examples{
 metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),

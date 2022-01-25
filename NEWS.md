@@ -1,3 +1,6 @@
+# meta.arrR 0.4.1
+* Place local ecosystems in "empty space"
+
 # meta.arrR 0.4
 * Use `terra` instead of `raster`
 * Rename `nutr_input` to `nutrients_input`
