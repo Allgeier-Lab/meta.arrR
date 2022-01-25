@@ -13,6 +13,9 @@ plot_meta_production(result, lag = c(FALSE, TRUE), base_size = 10)
 
 \item{base_size}{Numeric to specify base font size.}
 }
+\value{
+ggplot
+}
 \description{
 Plot local abundance.
 }

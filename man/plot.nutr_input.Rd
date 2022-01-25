@@ -17,6 +17,9 @@
 
 \item{...}{Not used.}
 }
+\value{
+ggplot
+}
 \description{
 Plotting method for nutr_input object.
 }

@@ -10,6 +10,8 @@
 #' @details
 #' Plot the production per meta ecosystem.
 #'
+#' @return ggplot
+#'
 #' @examples
 #' \dontrun{
 #' plot_meta_production(result = result_rand)

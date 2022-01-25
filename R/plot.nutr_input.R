@@ -13,6 +13,8 @@
 #' Plotting method for metaecosystem created with \code{setup_meta}. If \code{gamma = TRUE}
 #' the sum of all local metaecosystems is plotted additionally.
 #'
+#' @return ggplot
+#'
 #' @examples
 #' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
 #' variability = 0.5)

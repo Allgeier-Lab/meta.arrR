@@ -18,6 +18,8 @@
 #' Plotting method for result of metaecosystem model run created
 #' with \code{run_meta}.
 #'
+#' @return ggplot
+#'
 #' @examples
 #' \dontrun{
 #' plot(result_rand)

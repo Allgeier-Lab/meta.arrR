@@ -11,6 +11,9 @@ plot_local_abund(result, base_size = 10)
 
 \item{base_size}{Numeric to specify base font size.}
 }
+\value{
+ggplot
+}
 \description{
 Plot local abundance.
 }

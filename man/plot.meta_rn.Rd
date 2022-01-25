@@ -38,6 +38,9 @@
 
 \item{...}{Not used.}
 }
+\value{
+ggplot
+}
 \description{
 Plotting method for meta_rn object.
 }

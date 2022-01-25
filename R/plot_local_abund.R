@@ -11,6 +11,8 @@
 #' over time steps. Additional, the minimum, maximum and mean of all metaecosystems are
 #' included.
 #'
+#' @return ggplot
+#'
 #' @examples
 #' \dontrun{
 #' plot_local_abund(result = result_rand)
