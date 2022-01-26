@@ -21,6 +21,8 @@
 #' @aliases plot_local_abund
 #' @rdname plot_local_abund
 #'
+#' @importFrom rlang .data
+#'
 #' @export
 plot_local_abund <- function(result, base_size = 10) {
 
@@ -48,9 +50,12 @@ plot_local_abund <- function(result, base_size = 10) {
   # create plot
   gg_input <- ggplot2::ggplot(data = abundance) +
     ggplot2::geom_line(data = minmax_df, col = "lightgrey",
-                       ggplot2::aes(x = timestep, y = value, linetype = measure)) +
-    ggplot2::geom_point(ggplot2::aes(x = timestep, y = abundance,col = factor(meta))) +
-    ggplot2::geom_path(ggplot2::aes(x = timestep, y = abundance, col = factor(meta)),
+                       ggplot2::aes(x = .data$timestep, y = .data$value,
+                                    linetype = .data$measure)) +
+    ggplot2::geom_point(ggplot2::aes(x = .data$timestep, y = .data$abundance,
+                                     col = factor(.data$meta))) +
+    ggplot2::geom_path(ggplot2::aes(x = .data$timestep, y = .data$abundance,
+                                    col = factor(.data$meta)),
                        alpha = 1/3) +
     ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
     ggplot2::scale_linetype_manual(name = "", values = c("Min" = 2, "Max" = 2, "Mean" = 1)) +

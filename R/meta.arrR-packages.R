@@ -1,9 +1,6 @@
-#' @title meta.arrR
-#'
 #' @description
-#' Metaecosystem of the arrR model
-#'
-#' For more information about how to use the model, please see \code{browseVignettes("meta.arrR")}.
+#' Simulate metaecosystem of artifical reefs. For more information about how to
+#' use the model, please see \code{browseVignettes("meta.arrR")}.
 #'
 #' @name meta.arrR
 #' @docType package
@@ -11,23 +8,3 @@
 #' @importFrom Rcpp sourceCpp
 #' @keywords internal
 "_PACKAGE"
-
-globalVariables(names = c(
-  "Facet",
-  "Meta",
-  "Timestep",
-  "Value",
-  "bottom_left",
-  "bottom_right",
-  "burn_in",
-  "density",
-  "itr",
-  "measure",
-  "meta",
-  "n",
-  "timestep",
-  "top_left",
-  "top_right",
-  "value",
-  "x", "y"
-))

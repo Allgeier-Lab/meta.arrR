@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' get_global_range(result = result_rand)
+#' get_global_range(result = list(result_rand, result_rand), value = "ag_biomass")
 #' }
 #'
 #' @aliases get_global_range
@@ -41,7 +41,7 @@ get_global_range <- function(result, value) {
 
     lapply(i$seafloor, function(j) {
 
-      range(subset(j, select = value), na.rm = TRUE)
+      range(j[, value], na.rm = TRUE)
 
     })
   }))

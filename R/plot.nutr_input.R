@@ -23,6 +23,8 @@
 #' @aliases plot.nutr_input
 #' @rdname plot.nutr_input
 #'
+#' @importFrom rlang .data
+#'
 #' @export
 plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
                             base_size = 10, viridis_option = "C", ...) {
@@ -49,7 +51,7 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
   # subset data depending on alpha and gamma option
   if (!alpha) {
 
-    input_df <- subset(input_df, Facet == "Gamma scale")
+    input_df <- input_df[input_df$Facet == "Gamma scale", ]
 
     # remove black color
     col_viridis <- "black"
@@ -58,7 +60,7 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
 
   if (!gamma) {
 
-    input_df <- subset(input_df, Facet == "Alpha scale")
+    input_df <- input_df[input_df$Facet == "Alpha scale", ]
 
     # remove black color
     col_viridis <- col_viridis[-length(col_viridis)]
@@ -73,13 +75,14 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
 
   # create plot
   gg_input <- ggplot2::ggplot(data = input_df) +
-    ggplot2::geom_line(ggplot2::aes(x = Timestep, y = Value, color = Meta)) +
+    ggplot2::geom_line(ggplot2::aes(x = .data$Timestep, y = .data$Value,
+                                    color = .data$Meta)) +
     ggplot2::geom_hline(yintercept = 0, color = "darkgrey", linetype = 2) +
     ggplot2::labs(x = "Timestep", y = "Nutrient input [g/cell]") +
     ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
                    legend.position = "bottom") +
-    ggplot2::facet_wrap(. ~ Facet, ncol = 1, scales = "free_y") +
+    ggplot2::facet_wrap(. ~ .data$Facet, ncol = 1, scales = "free_y") +
     ggplot2::scale_color_manual(name = "", values = col_viridis) +
     ggplot2::theme(strip.background = ggplot2::element_blank(),
                    strip.text = ggplot2::element_blank()) +

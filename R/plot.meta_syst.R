@@ -52,13 +52,15 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
   col_viridis <- viridis::viridis(n = x$n, option = viridis_option)
 
   gg_map <- ggplot2::ggplot(data = local_xy) +
-    ggplot2::geom_polygon(data = poly_xy, ggplot2::aes(x = x, y = y),
+    ggplot2::geom_polygon(data = poly_xy, ggplot2::aes(x = .data$x, y = .data$y),
                           fill = NA, col = "black") +
-    ggplot2::geom_point(ggplot2::aes(x = x, y = y, color = factor(.data$id)), shape = 15,
-                        size = 5, alpha = 1/4) +
-    ggplot2::geom_point(ggplot2::aes(x = x, y = y, color = factor(.data$id)), shape = 0, size = 5) +
+    ggplot2::geom_point(ggplot2::aes(x = .data$x, y = .data$y, color = factor(.data$id)),
+                        shape = 15, size = 5, alpha = 1/4) +
+    ggplot2::geom_point(ggplot2::aes(x = .data$x, y = .data$y, color = factor(.data$id)),
+                        shape = 0, size = 5) +
     ggplot2::geom_point(ggplot2::aes(x = 0.0, y = 0.0), shape = 3, col = "black") +
-    ggplot2::geom_text(ggplot2::aes(x = x, y = y, label = factor(.data$id)), col = "grey") +
+    ggplot2::geom_text(ggplot2::aes(x = .data$x, y = .data$y, label = factor(.data$id)),
+                       col = "grey") +
     ggplot2::coord_equal() +
     ggplot2::scale_color_manual(name = "Ecosystem", values = col_viridis) +
     ggplot2::labs(x = "x coordinate", y = "y coordinate") +
@@ -80,10 +82,10 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
     ggplot2::theme(legend.position = "bottom")
 
   gg_function <- ggplot2::ggplot(data = local_prob) +
-    ggplot2::geom_line(ggplot2::aes(x = .data$distance, y = .data$probability, col = factor(.data$id_local)),
-                       alpha = 1/4) +
-    ggplot2::geom_point(ggplot2::aes(x = .data$distance, y = .data$probability, col = factor(.data$id_local)),
-                        shape = 1, size = 2) +
+    ggplot2::geom_line(ggplot2::aes(x = .data$distance, y = .data$probability,
+                                    col = factor(.data$id_local)), alpha = 1/4) +
+    ggplot2::geom_point(ggplot2::aes(x = .data$distance, y = .data$probability,
+                                     col = factor(.data$id_local)), shape = 1, size = 2) +
     ggplot2::scale_color_manual(name = "Ecoystem", values = col_viridis) +
     ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 3, by = 0.5), limits = c(0, 3)) +
     ggplot2::scale_y_continuous(limits = c(0, 1)) +

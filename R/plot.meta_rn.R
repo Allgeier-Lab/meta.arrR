@@ -28,6 +28,8 @@
 #' @aliases plot.meta_rn
 #' @rdname plot.meta_rn
 #'
+#' @importFrom rlang .data
+#'
 #' @export
 plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_biomass", gamma = FALSE,
                          limits = NULL, burn_in = FALSE, base_size = 10, viridis_option = "C", ...) {
@@ -128,7 +130,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     # create plot
     gg_top_left <- ggplot2::ggplot(data = result_aggr) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_left, col = factor(meta))) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$top_left,
+                                      col = factor(.data$meta))) +
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
       ggplot2::labs(x = "Timestep", y = y_labels[1]) +
@@ -139,7 +142,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     # create plot
     gg_top_right <- ggplot2::ggplot(data = result_aggr) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_right, col = factor(meta))) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$top_right,
+                                      col = factor(.data$meta))) +
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[2]) +
@@ -149,7 +153,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     # create plot
     gg_bottom_left <- ggplot2::ggplot(data = result_aggr) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_left, col = factor(meta))) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$bottom_left,
+                                      col = factor(.data$meta))) +
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[3]) +
@@ -159,7 +164,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     # create plot
     gg_bottom_right <- ggplot2::ggplot(data = result_aggr) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_right, col = factor(meta))) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$bottom_right,
+                                      col = factor(.data$meta))) +
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[4]) +
@@ -201,8 +207,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
         id <- paste0("Metaecosystem ", j)
 
-        cbind(subset(x$seafloor[[j]], timestep == max_i,
-                     select = c("x", "y", fill)), id)
+        cbind(x$seafloor[[j]][x$seafloor[[j]]$timestep == max_i, c("x", "y", fill)], id)
 
       }))
 
@@ -217,8 +222,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
       # create ggplot
       gg_all <- ggplot2::ggplot(data = seafloor) +
-        ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = fill)) +
-        ggplot2::facet_wrap(. ~ id, nrow = 1) +
+        ggplot2::geom_raster(ggplot2::aes(x = .data$x, y = .data$y, fill = .data$fill)) +
+        ggplot2::facet_wrap(. ~ .data$id, nrow = 1) +
         ggplot2::scale_fill_gradientn(colours = c("#368AC0", "#F4B5BD", "#EC747F"),
                                       na.value = "#9B964A", limits = limits,
                                       name = fill) +
@@ -252,10 +257,10 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
                       " indiv [Movement : ", x$movement, "]")
 
       gg_all <- ggplot2::ggplot(data = densities) +
-        ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = density)) +
-        ggplot2::geom_raster(data = coords_reef, ggplot2::aes(x = x, y = y),
+        ggplot2::geom_raster(ggplot2::aes(x = .data$x, y = .data$y, fill = .data$density)) +
+        ggplot2::geom_raster(data = coords_reef, ggplot2::aes(x = .data$x, y = .data$y),
                              fill = "#9B964A") +
-        ggplot2::facet_wrap(. ~ id) +
+        ggplot2::facet_wrap(. ~ .data$id) +
         ggplot2::scale_fill_gradientn(colours = c("#368AC0", "#F4B5BD", "#EC747F"),
                                       name = "Density") +
         ggplot2::coord_equal() +

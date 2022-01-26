@@ -54,7 +54,7 @@ get_meta_densities <- function(result, normalize = FALSE, verbose = TRUE) {
     # remove burn_in
     if (flag_burnin) {
 
-      fishpop_temp <- subset(fishpop_temp, burn_in == "no")
+      fishpop_temp <- fishpop_temp[fishpop_temp$burn_in == "no", ]
 
     }
 
@@ -77,7 +77,7 @@ get_meta_densities <- function(result, normalize = FALSE, verbose = TRUE) {
   # normalize by i
   if (normalize) {
 
-    density_full$density <- density_full$density / x$max_i
+    density_full$density <- density_full$density / result$max_i
 
   }
 

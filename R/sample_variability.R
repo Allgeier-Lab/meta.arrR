@@ -216,6 +216,9 @@ sample_variability_internal <- function(values_i, n_total) {
 
 reshape_sample_interal <- function(result) {
 
+  # init itr to avoid R CMD check note
+  itr <- NULL
+
   # combine to one data.frame
   result <- do.call(what = "rbind", args = result)
 
