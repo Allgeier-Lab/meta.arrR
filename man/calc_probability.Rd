@@ -4,12 +4,16 @@
 \alias{calc_probability}
 \title{calc_probability}
 \usage{
-calc_probability(metasyst, lambda = 1)
+calc_probability(metasyst, lambda = 1, diag_value = NA, full = TRUE)
 }
 \arguments{
 \item{metasyst}{\code{meta_syst} object simulated with \code{setup_meta}.}
 
 \item{lambda}{Distance decay parameter.}
+
+\item{diag_value}{Numeric with value to be used on diagonal.}
+
+\item{full}{Logical if full matrix should be returned.}
 }
 \value{
 matrix

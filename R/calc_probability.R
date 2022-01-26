@@ -5,6 +5,8 @@
 #'
 #' @param metasyst \code{meta_syst} object simulated with \code{setup_meta}.
 #' @param lambda Distance decay parameter.
+#' @param diag_value Numeric with value to be used on diagonal.
+#' @param full Logical if full matrix should be returned.
 #'
 #' @details
 #' Calculate probability matrix for local ecosystems based on distances between them
@@ -29,7 +31,7 @@
 #' @rdname calc_probability
 #'
 #' @export
-calc_probability <- function(metasyst, lambda = 1) {
+calc_probability <- function(metasyst, lambda = 1, diag_value = NA, full = TRUE) {
 
   if (!inherits(x = metasyst, what = "meta_syst")) stop("Please provide 'meta_syst' object.", call. = FALSE)
 
@@ -37,11 +39,14 @@ calc_probability <- function(metasyst, lambda = 1) {
   local_dist <- as.matrix(stats::dist(metasyst$seafloor_xy[, 2:3], diag = TRUE, upper = TRUE,
                                       method = "euclidean"))
 
-  # replace diag with NA
-  diag(local_dist) <- NA
-
   # calculate probability
   local_prob <- exp(-local_dist * lambda)
+
+  # replace diag with diag value
+  diag(local_prob) <- diag_value
+
+  # set lower tri to NA
+  if (!full) local_prob[upper.tri(local_prob)] <- NA
 
   return(local_prob)
 

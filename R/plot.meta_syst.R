@@ -34,10 +34,7 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
   local_xy <- as.data.frame(x$seafloor_xy)
 
   # calculate probabilities
-  local_prob <- calc_probability(metasyst = x, lambda = lambda)
-
-  # set lower tri to NA
-  local_prob[upper.tri(local_prob)] <- NA
+  local_prob <- calc_probability(metasyst = x, lambda = lambda, full = FALSE)
 
   # add id col for reshaping
   local_prob <- data.frame(id_origin = 1:x$n, id_reach = local_prob)
