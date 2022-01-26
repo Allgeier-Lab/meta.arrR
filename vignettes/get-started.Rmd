@@ -78,7 +78,7 @@ nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$n
 ```
 
 ```{r run_dummy, echo = FALSE}
-result <- meta.arrR:::result_readme
+# result <- meta.arrR:::result_readme
 ```
 
 ```{r run_model, eval = FALSE}
@@ -90,9 +90,9 @@ result <- run_meta(metasyst = metasyst, nutrients_input = nutrients_input,
 ### 3. Analyze results
 
 ```{r analyze_results, eval = FALSE}
-plot(result, what = "seafloor")
-
-plot_local_abund(result)
-
-get_abundance(result)
+# plot(result, what = "seafloor")
+# 
+# plot_local_abund(result)
+# 
+# get_abundance(result)
 ```
