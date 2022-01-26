@@ -34,16 +34,19 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
   local_xy <- as.data.frame(x$seafloor_xy)
 
   # calculate probabilities
-  local_prob <- data.frame(id_local = 1:x$n, id_source = calc_probability(metasyst = x, lambda = lambda))
+  local_prob <- calc_probability(metasyst = x, lambda = lambda)
+
+  # set lower tri to NA
+  local_prob[upper.tri(local_prob)] <- NA
+
+  # add id col for reshaping
+  local_prob <- data.frame(id_origin = 1:x$n, id_reach = local_prob)
 
   # reshape long
   local_prob <- stats::reshape(data = local_prob, direction = "long",
                                v.names = "probability", varying = list(names(local_prob[, -1])),
-                               idvar = "id_local", ids = local_prob[, 1], timevar = "id_source",
+                               idvar = "id_origin", ids = local_prob[, 1], timevar = "id_reach",
                                times = 1:x$n, new.row.names = seq(from = 1, to = x$n ^ 2))
-
-  # replace all self-references with NA
-  local_prob[local_prob$id_local == local_prob$id_source, "probability"] <- NA
 
   # back-calculate distance
   local_prob$distance <- -log(local_prob$probability) / lambda
@@ -58,9 +61,9 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
                         shape = 15, size = 5, alpha = 1/4) +
     ggplot2::geom_point(ggplot2::aes(x = .data$x, y = .data$y, color = factor(.data$id)),
                         shape = 0, size = 5) +
-    ggplot2::geom_point(ggplot2::aes(x = 0.0, y = 0.0), shape = 3, col = "black") +
+    ggplot2::geom_point(ggplot2::aes(x = 0.0, y = 0.0), shape = 3, col = "grey") +
     ggplot2::geom_text(ggplot2::aes(x = .data$x, y = .data$y, label = factor(.data$id)),
-                       col = "grey") +
+                       col = "black") +
     ggplot2::coord_equal() +
     ggplot2::scale_color_manual(name = "Ecosystem", values = col_viridis) +
     ggplot2::labs(x = "x coordinate", y = "y coordinate") +
@@ -69,28 +72,28 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
                    axis.title.y = ggplot2::element_text(angle = 90))
 
   gg_raster <- ggplot2::ggplot(data = local_prob) +
-    ggplot2::geom_tile(ggplot2::aes(x = factor(.data$id_local), y = factor(.data$id_source),
+    ggplot2::geom_tile(ggplot2::aes(x = factor(.data$id_origin), y = factor(.data$id_reach),
                                     fill = .data$probability)) +
-    ggplot2::geom_tile(ggplot2::aes(x = factor(.data$id_local), y = factor(.data$id_source)),
-                       fill = NA, colour = "black", size = 0.75) +
+    # ggplot2::geom_tile(ggplot2::aes(x = factor(.data$id_local), y = factor(.data$id_source)),
+    #                    fill = NA, colour = "black", size = 0.75) +
     ggplot2::coord_equal() +
     ggplot2::scale_fill_gradientn(name = "Probability", limits = c(0, 1), breaks = c(0, 0.5, 1),
                          colors = viridis::viridis(n = 255, option = viridis_option),
                          na.value = "white") +
     ggplot2::labs(x = "Ecosystem origin", y = "Ecosystem reach") +
-    ggplot2::theme_classic() +
+    ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(legend.position = "bottom")
 
   gg_function <- ggplot2::ggplot(data = local_prob) +
     ggplot2::geom_line(ggplot2::aes(x = .data$distance, y = .data$probability,
-                                    col = factor(.data$id_local)), alpha = 1/4) +
+                                    col = factor(.data$id_origin)) ) +
     ggplot2::geom_point(ggplot2::aes(x = .data$distance, y = .data$probability,
-                                     col = factor(.data$id_local)), shape = 1, size = 2) +
+                                     col = factor(.data$id_origin)), shape = 1, size = 2) +
     ggplot2::scale_color_manual(name = "Ecoystem", values = col_viridis) +
     ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 3, by = 0.5), limits = c(0, 3)) +
     ggplot2::scale_y_continuous(limits = c(0, 1)) +
     ggplot2::labs(x = "Distance", y = "Probability") +
-    ggplot2::theme_classic() +
+    ggplot2::theme_classic(base_size = base_size) +
     ggplot2::theme(legend.position = "bottom")
 
   # combine to one grid

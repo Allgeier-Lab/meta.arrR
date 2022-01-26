@@ -7,7 +7,7 @@
 calc_probability(metasyst, lambda = 1)
 }
 \arguments{
-\item{metasyst}{ADD TEXT}
+\item{metasyst}{\code{meta_syst} object simulated with \code{setup_meta}.}
 
 \item{lambda}{Distance decay parameter.}
 }
@@ -18,11 +18,20 @@ matrix
 Calculate probability
 }
 \details{
-ADD TEXT
+Calculate probability matrix for local ecosystems based on distances between them
+using a negative exponential function I = exp(-d*lambda).
 }
 \examples{
 \dontrun{
 calc_probability(metasyst)
 }
 
+}
+\references{
+https://en.wikipedia.org/wiki/Exponential_decay
+
+https://en.wikipedia.org/wiki/Distance_decay
+
+Nekola, J.C. and White, P.S., 1999. The distance decay of similarity in biogeography
+and ecology. Journal of biogeography, 26(4), pp.867-878.
 }
