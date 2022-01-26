@@ -187,8 +187,8 @@ setup_meta <- function(n, max_i, dimensions, grain = c(1, 1), reef = NULL,
   # create random seafloor_xy
   if (is.null(seafloor_xy)) {
 
-    seafloor_xy <- cbind(id = 1:n, x = runif(n = n, min = -1, max = 1),
-                         y = runif(n = n, min = -1, max = 1))
+    seafloor_xy <- cbind(id = 1:n, x = stats::runif(n = n, min = -1, max = 1),
+                         y = stats::runif(n = n, min = -1, max = 1))
 
   # run checks
   } else {

@@ -22,6 +22,8 @@
 #' @aliases plot.meta_syst
 #' @rdname plot.meta_syst
 #'
+#' @importFrom rlang .data
+#'
 #' @export
 plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", ...) {
 
@@ -52,22 +54,22 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
   gg_map <- ggplot2::ggplot(data = local_xy) +
     ggplot2::geom_polygon(data = poly_xy, ggplot2::aes(x = x, y = y),
                           fill = NA, col = "black") +
-    ggplot2::geom_point(ggplot2::aes(x = x, y = y, color = factor(id)), shape = 15,
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y, color = factor(.data$id)), shape = 15,
                         size = 5, alpha = 1/4) +
-    ggplot2::geom_point(ggplot2::aes(x = x, y = y, color = factor(id)), shape = 0, size = 5) +
-    ggplot2::geom_point(aes(x = 0.0, y = 0.0), shape = 3, col = "black") +
-    ggplot2::geom_text(aes(x = x, y = y, label = factor(id)), col = "black") +
+    ggplot2::geom_point(ggplot2::aes(x = x, y = y, color = factor(.data$id)), shape = 0, size = 5) +
+    ggplot2::geom_point(ggplot2::aes(x = 0.0, y = 0.0), shape = 3, col = "black") +
+    ggplot2::geom_text(ggplot2::aes(x = x, y = y, label = factor(.data$id)), col = "grey") +
     ggplot2::coord_equal() +
     ggplot2::scale_color_manual(name = "Ecosystem", values = col_viridis) +
     ggplot2::labs(x = "x coordinate", y = "y coordinate") +
     ggplot2::theme_void(base_size = base_size) +
-    ggplot2::theme(legend.position = "bottom", axis.title = element_text(),
-                   axis.title.y = element_text(angle = 90))
+    ggplot2::theme(legend.position = "bottom", axis.title = ggplot2::element_text(),
+                   axis.title.y = ggplot2::element_text(angle = 90))
 
   gg_raster <- ggplot2::ggplot(data = local_prob) +
-    ggplot2::geom_tile(ggplot2::aes(x = factor(id_local), y = factor(id_source),
-                                    fill = probability)) +
-    ggplot2::geom_tile(ggplot2::aes(x = factor(id_local), y = factor(id_source)),
+    ggplot2::geom_tile(ggplot2::aes(x = factor(.data$id_local), y = factor(.data$id_source),
+                                    fill = .data$probability)) +
+    ggplot2::geom_tile(ggplot2::aes(x = factor(.data$id_local), y = factor(.data$id_source)),
                        fill = NA, colour = "black", size = 0.75) +
     ggplot2::coord_equal() +
     ggplot2::scale_fill_gradientn(name = "Probability", limits = c(0, 1), breaks = c(0, 0.5, 1),
@@ -78,9 +80,9 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
     ggplot2::theme(legend.position = "bottom")
 
   gg_function <- ggplot2::ggplot(data = local_prob) +
-    ggplot2::geom_line(ggplot2::aes(x = distance, y = probability, col = factor(id_local)),
+    ggplot2::geom_line(ggplot2::aes(x = .data$distance, y = .data$probability, col = factor(.data$id_local)),
                        alpha = 1/4) +
-    ggplot2::geom_point(ggplot2::aes(x = distance, y = probability, col = factor(id_local)),
+    ggplot2::geom_point(ggplot2::aes(x = .data$distance, y = .data$probability, col = factor(.data$id_local)),
                         shape = 1, size = 2) +
     ggplot2::scale_color_manual(name = "Ecoystem", values = col_viridis) +
     ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 3, by = 0.5), limits = c(0, 3)) +
