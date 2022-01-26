@@ -230,6 +230,11 @@ run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "r
 
   }
 
+  # MH: Only if fishpop present or move_res
+  # calculate probability matrix of local ecosystems
+  seafloor_probs <- calc_probability(metasyst = metasyst, lambda = parameters$move_lambda,
+                                     diag_value = 0.0)
+
   # print model run characteristics #
 
   # print some basic information about model run
@@ -257,7 +262,7 @@ run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "r
   }
 
   # run model
-  rcpp_sim_meta(seafloor = seafloor, fishpop = fishpop,
+  rcpp_sim_meta(seafloor = seafloor, fishpop = fishpop, seafloor_probs = seafloor_probs,
                 seafloor_track = seafloor_track, fishpop_track = fishpop_track,
                 parameters = parameters, movement = movement, max_dist = max_dist,
                 n = metasyst$n, pop_n = metasyst$starting_values$pop_n,

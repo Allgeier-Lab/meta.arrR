@@ -5,6 +5,7 @@
 \title{rcpp_move_meta}
 \usage{
 rcpp_move_meta(
+  seafloor_probs,
   fishpop,
   residence_values,
   n,
@@ -15,6 +16,8 @@ rcpp_move_meta(
 )
 }
 \arguments{
+\item{seafloor_probs}{Matrix with local ecosystems probabilities.}
+
 \item{fishpop}{List with fish population.}
 
 \item{residence_values}{Vector with residence values.}

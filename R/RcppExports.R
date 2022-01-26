@@ -71,6 +71,7 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @description
 #' Rcpp move meta.
 #'
+#' @param seafloor_probs Matrix with local ecosystems probabilities.
 #' @param fishpop List with fish population.
 #' @param n,pop_n_sum Integer with total number of local metaecosystems and individuals.
 #' @param id_attr Vector with unique id of fishpop attributes matrix.
@@ -90,8 +91,8 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @rdname rcpp_move_meta
 #'
 #' @export
-rcpp_move_meta <- function(fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent)
+rcpp_move_meta <- function(seafloor_probs, fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, seafloor_probs, fishpop, residence_values, n, pop_n_sum, id_attr, id_meta, extent)
 }
 
 #' rcpp_sim_meta
@@ -101,6 +102,7 @@ rcpp_move_meta <- function(fishpop, residence_values, n, pop_n_sum, id_attr, id_
 #'
 #' @param seafloor,fishpop List with seafloor and fishpop data of metaecosystems.
 #' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
+#' @param seafloor_probs Matrix with local ecosystems probabilities.
 #' @param parameters List with parameters.
 #' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
 #' @param max_dist Double with maximum movement distance.
@@ -144,8 +146,8 @@ rcpp_move_meta <- function(fishpop, residence_values, n, pop_n_sum, id_attr, id_
 #' @rdname rcpp_sim_meta
 #'
 #' @export
-rcpp_sim_meta <- function(seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutrients_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
-    invisible(.Call(`_meta_arrR_rcpp_sim_meta`, seafloor, fishpop, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutrients_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
+rcpp_sim_meta <- function(seafloor, fishpop, seafloor_probs, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutrients_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
+    invisible(.Call(`_meta_arrR_rcpp_sim_meta`, seafloor, fishpop, seafloor_probs, seafloor_track, fishpop_track, parameters, movement, max_dist, n, pop_n, fishpop_attributes, nutrients_input, coords_reef, cell_adj, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
 }
 
 #' rcpp_subset_matrix

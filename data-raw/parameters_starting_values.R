@@ -38,8 +38,10 @@ meta.arrR_parameters <- list(
   move_border = 2.0,
   move_reef = 0.5,
   move_return = 50.0,
-  move_residence = 0.0,
+  move_residence = 0.0, # MH: check again if that makes sense...
   move_residence_var = 0.0,
+  move_lambda = 1.0,
+  # MH: what about var?
 
   # fishpop dimensions
   pop_a = 0.0121,

@@ -7,6 +7,7 @@
 rcpp_sim_meta(
   seafloor,
   fishpop,
+  seafloor_probs,
   seafloor_track,
   fishpop_track,
   parameters,
@@ -30,6 +31,8 @@ rcpp_sim_meta(
 }
 \arguments{
 \item{seafloor, fishpop}{List with seafloor and fishpop data of metaecosystems.}
+
+\item{seafloor_probs}{Matrix with local ecosystems probabilities.}
 
 \item{seafloor_track, fishpop_track}{List with entry for each saving timestep and metaecosystems.}
 

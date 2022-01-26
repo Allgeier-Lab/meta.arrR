@@ -19,6 +19,7 @@ using namespace Rcpp;
 //'
 //' @param seafloor,fishpop List with seafloor and fishpop data of metaecosystems.
 //' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
+//' @param seafloor_probs Matrix with local ecosystems probabilities.
 //' @param parameters List with parameters.
 //' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
 //' @param max_dist Double with maximum movement distance.
@@ -63,7 +64,7 @@ using namespace Rcpp;
 //'
 //' @export
 // [[Rcpp::export]]
-void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
+void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs,
                    Rcpp::List seafloor_track, Rcpp::List fishpop_track,
                    Rcpp::List parameters, Rcpp::String movement, double max_dist,
                    int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes,
@@ -129,7 +130,7 @@ void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
   // init various stuff //
 
   // get unique metaecosystem id
-  Rcpp::IntegerVector id_meta = Rcpp::seq(1, fishpop.length());
+  Rcpp::IntegerVector id_meta = Rcpp::seq(1, seafloor.length());
 
   // calc time_frac for rcpp_seagrass_growth
   double time_frac = (min_per_i / 60.0) * seagrass_each;
@@ -159,7 +160,7 @@ void rcpp_sim_meta(Rcpp::List seafloor, Rcpp::List fishpop,
     // check if individuals move between meta systems
     if (flag_move) {
 
-      fishpop = rcpp_move_meta(fishpop, residence_values, n, pop_n_sum,
+      fishpop = rcpp_move_meta(seafloor_probs, fishpop, residence_values, n, pop_n_sum,
                                id_attr, id_meta, extent);
 
     }
