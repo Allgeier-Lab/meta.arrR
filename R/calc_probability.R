@@ -10,7 +10,8 @@
 #'
 #' @details
 #' Calculate probability matrix for local ecosystems based on distances between them
-#' using a negative exponential function I = exp(-d*lambda).
+#' using a negative exponential function I = exp(-d*lambda). If \code{lambda=0},
+#' movement across metaecosystems is random.
 #'
 #' @references
 #' https://en.wikipedia.org/wiki/Exponential_decay
