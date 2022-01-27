@@ -207,8 +207,12 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
   }
 
   # filter input
-  x$nutrients_input <- filter_meta.nutr_input(x = x$nutrients_input, filter = filter,
-                                              verbose = FALSE)
+  if (!is.na(x$nutrients_input)) {
+
+    x$nutrients_input <- filter_meta.nutr_input(x = x$nutrients_input, filter = filter,
+                                                verbose = FALSE)
+
+  }
 
   # replace elements
   x$max_i <- unique(vapply(X = x$seafloor, FUN = function(i) max(i$timestep),
