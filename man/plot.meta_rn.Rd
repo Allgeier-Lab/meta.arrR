@@ -18,7 +18,7 @@
 )
 }
 \arguments{
-\item{x}{\code{meta_rn} object simulated with \code{run_meta}.}
+\item{x}{\code{meta_rn} object simulated with \code{run_simulation_meta}.}
 
 \item{what}{Character specifying what to plot.}
 
@@ -46,7 +46,7 @@ Plotting method for meta_rn object.
 }
 \details{
 Plotting method for result of metaecosystem model run created
-with \code{run_meta}.
+with \code{run_simulation_meta}.
 }
 \examples{
 \dontrun{

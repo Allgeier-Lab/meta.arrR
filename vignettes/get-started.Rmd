@@ -78,9 +78,9 @@ nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$n
 ```
 
 ```{r run_model}
-result <- run_meta(metasyst = metasyst, nutrients_input = nutrients_input,
-                   parameters = parameters, movement = "rand",
-                   max_i = max_i, save_each = save_each, min_per_i = min_per_i)
+result <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_input,
+                              parameters = parameters, movement = "rand",
+                              max_i = max_i, save_each = max_i, min_per_i = min_per_i)
 ```
 
 ### 3. Analyze results

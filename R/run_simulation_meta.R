@@ -123,9 +123,9 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
   if (!inherits(x = nutrients_input, what = "nutr_input")) {
 
-    if (length(nutrients_input != 1)) {
+    if (length(nutrients_input) != 1) {
 
-      stop("'nutrients_input' must either be 'nutr_input' object or single value",
+      stop("'nutrients_input' must either be 'nutr_input' object or single value.",
            call. = FALSE)
 
     } else {
@@ -284,25 +284,17 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
     }
   }
 
-  # no nutrient input was provided; return NA
-  if (!flag_nutr_input) {
-
-    nutrients_input <- NA
-
-  }
-
   # name lists
   names(seafloor_track) <- paste0("Meta_", 1:metasyst$n)
 
   names(fishpop_track) <- paste0("Meta_", 1:metasyst$n)
 
   # combine result to list
-  result <- list(seafloor = seafloor_track, fishpop = fishpop_track, n = metasyst$n,
-                 fishpop_attributes = metasyst$fishpop_attributes, movement = movement,
-                 starting_values = metasyst$starting_values, parameters = parameters,
-                 max_dist = max_dist, nutrients_input = nutrients_input, coords_reef = coords_reef,
-                 extent = extent, grain = terra::res(metasyst$seafloor[[1]]),
-                 dimensions = dimensions, max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
+  result <- list(seafloor = seafloor_track, fishpop = fishpop_track, nutrients_input = nutrients_input,
+                 n = metasyst$n, movement = movement, fishpop_attributes = metasyst$fishpop_attributes,
+                 parameters = parameters, starting_values = metasyst$starting_values,
+                 extent = extent, grain = terra::res(metasyst$seafloor[[1]]), dimensions = dimensions,
+                 max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  seagrass_each = seagrass_each, save_each = save_each)
 
   # set class of result

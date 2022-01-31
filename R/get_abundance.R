@@ -3,11 +3,11 @@
 #' @description
 #' Get abundance of local metaecosystems.
 #'
-#' @param result \code{meta_rn} object simulated with \code{run_meta}.
+#' @param result \code{meta_rn} object simulated with \code{run_simulation_meta}.
 #'
 #' @details
 #' Get the number of individuals within each local metaecosystem of model run result
-#' created with \code{run_meta}.
+#' created with \code{run_simulation_meta}.
 #'
 #' @return data.frame
 #'

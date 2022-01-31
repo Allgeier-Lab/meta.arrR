@@ -50,8 +50,8 @@ nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$n
 metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain,
                        reef = reef, starting_values = starting_values, parameters = parameters)
 
-result_readme <- run_meta(metasyst = metasyst, nutrients_input = nutrients_input,
-                          parameters = parameters, movement = "attr",
-                          max_i = max_i, save_each = save_each, min_per_i = min_per_i)
+result_readme <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_input,
+                                     parameters = parameters, movement = "attr",
+                                     max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 
 # usethis::use_data(result_readme, internal = TRUE, overwrite = FALSE)

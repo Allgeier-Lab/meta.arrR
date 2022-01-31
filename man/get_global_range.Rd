@@ -19,7 +19,7 @@ Get global range
 }
 \details{
 Returns the minimum and maximum of selected seafloor value of several model run results
-created with \code{run_meta}.
+created with \code{run_simulation_meta}.
 }
 \examples{
 \dontrun{

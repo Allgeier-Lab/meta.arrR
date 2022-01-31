@@ -3,12 +3,12 @@
 #' @description
 #' Printing method for meta_rn object.
 #'
-#' @param x \code{meta_rn} object simulated with \code{run_meta}.
+#' @param x \code{meta_rn} object simulated with \code{run_simulation_meta}.
 #' @param digits Numeric of decimal places (passed on to \code{round}).
 #' @param ... Not used.
 #'
 #' @details
-#' Printing method for metaecosystem model run created with \code{run_meta}.
+#' Printing method for metaecosystem model run created with \code{run_simulation_meta}.
 #' Returns the mean values for several seafloor and fish population values.
 #'
 #' @examples

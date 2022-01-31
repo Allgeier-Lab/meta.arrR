@@ -3,7 +3,7 @@
 #' @description
 #' Summarize biomass and production values of each timestep
 #'
-#' @param result \code{meta_rn} object simulated \code{run_meta}.
+#' @param result \code{meta_rn} object simulated \code{run_simulation_meta}.
 #' @param biomass,production Logical to specifiy if biomass and/or production is summarize.d
 #' @param fun Function to aggregate results. Passed on to \code{aggregate}.
 #' @param na.rm Logical passed on to \code{aggregate}.

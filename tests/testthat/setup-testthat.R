@@ -44,22 +44,25 @@ metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reef = ree
                        starting_values = starting_values, parameters = parameters,
                        verbose = FALSE)
 
-# setup metaecosystems
+# setup metaecosystems w/o reef
 metasyst_nr <- setup_meta(n = n, dimensions = dimensions, grain = grain, reef = NULL,
                           starting_values = starting_values, parameters = parameters,
                           verbose = FALSE)
 
-result_rand <- run_meta(metasyst = metasyst, parameters = parameters,
-                        movement = "rand",  max_i = max_i, min_per_i = min_per_i,
-                        save_each = save_each, seagrass_each = seagrass_each,
-                        verbose = FALSE)
+# run model
+result_rand <- run_simulation_meta(metasyst = metasyst, parameters = parameters,
+                                   movement = "rand",  max_i = max_i, min_per_i = min_per_i,
+                                   save_each = save_each, seagrass_each = seagrass_each,
+                                   verbose = FALSE)
 
-result_rand_nr <- run_meta(metasyst = metasyst_nr, parameters = parameters,
-                           movement = "rand",  max_i = max_i, min_per_i = min_per_i,
-                           save_each = save_each, seagrass_each = seagrass_each,
-                           verbose = FALSE)
+# run w/o reef
+result_rand_nr <- run_simulation_meta(metasyst = metasyst_nr, parameters = parameters,
+                                      movement = "rand",  max_i = max_i, min_per_i = min_per_i,
+                                      save_each = save_each, seagrass_each = seagrass_each,
+                                      verbose = FALSE)
 
-result_attr <- run_meta(metasyst = metasyst, parameters = parameters,
-                        movement = "attr",  max_i = max_i, min_per_i = min_per_i,
-                        save_each = save_each, seagrass_each = seagrass_each,
-                        verbose = FALSE)
+# run with attracted movement
+result_attr <- run_simulation_meta(metasyst = metasyst, parameters = parameters,
+                                   movement = "attr",  max_i = max_i, min_per_i = min_per_i,
+                                   save_each = save_each, seagrass_each = seagrass_each,
+                                   verbose = FALSE)

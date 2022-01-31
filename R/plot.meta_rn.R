@@ -3,7 +3,7 @@
 #' @description
 #' Plotting method for meta_rn object.
 #'
-#' @param x \code{meta_rn} object simulated with \code{run_meta}.
+#' @param x \code{meta_rn} object simulated with \code{run_simulation_meta}.
 #' @param what Character specifying what to plot.
 #' @param summarize Logical if TRUE values over time steps are plotted.
 #' @param fill Character specifying which column to use for plotting.
@@ -16,7 +16,7 @@
 #'
 #' @details
 #' Plotting method for result of metaecosystem model run created
-#' with \code{run_meta}.
+#' with \code{run_simulation_meta}.
 #'
 #' @return ggplot
 #'

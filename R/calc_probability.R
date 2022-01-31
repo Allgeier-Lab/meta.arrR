@@ -40,8 +40,6 @@ calc_probability <- function(metasyst, lambda = 1, diag_value = NA, full = TRUE)
   local_dist <- as.matrix(stats::dist(metasyst$seafloor_xy[, 2:3], diag = TRUE, upper = TRUE,
                                       method = "euclidean"))
 
-  # MH: Allow different functions here and e.g. all values = 1 for random movement
-
   # calculate probability
   local_prob <- exp(-local_dist * lambda)
 
