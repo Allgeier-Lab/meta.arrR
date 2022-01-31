@@ -1,5 +1,7 @@
 #include <Rcpp.h>
+
 #include "rcpp_matrix_to_list.h"
+
 #include "rcpp_get_table.h"
 #include "rcpp_matrix_to_list.h"
 
@@ -38,7 +40,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
     int k = 0;
 
     // get number of individuals in metaecosystem
-    int nrow_temp = id_table[i];
+    int nrow_temp = id_table(i);
 
     // still need one row for NA if no individual is present
     if (nrow_temp == 0) nrow_temp = 1;
@@ -47,7 +49,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
     Rcpp::NumericMatrix fishpop_temp(nrow_temp, 17);
 
     // individuals present in current metaecosystem
-    if (id_table[i] > 0) {
+    if (id_table(i) > 0) {
 
       // loop through all individuals
       for (int j = 0; j < fishpop.nrow(); j++) {

@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+
 #include "rcpp_get_table.h"
 
 using namespace Rcpp;
@@ -29,7 +30,7 @@ Rcpp::IntegerVector rcpp_get_table(Rcpp::NumericVector x, int n) {
   // loop through all possible id
   for (int i = 0; i < x.length(); i++) {
 
-    int value_temp = x[i] - 1;
+    int value_temp = x(i) - 1;
 
     // increase count
     x_table(value_temp) += 1;
