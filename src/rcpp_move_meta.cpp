@@ -45,7 +45,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
   for (int i = 0; i < fishpop_mat.nrow(); i++) {
 
     // get row id of current individual
-    int id_attr = (int) rcpp_find(fishpop_mat(i, 0), fishpop_attributes(_, 0))(0);
+    int id_attr = rcpp_find(fishpop_mat(i, 0), fishpop_attributes(_, 0));
 
     // prob_move
     double prob_move = fishpop_mat(i, 16) / fishpop_attributes(id_attr, 1);
@@ -59,13 +59,11 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
       // get current id
       int meta_temp = fishpop_mat(i, 17);
 
+      // get probs of starting ecosystem
       Rcpp::NumericVector p = seafloor_probs(_, meta_temp - 1);
 
       // sample new random id
       int id_random = Rcpp::sample(meta_ids, 1, false, p)(0);
-
-      // MH: check if fish moved
-      if (meta_temp == id_random) Rcpp::stop("Fish didn't move.");
 
       // update meta id
       fishpop_mat(i, 17) = id_random;

@@ -54,16 +54,6 @@ rcpp_simulate_meta(
 \item{burn_in}{Numeric with timesteps used to burn in.}
 
 \item{verbose}{If TRUE, progress reports are printed.}
-
-\item{max_dist}{Double with maximum movement distance.}
-
-\item{n}{Integer with number of metaecosystems.}
-
-\item{pop_n}{Vector with number of individuals.}
-
-\item{coords_reef}{List with ID and coords of reef cells.}
-
-\item{cell_adj}{Matrix with cell adjacencies.}
 }
 \value{
 void
