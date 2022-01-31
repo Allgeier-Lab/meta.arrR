@@ -1,11 +1,11 @@
-#' run_meta
+#' run_simulation_meta
 #'
 #' @description
 #' Run metaecosystems simulation.
 #'
 #' @param metasyst \code{meta_syst} object created with \code{setup_meta}.
 #' @param parameters List with all model parameters.
-#' @param nutrients_input \code{nutr_input} with nutrient inputs
+#' @param nutrients_input \code{nutr_input} object or numeric with nutrient inputs.
 #' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param min_per_i Integer to specify minutes per i.
@@ -33,7 +33,7 @@
 #' attracted movement towards the artificial reef of individuals or a movement behavior based
 #' on their biosenergetics.
 #'
-#' If \code{nutrients_input} is \code{NULL}, no nutrient input is simulated. To also simulate no
+#' If \code{nutrients_input = 0.0}, no nutrient input is simulated. To also simulate no
 #' nutrient output, set the \code{nutrients_loss} parameter to zero.
 #'
 #' If \code{save_each > 1}, not all iterations are saved in the final \code{meta_rn} object,
@@ -48,16 +48,16 @@
 #'
 #' @examples
 #' \dontrun{
-#' result_rand <- run_meta(metasyst = metasyst, nutrients_input = nutrients_input,
+#' result_rand <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_input,
 #' parameters = parameters, movement = "rand", max_i = max_i, seagrass_each = seagrass_each,
 #' min_per_i = min_per_i, save_each = save_each, verbose = TRUE)
 #' }
 #'
-#' @aliases run_meta
-#' @rdname run_meta
+#' @aliases run_simulation_meta
+#' @rdname run_simulation_meta
 #'
 #' @export
-run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "rand",
+run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, movement = "rand",
                      max_i, min_per_i, burn_in = 0, seagrass_each = 1, save_each = 1,
                      return_burnin = TRUE, verbose = TRUE) {
 
@@ -101,112 +101,11 @@ run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "r
 
   }
 
-  # setup fishpop #
-
-  # MH: Check if actually present!
-
-  # convert seafloor to matrix
-  fishpop <- lapply(metasyst$fishpop, as.matrix)
-
-  # calculate maximum movement distance
-  mean_temp <- ifelse(test = movement == "behav",
-                      yes = parameters$move_return, no = parameters$move_mean)
-
-  var_temp <- ifelse(test = movement == "behav",
-                     yes = 1.0, no = parameters$move_var)
-
-  # get max_dist if fishpop is present
-  if (any(metasyst$starting_values$pop_n != 0)) {
-
-    # sample from lognorm to get maximum distance
-    max_dist <- vapply(X = 1:1000000, FUN = function(i) {
-      arrR::rcpp_rlognorm(mean = mean_temp, sd = sqrt(var_temp), min = 0.0, max = Inf)},
-      FUN.VALUE = numeric(1))
-
-    # set maximum distance to 95%
-    max_dist <- stats::quantile(x = max_dist, probs = 0.95, names = FALSE)
-
-  # no fish present at all
-  } else {
-
-    max_dist <- 0.0
-
-    # check if no fishpop is present but movement not rand
-    if (movement %in% c("attr", "behav")) {
-
-      movement <- "rand"
-
-      warning("No fishpop present. Setting 'movement' to 'rand'.", call. = FALSE)
-
-    }
-  }
-
-  fishpop_track <- vector(mode = "list", length = metasyst$n)
-
-  fishpop_track <- lapply(seq_along(fishpop_track), function(i)
-    vector(mode = "list", length = (max_i / save_each) + 1))
-
-  # setup nutrient input #
-
-  # check if nutrients_input has value for each iteration
-  if (!is.null(nutrients_input)) {
-
-    # check if nutrients_input is correct class
-    if (!inherits(x = nutrients_input, what = "nutr_input")) {
-
-      stop("The nutrients input must be of class 'nutr_input'.", call. = FALSE)
-
-    }
-
-    # check length of nutrient input
-    if (!all(vapply(X = nutrients_input$values, function(i) nrow(i),
-                    FUN.VALUE = integer(1)) == (max_i / seagrass_each))) {
-
-      stop("There must be a nutrient input value for each timestep.", call. = FALSE)
-
-    }
-
-    # check meta n of input
-    if (nutrients_input$n != metasyst$n) {
-
-      stop("There must be nutrient input values for each local ecosystem.", call. = FALSE)
-
-    }
-
-    # set nutrient flag to save results later
-    flag_nutr_input <- TRUE
-
-  # create nutrient input if not present
-  } else {
-
-    nutrients_input <- sim_nutr_input(n = metasyst$n, max_i = max_i, seagrass_each = seagrass_each,
-                                      input_mn = 0.0, freq_mn = 0.0, verbose = FALSE)
-
-    # set nutrient flag to save results later
-    flag_nutr_input <- FALSE
-
-  }
-
-  # get list of input values
-  nutr_input_list <- lapply(X = nutrients_input$values, function(i) i[, 2])
-
   # setup seafloor #
 
   # convert seafloor to matrix
-  seafloor <- lapply(metasyst$seafloor, function(i)
+  seafloor_values <- lapply(metasyst$seafloor, function(i)
     as.matrix(terra::as.data.frame(i, xy = TRUE, na.rm = FALSE)))
-
-  # get cell id of reef cells (needs matrix input)
-  cells_reef <- lapply(seafloor, function(i) which(i[, 16] == 1))
-
-  # get coordinates of reef cells (needs matrix input)
-  coords_reef <- lapply(seq_along(seafloor),
-                        function(i) matrix(data = c(cells_reef[[i]],
-                                                    seafloor[[i]][cells_reef[[i]], 1:2]),
-                                           ncol = 3))
-
-  # get neighboring cells for each focal cell using torus
-  cell_adj <- arrR::get_neighbors(x = metasyst$seafloor[[1]], direction = 8, cpp = TRUE)
 
   # get extent of environment
   extent <- metasyst$extent
@@ -220,17 +119,68 @@ run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "r
   seafloor_track <- lapply(seq_along(seafloor_track), function(i)
     vector(mode = "list", length = (max_i / save_each) + 1))
 
+  # setup nutrient input #
+
+  if (!inherits(x = nutrients_input, what = "nutr_input")) {
+
+    if (length(nutrients_input != 1)) {
+
+      stop("'nutrients_input' must either be 'nutr_input' object or single value",
+           call. = FALSE)
+
+    } else {
+
+      nutrients_input <- sim_nutr_input(n = metasyst$n, max_i = max_i, seagrass_each = seagrass_each,
+                                        input_mn = nutrients_input, freq_mn = 0.0, verbose = FALSE)
+
+    }
+  }
+
+  # get list of input values
+  nutrients_input_values <- lapply(X = nutrients_input$values, function(i) i[, 2])
+
+  # setup fishpop #
+
+  # convert seafloor to matrix
+  fishpop_values <- lapply(metasyst$fishpop, as.matrix)
+
+  # check if no fishpop is present but movement not rand
+  if ((sum(metasyst$starting_values$pop_n) == 0) && (movement %in% c("attr", "behav"))) {
+
+    movement <- "rand"
+
+    warning("No fishpop present. Setting 'movement' to 'rand'.", call. = FALSE)
+
+  }
+
   # check if no reef is present but movement not rand
-  if (all(vapply(coords_reef, nrow, FUN.VALUE = numeric(1)) == 0) &&
+  if ((sum(vapply(metasyst$reef, nrow, FUN.VALUE = numeric(1))) == 0) &&
       movement %in% c("attr", "behav")) {
 
     movement <- "rand"
 
-    warning("No reef cells present in any metaecosystem. Thus 'movement' set to 'rand'.", call. = FALSE)
+    warning("No reef cells present in any metaecosystem. Setting 'movement = rand'.", call. = FALSE)
 
   }
 
-  # MH: Only if fishpop present or move_res
+  # set behavior column to 3 for rand/attr movement
+  if ((sum(metasyst$starting_values$pop_n) > 0) && (movement %in% c("rand", "attr"))) {
+
+    for (i in 1:length(fishpop_values)) {
+
+      fishpop_values[[i]][, "behavior"] <- 3.0
+
+    }
+  }
+
+  fishpop_track <- vector(mode = "list", length = metasyst$n)
+
+  fishpop_track <- lapply(seq_along(fishpop_track), function(i)
+    vector(mode = "list", length = (max_i / save_each) + 1))
+
+  # setup various #
+
+  # MH: only needed of fishpop present, but also cheap to calculate
   # calculate probability matrix of local ecosystems
   seafloor_probs <- calc_probability(metasyst = metasyst, lambda = parameters$move_lambda,
                                      diag_value = 0.0)
@@ -247,7 +197,7 @@ run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "r
     message("> Metaecosystem with ", metasyst$n, " local ecosystems.")
 
     message("> Seafloors with ", dimensions[1], " rows x ", dimensions[2], " cols; ",
-            paste(vapply(coords_reef, nrow, FUN.VALUE = numeric(1)), collapse = ", "), " reef cells.")
+            paste(vapply(metasyst$reef, nrow, FUN.VALUE = numeric(1)), collapse = ", "), " reef cells.")
 
     message("> Populations with ", paste(metasyst$starting_values$pop_n, collapse = ", "), " individuals [movement: '", movement, "'].")
 
@@ -262,16 +212,14 @@ run_meta <- function(metasyst, parameters, nutrients_input = NULL, movement = "r
   }
 
   # run model
-  rcpp_sim_meta(seafloor = seafloor, fishpop = fishpop, seafloor_probs = seafloor_probs,
-                seafloor_track = seafloor_track, fishpop_track = fishpop_track,
-                parameters = parameters, movement = movement, max_dist = max_dist,
-                n = metasyst$n, pop_n = metasyst$starting_values$pop_n,
-                fishpop_attributes = metasyst$fishpop_attributes,
-                nutrients_input = nutr_input_list, coords_reef = coords_reef, cell_adj = cell_adj,
-                extent = extent, dimensions = dimensions,
-                max_i = max_i, min_per_i = min_per_i, save_each = save_each,
-                seagrass_each = seagrass_each, burn_in = burn_in,
-                verbose = verbose)
+  rcpp_simulate_meta(seafloor = seafloor_values, fishpop = fishpop_values, nutrients_input = nutrients_input_values,
+                     fishpop_attributes = metasyst$fishpop_attributes, seafloor_probs = seafloor_probs,
+                     seafloor_track = seafloor_track, fishpop_track = fishpop_track,
+                     parameters = parameters, movement = movement,
+                     extent = extent, dimensions = dimensions,
+                     max_i = max_i, min_per_i = min_per_i, save_each = save_each,
+                     seagrass_each = seagrass_each, burn_in = burn_in,
+                     verbose = verbose)
 
   # new line after last progress message
   if (verbose) {
