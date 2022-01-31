@@ -6,11 +6,11 @@
 #' @description
 #' Rcpp find.
 #'
-#' @param x NumericVector with with values to find.
+#' @param x Integer with with value to find.
 #' @param y NumericVector with values to find all elements of x in.
 #'
 #' @details
-#' Returns the index of all elements of the \code{x} object within the \code{y} object.
+#' Returns the index of the \code{x} object within the \code{y} object.
 #' The index of the first element is 0. If an element is not present within \code{y} object,
 #' \code{NA} is returned. Returns only the first index of an object if present multiple
 #' times in the \code{y} object.
@@ -122,17 +122,12 @@ rcpp_move_meta <- function(fishpop, seafloor_probs, fishpop_attributes, extent) 
 #' Rcpp run simulation of metaecosystems processes.
 #'
 #' @param seafloor,fishpop List with seafloor and fishpop data of metaecosystems.
-#' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
+#' @param nutrients_input List with amount of nutrient input each timestep.
+#' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual
 #' @param seafloor_probs Matrix with local ecosystems probabilities.
+#' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
 #' @param parameters List with parameters.
 #' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
-#' @param max_dist Double with maximum movement distance.
-#' @param n Integer with number of metaecosystems.
-#' @param pop_n Vector with number of individuals.
-#' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual
-#' @param nutrients_input List with amount of nutrient input each timestep.
-#' @param coords_reef List with ID and coords of reef cells.
-#' @param cell_adj Matrix with cell adjacencies.
 #' @param extent Vector with extent (xmin,xmax,ymin,ymax).
 #' @param dimensions Vector with dimensions (nrow, ncol).
 #' @param max_i Integer with maximum number of simulation timesteps.

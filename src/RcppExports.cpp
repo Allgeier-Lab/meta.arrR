@@ -11,12 +11,12 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // rcpp_find
-Rcpp::IntegerVector rcpp_find(NumericVector x, Rcpp::NumericVector y);
+int rcpp_find(int x, Rcpp::NumericVector y);
 RcppExport SEXP _meta_arrR_rcpp_find(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
     rcpp_result_gen = Rcpp::wrap(rcpp_find(x, y));
     return rcpp_result_gen;

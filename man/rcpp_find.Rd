@@ -7,7 +7,7 @@
 rcpp_find(x, y)
 }
 \arguments{
-\item{x}{NumericVector with with values to find.}
+\item{x}{Integer with with value to find.}
 
 \item{y}{NumericVector with values to find all elements of x in.}
 }
@@ -18,7 +18,7 @@ NumericVector
 Rcpp find.
 }
 \details{
-Returns the index of all elements of the \code{x} object within the \code{y} object.
+Returns the index of the \code{x} object within the \code{y} object.
 The index of the first element is 0. If an element is not present within \code{y} object,
 \code{NA} is returned. Returns only the first index of an object if present multiple
 times in the \code{y} object.
