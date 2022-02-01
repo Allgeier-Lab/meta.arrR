@@ -20,7 +20,7 @@
 #' Function to create metaecosystem including environmental raster grids and fish
 #' populations.
 #'
-#' If \code{seafloor_xy = NULL}, coordiantes are simulated random (range: 0-1).
+#' If \code{seafloor_xy = NULL}, coordinates are simulated random (range: 0-1).
 #'
 #'
 #' @return meta_syst
@@ -34,9 +34,8 @@
 #'
 #' @export
 setup_meta <- function(n, max_i, dimensions, grain = c(1, 1), reef = NULL,
-                       seafloor_xy = NULL,
-                       starting_values, parameters, random = 0.0, use_log = TRUE,
-                       verbose = TRUE, ...) {
+                       seafloor_xy = NULL, starting_values, parameters, random = 0.0,
+                       use_log = TRUE, verbose = TRUE, ...) {
 
   # print some information on console
   if (verbose) {

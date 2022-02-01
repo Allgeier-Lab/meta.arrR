@@ -54,7 +54,7 @@ Setup metaecosystems.
 Function to create metaecosystem including environmental raster grids and fish
 populations.
 
-If \code{seafloor_xy = NULL}, coordiantes are simulated random (range: 0-1).
+If \code{seafloor_xy = NULL}, coordinates are simulated random (range: 0-1).
 }
 \examples{
 metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
