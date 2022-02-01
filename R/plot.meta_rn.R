@@ -238,11 +238,18 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       # get density within each cell
       densities <- get_meta_densities(result = x)
 
-      # get number of reefs
-      no_reefs <- vapply(x$coords_reef, nrow, FUN.VALUE = numeric(1))
+      # get reef matrix
+      coords_reef <- lapply(X = x$seafloor, FUN = function(i) {
+
+        arrR::rcpp_get_reef(as.matrix(i[i$timestep == 0, -18]))
+
+      })
+
+      # count number of reef cells
+      no_reefs <- vapply(X = coords_reef, nrow, FUN.VALUE = numeric(1))
 
       # get coords of reefs
-      coords_reef <- data.frame(do.call(rbind, x$coords_reef))
+      coords_reef <- data.frame(do.call(rbind, coords_reef))
 
       # add metaecosystem id
       coords_reef$id <- rep(x = 1:x$n, times = no_reefs)

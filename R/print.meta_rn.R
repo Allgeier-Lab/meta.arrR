@@ -37,15 +37,8 @@ print.meta_rn <- function(x, digits = 3, ...) {
   })
 
   # get number of reefs
-  no_reefs <- vapply(x$seafloor, function(seafloor_temp) {
-
-    # filter max_i timestep
-    seafloor_maxi <- seafloor_temp[seafloor_temp$timestep == x$max_i, ]
-
-    # get number of rows in which reef = 1
-    nrow(seafloor_maxi[seafloor_maxi$reef == 1, ])
-
-  }, FUN.VALUE = numeric(1))
+  no_reefs <- vapply(x$seafloor, function(i) nrow(i[i$timestep == 0 & i$reef == 1, ]),
+                     FUN.VALUE = numeric(1))
 
   # collapse to charachter string
   no_reefs <- paste(c(no_reefs), collapse = ", ")

@@ -29,9 +29,9 @@ rcpp_simulate_meta(
 
 \item{nutrients_input}{List with amount of nutrient input each timestep.}
 
-\item{fishpop_attributes}{Matrix with residence and reserves_thres values for each individual}
+\item{fishpop_attributes}{NumericMatrix with residence and reserves_thres values for each individual}
 
-\item{seafloor_probs}{Matrix with local ecosystems probabilities.}
+\item{seafloor_probs}{NumericMatrix with local ecosystems probabilities.}
 
 \item{seafloor_track, fishpop_track}{List with entry for each saving timestep and metaecosystems.}
 
@@ -39,9 +39,9 @@ rcpp_simulate_meta(
 
 \item{movement}{String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.}
 
-\item{extent}{Vector with extent (xmin,xmax,ymin,ymax).}
+\item{extent}{NumericVector with extent (xmin,xmax,ymin,ymax).}
 
-\item{dimensions}{Vector with dimensions (nrow, ncol).}
+\item{dimensions}{IntegerVector with dimensions (nrow, ncol).}
 
 \item{max_i}{Integer with maximum number of simulation timesteps.}
 

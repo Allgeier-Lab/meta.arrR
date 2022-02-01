@@ -9,11 +9,11 @@ rcpp_move_meta(fishpop, seafloor_probs, fishpop_attributes, extent)
 \arguments{
 \item{fishpop}{List with fish population.}
 
-\item{seafloor_probs}{Matrix with local ecosystems probabilities.}
+\item{seafloor_probs}{NumericMatrix with local ecosystems probabilities.}
 
-\item{fishpop_attributes}{Matrix with residence and reserves_thres values for each individual.}
+\item{fishpop_attributes}{NumericMatrix with residence and reserves_thres values for each individual.}
 
-\item{extent}{Spatial extent of the seafloor raster.}
+\item{extent}{NumericVector with spatial extent of the seafloor raster.}
 }
 \value{
 list

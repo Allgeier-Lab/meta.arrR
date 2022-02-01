@@ -14,9 +14,9 @@ using namespace Rcpp;
 //' Rcpp move meta.
 //'
 //' @param fishpop List with fish population.
-//' @param seafloor_probs Matrix with local ecosystems probabilities.
-//' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual.
-//' @param extent Spatial extent of the seafloor raster.
+//' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
+//' @param fishpop_attributes NumericMatrix with residence and reserves_thres values for each individual.
+//' @param extent NumericVector with spatial extent of the seafloor raster.
 //'
 //' @details
 //' Simulate movement across local metaecosystem. Individuals move to a new local

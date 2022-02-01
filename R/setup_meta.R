@@ -73,11 +73,8 @@ setup_meta <- function(n, max_i, dimensions, grain = c(1, 1), reef = NULL,
     }
 
     # get number of reefs for each local metaecosystem
-    no_reefs <- paste(c(vapply(reef, FUN = function(i) {
-
-      ifelse(test = is.null(i), yes = 0, no = nrow(i))
-
-    }, FUN.VALUE = numeric(1))),  collapse = ", ")
+    no_reefs <- paste(c(vapply(reef, FUN = function(i) ifelse(test = is.null(i), yes = 0, no = nrow(i)),
+                               FUN.VALUE = numeric(1))),  collapse = ", ")
 
     if (verbose) {
 

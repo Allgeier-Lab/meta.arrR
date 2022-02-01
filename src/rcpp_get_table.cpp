@@ -9,13 +9,13 @@ using namespace Rcpp;
 //' @description
 //' Rcpp get table.
 //'
-//' @param x Vector with values.
+//' @param x NumericVector with values.
 //' @param n Integer with maximum number of classes.
 //'
 //' @details
 //' Returns table with value count. Only values x > 0 are allowed.
 //'
-//' @return vector
+//' @return IntegerVector
 //'
 //' @aliases rcpp_get_table
 //' @rdname rcpp_get_table

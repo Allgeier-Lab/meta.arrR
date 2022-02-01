@@ -17,7 +17,7 @@ using namespace Rcpp;
 //' Converts list with individuals within a local metaecosystem to one matrix. If
 //' \code{id = TRUE} a column identifying the metaecosystem is added.
 //'
-//' @return matrix
+//' @return NumericMatrix
 //'
 //' @aliases rcpp_list_to_matrix
 //' @rdname rcpp_list_to_matrix
@@ -27,10 +27,11 @@ using namespace Rcpp;
 Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool id) {
 
   // number of col
+  // MH: Set automatically using ncol(fishpop)
   int n_col = 17;
 
   // set col names
-  // MH: Set automaticall using colnames(fishpop);
+  // MH: Set automatically using colnames(fishpop);
   Rcpp::CharacterVector col_names = Rcpp::CharacterVector::create("id", "age", "x", "y",
     "heading", "length", "weight", "activity", "respiration", "reserves", "reserves_max",
     "behavior", "consumption", "excretion", "died_consumption", "died_background",

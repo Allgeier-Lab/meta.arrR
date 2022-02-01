@@ -12,14 +12,13 @@ rcpp_find(x, y)
 \item{y}{NumericVector with values to find all elements of x in.}
 }
 \value{
-NumericVector
+int
 }
 \description{
 Rcpp find.
 }
 \details{
-Returns the index of the \code{x} object within the \code{y} object.
-The index of the first element is 0. If an element is not present within \code{y} object,
-\code{NA} is returned. Returns only the first index of an object if present multiple
-times in the \code{y} object.
+Returns the index (starting at zero) of the \code{x} integer within the \code{y} vector.
+If an element is not present within \code{y} vector, \code{NA} is returned.
+Returns only the first index if \code{x} is present multiple times in the \code{y} vector.
 }

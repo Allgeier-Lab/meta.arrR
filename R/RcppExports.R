@@ -10,12 +10,11 @@
 #' @param y NumericVector with values to find all elements of x in.
 #'
 #' @details
-#' Returns the index of the \code{x} object within the \code{y} object.
-#' The index of the first element is 0. If an element is not present within \code{y} object,
-#' \code{NA} is returned. Returns only the first index of an object if present multiple
-#' times in the \code{y} object.
+#' Returns the index (starting at zero) of the \code{x} integer within the \code{y} vector.
+#' If an element is not present within \code{y} vector, \code{NA} is returned.
+#' Returns only the first index if \code{x} is present multiple times in the \code{y} vector.
 #'
-#' @return NumericVector
+#' @return int
 #'
 #' @aliases rcpp_find
 #' @rdname rcpp_find
@@ -30,13 +29,13 @@ rcpp_find <- function(x, y) {
 #' @description
 #' Rcpp get table.
 #'
-#' @param x Vector with values.
+#' @param x NumericVector with values.
 #' @param n Integer with maximum number of classes.
 #'
 #' @details
 #' Returns table with value count. Only values x > 0 are allowed.
 #'
-#' @return vector
+#' @return IntegerVector
 #'
 #' @aliases rcpp_get_table
 #' @rdname rcpp_get_table
@@ -59,7 +58,7 @@ rcpp_get_table <- function(x, n) {
 #' Converts list with individuals within a local metaecosystem to one matrix. If
 #' \code{id = TRUE} a column identifying the metaecosystem is added.
 #'
-#' @return matrix
+#' @return NumericMatrix
 #'
 #' @aliases rcpp_list_to_matrix
 #' @rdname rcpp_list_to_matrix
@@ -78,7 +77,7 @@ rcpp_list_to_matrix <- function(fishpop, pop_n_sum, id) {
 #' @param n Integer with number of total metaecosystems.
 #'
 #' @details
-#' Converts individual matrix to a list split by metaecosystems.
+#' Converts fish population matrix to a list split by metaecosystems.
 #'
 #' @return list
 #'
@@ -96,9 +95,9 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' Rcpp move meta.
 #'
 #' @param fishpop List with fish population.
-#' @param seafloor_probs Matrix with local ecosystems probabilities.
-#' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual.
-#' @param extent Spatial extent of the seafloor raster.
+#' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
+#' @param fishpop_attributes NumericMatrix with residence and reserves_thres values for each individual.
+#' @param extent NumericVector with spatial extent of the seafloor raster.
 #'
 #' @details
 #' Simulate movement across local metaecosystem. Individuals move to a new local
@@ -123,13 +122,13 @@ rcpp_move_meta <- function(fishpop, seafloor_probs, fishpop_attributes, extent) 
 #'
 #' @param seafloor,fishpop List with seafloor and fishpop data of metaecosystems.
 #' @param nutrients_input List with amount of nutrient input each timestep.
-#' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual
-#' @param seafloor_probs Matrix with local ecosystems probabilities.
+#' @param fishpop_attributes NumericMatrix with residence and reserves_thres values for each individual
+#' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 #' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
 #' @param parameters List with parameters.
 #' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
-#' @param extent Vector with extent (xmin,xmax,ymin,ymax).
-#' @param dimensions Vector with dimensions (nrow, ncol).
+#' @param extent NumericVector with extent (xmin,xmax,ymin,ymax).
+#' @param dimensions IntegerVector with dimensions (nrow, ncol).
 #' @param max_i Integer with maximum number of simulation timesteps.
 #' @param min_per_i Integer to specify minutes per i.
 #' @param save_each Numeric how often data should be saved to return.

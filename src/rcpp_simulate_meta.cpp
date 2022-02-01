@@ -20,13 +20,13 @@ using namespace Rcpp;
 //'
 //' @param seafloor,fishpop List with seafloor and fishpop data of metaecosystems.
 //' @param nutrients_input List with amount of nutrient input each timestep.
-//' @param fishpop_attributes Matrix with residence and reserves_thres values for each individual
-//' @param seafloor_probs Matrix with local ecosystems probabilities.
+//' @param fishpop_attributes NumericMatrix with residence and reserves_thres values for each individual
+//' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 //' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
 //' @param parameters List with parameters.
 //' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
-//' @param extent Vector with extent (xmin,xmax,ymin,ymax).
-//' @param dimensions Vector with dimensions (nrow, ncol).
+//' @param extent NumericVector with extent (xmin,xmax,ymin,ymax).
+//' @param dimensions IntegerVector with dimensions (nrow, ncol).
 //' @param max_i Integer with maximum number of simulation timesteps.
 //' @param min_per_i Integer to specify minutes per i.
 //' @param save_each Numeric how often data should be saved to return.

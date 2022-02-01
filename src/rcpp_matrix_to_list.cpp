@@ -16,7 +16,7 @@ using namespace Rcpp;
 //' @param n Integer with number of total metaecosystems.
 //'
 //' @details
-//' Converts individual matrix to a list split by metaecosystems.
+//' Converts fish population matrix to a list split by metaecosystems.
 //'
 //' @return list
 //'
@@ -86,7 +86,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
     }
 
     // set col names
-    // MH: Set automaticall using colnames(fishpop);
+    // MH: Set automatically using colnames(fishpop);
     colnames(fishpop_temp) = Rcpp::CharacterVector::create("id", "age", "x", "y", "heading",
              "length", "weight", "activity", "respiration", "reserves", "reserves_max",
              "behavior", "consumption", "excretion", "died_consumption", "died_background",

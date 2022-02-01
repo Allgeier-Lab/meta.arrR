@@ -154,7 +154,8 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
   }
 
   # check if no reef is present but movement not rand
-  if ((sum(vapply(metasyst$reef, nrow, FUN.VALUE = numeric(1))) == 0) &&
+  if ((sum(vapply(metasyst$reef, function(i) ifelse(test = is.null(i), yes = 0, no = nrow(i)),
+                  FUN.VALUE = numeric(1))) == 0) &&
       movement %in% c("attr", "behav")) {
 
     movement <- "rand"
@@ -197,7 +198,8 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
     message("> Metaecosystem with ", metasyst$n, " local ecosystems.")
 
     message("> Seafloors with ", dimensions[1], " rows x ", dimensions[2], " cols; ",
-            paste(vapply(metasyst$reef, nrow, FUN.VALUE = numeric(1)), collapse = ", "), " reef cells.")
+            paste(vapply(metasyst$reef, function(i) ifelse(test = is.null(i), yes = 0, no = nrow(i)),
+                         FUN.VALUE = numeric(1)), collapse = ", "), " reef cells.")
 
     message("> Populations with ", paste(metasyst$starting_values$pop_n, collapse = ", "), " individuals [movement: '", movement, "'].")
 

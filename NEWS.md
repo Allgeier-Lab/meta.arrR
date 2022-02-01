@@ -1,5 +1,6 @@
-# meta.arrR 0.4.1
+# meta.arrR 0.5
 * Place local ecosystems in "empty space"
+* Move some code to `Rcpp`
 
 # meta.arrR 0.4
 * Use `terra` instead of `raster`

@@ -1,7 +1,6 @@
 # create vector with names
-present_names <- c("seafloor", "fishpop", "n", "fishpop_attributes", "movement",
-                   "starting_values", "parameters", "max_dist", "nutrients_input",
-                   "coords_reef", "extent",  "grain", "dimensions",
+present_names <- c("seafloor", "fishpop", "nutrients_input", "n", "movement", "fishpop_attributes",
+                   "parameters", "starting_values", "extent", "grain", "dimensions",
                    "max_i" , "min_per_i", "burn_in", "seagrass_each", "save_each")
 
 test_that("run_meta returns meta_rn", {
