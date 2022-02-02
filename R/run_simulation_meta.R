@@ -188,6 +188,10 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
   # print model run characteristics #
 
+  total_time <- round(max_i * min_per_i / 60 / 24, digits = 2)
+
+  total_save_each <- round(save_each * min_per_i / 60 / 24, digits = 2)
+
   # print some basic information about model run
   if (verbose) {
 
@@ -203,9 +207,9 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
     message("> Populations with ", paste(metasyst$starting_values$pop_n, collapse = ", "), " individuals [movement: '", movement, "'].")
 
-    message("> Simulating ", max_i, " iterations [Burn-in: ", burn_in, " iter.].")
+    message("> Simulating ", max_i, " iterations (", total_time, " days) [Burn-in: ", burn_in, " iter.].")
 
-    message("> Saving each ", save_each, " iterations.")
+    message("> Saving each ", save_each, " iterations (", total_save_each, " days).")
 
     message("> One iteration equals ", min_per_i, " minutes.")
 
