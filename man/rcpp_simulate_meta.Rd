@@ -8,7 +8,7 @@ rcpp_simulate_meta(
   seafloor,
   fishpop,
   nutrients_input,
-  fishpop_attributes,
+  fishpop_attr,
   seafloor_probs,
   seafloor_track,
   fishpop_track,
@@ -29,7 +29,7 @@ rcpp_simulate_meta(
 
 \item{nutrients_input}{List with amount of nutrient input each timestep.}
 
-\item{fishpop_attributes}{NumericMatrix with residence and reserves_thres values for each individual}
+\item{fishpop_attr}{NumericMatrix with residence and reserves_thres values for each individual}
 
 \item{seafloor_probs}{NumericMatrix with local ecosystems probabilities.}
 
@@ -80,3 +80,4 @@ In preparation. Mechanistic support for increased primary production around arti
 
 Add references about meta approach.
 }
+\keyword{internal}

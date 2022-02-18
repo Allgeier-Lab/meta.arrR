@@ -6,13 +6,13 @@
 \usage{
 setup_meta(
   n,
-  max_i,
-  dimensions,
-  grain = c(1, 1),
   reef = NULL,
   seafloor_xy = NULL,
+  dimensions,
+  grain = c(1, 1),
   starting_values,
   parameters,
+  max_i,
   random = 0,
   use_log = TRUE,
   verbose = TRUE,
@@ -22,19 +22,19 @@ setup_meta(
 \arguments{
 \item{n}{Integer with number of metaecosystems to setup.}
 
-\item{max_i}{Integer with maximum number of simulation time steps.}
+\item{reef}{2-Column matrix with coordinates of artificial reefs.}
+
+\item{seafloor_xy}{3-Column matrix with ID and x,y coordinates of local ecosystems.}
 
 \item{dimensions}{Vector with number of rows and columns (spatial dimensions).}
 
 \item{grain}{Vector with size of cells in x- and y-direction (spatial grain).}
 
-\item{reef}{2-Column matrix with coordinates of artificial reefs.}
-
-\item{seafloor_xy}{3-Column matrix with ID and x,y coordinates of local ecosystems.}
-
 \item{starting_values}{List with all starting value.}
 
 \item{parameters}{List with all parameters.}
+
+\item{max_i}{Integer with maximum number of simulation time steps.}
 
 \item{random}{Numeric to randomize input values by 0 = 0 percent to 1 = 100 percent.}
 

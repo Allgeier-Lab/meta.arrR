@@ -1,10 +1,11 @@
+// [[Rcpp::depends(arrR)]]
+
 #include <Rcpp.h>
+#include <arrR.h>
 
 #include "rcpp_move_meta.h"
-
 #include "rcpp_list_to_matrix.h"
 #include "rcpp_matrix_to_list.h"
-#include "rcpp_find.h"
 
 using namespace Rcpp;
 
@@ -15,7 +16,7 @@ using namespace Rcpp;
 //'
 //' @param fishpop List with fish population.
 //' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
-//' @param fishpop_attributes NumericMatrix with residence and reserves_thres values for each individual.
+//' @param fishpop_attr NumericMatrix with residence and reserves_thres values for each individual.
 //' @param extent NumericVector with spatial extent of the seafloor raster.
 //'
 //' @details
@@ -29,14 +30,14 @@ using namespace Rcpp;
 //' @aliases rcpp_move_meta
 //' @rdname rcpp_move_meta
 //'
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs,
-                          Rcpp::NumericMatrix fishpop_attributes, Rcpp::NumericVector extent) {
+                          Rcpp::NumericMatrix fishpop_attr, Rcpp::NumericVector extent) {
 
   // convert list to matrix
-  Rcpp::NumericMatrix fishpop_mat = rcpp_list_to_matrix(fishpop, fishpop_attributes.nrow(),
-                                                        TRUE);
+  Rcpp::NumericMatrix fishpop_mat = rcpp_list_to_matrix(fishpop, fishpop_attr.nrow(),
+                                                        true);
 
   // create vector with all possible meta ids
   Rcpp::IntegerVector meta_ids = Rcpp::seq(1, seafloor_probs.nrow());
@@ -45,10 +46,10 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
   for (int i = 0; i < fishpop_mat.nrow(); i++) {
 
     // get row id of current individual
-    int id_attr = rcpp_find(fishpop_mat(i, 0), fishpop_attributes(_, 0));
+    int id_attr = arrR::rcpp_which(fishpop_mat(i, 0), fishpop_attr(_, 0));
 
     // prob_move
-    double prob_move = fishpop_mat(i, 16) / fishpop_attributes(id_attr, 1);
+    double prob_move = fishpop_mat(i, 16) / fishpop_attr(id_attr, 2);
 
     // get random number between 0 and 1
     double prob_random = runif(1, 0.0, 1.0)(0);
@@ -95,6 +96,6 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
 
 /*** R
 rcpp_move_meta(fishpop = fishpop, seafloor_probs = seafloor_probs,
-               fishpop_attributes = metasyst$fishpop_attributes,
+               fishpop_attr = fishpop_attr,
                extent = extent)
 */

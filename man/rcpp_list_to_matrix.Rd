@@ -23,3 +23,4 @@ Rcpp list to matrix.
 Converts list with individuals within a local metaecosystem to one matrix. If
 \code{id = TRUE} a column identifying the metaecosystem is added.
 }
+\keyword{internal}

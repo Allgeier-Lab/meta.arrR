@@ -20,7 +20,7 @@ using namespace Rcpp;
 //' @aliases rcpp_get_table
 //' @rdname rcpp_get_table
 //'
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::IntegerVector rcpp_get_table(Rcpp::NumericVector x, int n) {
 

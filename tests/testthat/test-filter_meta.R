@@ -1,7 +1,7 @@
 
-nutr_filter <- filter_meta(x = nutrients_input, filter = c(50, 75))
+nutr_filter <- filter_meta(x = nutrients_input, as.integer(c(50, 75)))
 
-result_filter <- filter_meta(x = result_rand, filter = c(50, 75))
+result_filter <- filter_meta(x = result_rand, as.integer(c(50, 75)))
 
 test_that("filter_meta returns correct classes", {
 
@@ -18,6 +18,5 @@ test_that("filter_meta returns filters data", {
 
   expect_true(object = all(sapply(X = nutr_filter$values, FUN = function(i)
     all(range(i$timestep) == c(50, 75)))))
-
 
 })

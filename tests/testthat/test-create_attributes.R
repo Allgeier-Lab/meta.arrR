@@ -25,7 +25,7 @@ test_that("create_attributes has correct dimensions", {
   expect_equal(object = ncol(attributes_matrix), expected = 3)
 
   expect_equal(object = colnames(attributes_matrix),
-               expected = c("id", "residence", "reserves_thres"))
+               expected = c("id", "reserves_thres", "residence"))
 
 })
 

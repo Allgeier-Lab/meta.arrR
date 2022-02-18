@@ -219,7 +219,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
   # run model
   rcpp_simulate_meta(seafloor = seafloor_values, fishpop = fishpop_values, nutrients_input = nutrients_input_values,
-                     fishpop_attributes = metasyst$fishpop_attributes, seafloor_probs = seafloor_probs,
+                     fishpop_attr = metasyst$fishpop_attr, seafloor_probs = seafloor_probs,
                      seafloor_track = seafloor_track, fishpop_track = fishpop_track,
                      parameters = parameters, movement = movement,
                      extent = extent, dimensions = dimensions,
@@ -297,7 +297,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
   # combine result to list
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track, nutrients_input = nutrients_input,
-                 n = metasyst$n, movement = movement, fishpop_attributes = metasyst$fishpop_attributes,
+                 n = metasyst$n, movement = movement, fishpop_attr = metasyst$fishpop_attr,
                  parameters = parameters, starting_values = metasyst$starting_values,
                  extent = extent, grain = terra::res(metasyst$seafloor[[1]]), dimensions = dimensions,
                  max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,

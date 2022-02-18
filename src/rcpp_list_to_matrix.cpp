@@ -22,7 +22,7 @@ using namespace Rcpp;
 //' @aliases rcpp_list_to_matrix
 //' @rdname rcpp_list_to_matrix
 //'
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool id) {
 
@@ -91,10 +91,8 @@ Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool 
 
 /*** R
 fishpop <- lapply(metasyst$fishpop, function(i) as.matrix(i, xy = TRUE))
-
 rcpp_list_to_matrix(fishpop = fishpop, pop_n_sum = sum(metasyst$starting_values$pop_n),
                     id = TRUE)
-
 rcpp_list_to_matrix(fishpop = fishpop, pop_n_sum = sum(metasyst$starting_values$pop_n),
                     id = FALSE)
 */

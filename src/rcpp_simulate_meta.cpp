@@ -6,10 +6,8 @@
 #include <arrR.h>
 
 #include "rcpp_simulate_meta.h"
-
 #include "rcpp_list_to_matrix.h"
 #include "rcpp_move_meta.h"
-#include "rcpp_find.h"
 
 using namespace Rcpp;
 
@@ -20,7 +18,7 @@ using namespace Rcpp;
 //'
 //' @param seafloor,fishpop List with seafloor and fishpop data of metaecosystems.
 //' @param nutrients_input List with amount of nutrient input each timestep.
-//' @param fishpop_attributes NumericMatrix with residence and reserves_thres values for each individual
+//' @param fishpop_attr NumericMatrix with residence and reserves_thres values for each individual
 //' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 //' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
 //' @param parameters List with parameters.
@@ -58,10 +56,10 @@ using namespace Rcpp;
 //' @aliases rcpp_simulate_meta
 //' @rdname rcpp_simulate_meta
 //'
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutrients_input,
-                        Rcpp::NumericMatrix fishpop_attributes, Rcpp::NumericMatrix seafloor_probs,
+                        Rcpp::NumericMatrix fishpop_attr, Rcpp::NumericMatrix seafloor_probs,
                         Rcpp::List seafloor_track, Rcpp::List fishpop_track,
                         Rcpp::List parameters, Rcpp::String movement,
                         Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions,
@@ -72,7 +70,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
 
   // init flag for movement across metasystem
   bool flag_move = (as<double>(parameters["move_residence"]) > 0.0) &&
-    (fishpop_attributes.nrow() > 0);
+    (fishpop_attr.nrow() > 0);
 
   // flag if diffusion needs to be run
   bool flag_diffuse = (as<double>(parameters["nutrients_diffusion"]) > 0.0) ||
@@ -90,7 +88,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
   // init seafloor related objects //
 
   // init list for coords_reef
-  Rcpp::List coords_reef (seafloor.length());
+  Rcpp::List coords_reef(seafloor.length());
 
   // get reef coords for each ecosystem
   for (int i = 0; i < seafloor.length(); i++) {
@@ -109,15 +107,15 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
   double max_dist = 0.0;
 
   // calculate maximum movement distance
-  if (fishpop_attributes.nrow() > 0) {
+  if (fishpop_attr.nrow() > 0) {
 
     max_dist = arrR::rcpp_get_max_dist(movement, parameters, 1000000);
 
   }
 
   // get matrix with inital values
-  Rcpp::NumericMatrix fishpop_start = rcpp_list_to_matrix(fishpop, fishpop_attributes.nrow(),
-                                                          FALSE);
+  Rcpp::NumericMatrix fishpop_start = rcpp_list_to_matrix(fishpop, fishpop_attr.nrow(),
+                                                          false);
 
   // init various //
 
@@ -149,7 +147,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
     // check if individuals move between meta systems
     if (flag_move) {
 
-      fishpop = rcpp_move_meta(fishpop, seafloor_probs, fishpop_attributes, extent);
+      fishpop = rcpp_move_meta(fishpop, seafloor_probs, fishpop_attr, extent);
 
     }
 
@@ -200,20 +198,15 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
       // fish individuals are present and i above burn_in
       if ((i > burn_in) && (pop_n_temp > 0)) {
 
-        // init vector for reserves of individuals
-        Rcpp::NumericVector pop_reserves_thres_temp (pop_n_temp);
-
         // creating final matrix
-        Rcpp::NumericMatrix fishpop_start_temp (pop_n_temp, as<Rcpp::NumericMatrix>(fishpop[j]).ncol());
+        Rcpp::NumericMatrix fishpop_start_temp(pop_n_temp, as<Rcpp::NumericMatrix>(fishpop[j]).ncol());
 
         // loop through all individuals
         for (int k = 0; k < pop_n_temp; k++) {
 
-          // get row id of current individual. Same id for fishpop_attributes & fishpop_start
-          int id_temp = rcpp_find(as<Rcpp::NumericMatrix>(fishpop[j])(k, 0), fishpop_attributes(_, 0));
-
-          // fill pop_reserves_thres vector for movement
-          pop_reserves_thres_temp(k) = fishpop_attributes(id_temp, 2);
+          // get row id of current individual. Same id for fishpop_attr & fishpop_start
+          int id_temp = arrR::rcpp_which(as<Rcpp::NumericMatrix>(fishpop[j])(k, 0),
+                                         fishpop_attr(_, 0));
 
           // fill matrix with inital fishpop values for reincarnation
           fishpop_start_temp(k, _) = fishpop_start(id_temp, _);
@@ -221,7 +214,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
         }
 
         // calculate new coordinates and activity
-        arrR::rcpp_move_wrap(fishpop[j], pop_reserves_thres_temp, movement,
+        arrR::rcpp_move_wrap(fishpop[j], fishpop_attr, movement,
                              parameters["move_mean"], parameters["move_var"],
                              parameters["move_reef"], parameters["move_border"],
                              parameters["move_return"], max_dist, coords_reef[j],
@@ -282,14 +275,3 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
 
   }
 }
-
-/*** R
-rcpp_simulate_meta(seafloor = seafloor_values, fishpop = fishpop_values, nutrients_input = nutrients_input_values,
-                   fishpop_attributes = metasyst$fishpop_attributes, seafloor_probs = seafloor_probs,
-                   seafloor_track = seafloor_track, fishpop_track = fishpop_track,
-                   parameters = parameters, movement = movement,
-                   extent = extent, dimensions = dimensions,
-                   max_i = max_i, min_per_i = min_per_i, save_each = save_each,
-                   seagrass_each = seagrass_each, burn_in = burn_in,
-                   verbose = verbose)
-*/

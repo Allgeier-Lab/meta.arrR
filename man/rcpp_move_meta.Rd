@@ -4,14 +4,14 @@
 \alias{rcpp_move_meta}
 \title{rcpp_move_meta}
 \usage{
-rcpp_move_meta(fishpop, seafloor_probs, fishpop_attributes, extent)
+rcpp_move_meta(fishpop, seafloor_probs, fishpop_attr, extent)
 }
 \arguments{
 \item{fishpop}{List with fish population.}
 
 \item{seafloor_probs}{NumericMatrix with local ecosystems probabilities.}
 
-\item{fishpop_attributes}{NumericMatrix with residence and reserves_thres values for each individual.}
+\item{fishpop_attr}{NumericMatrix with residence and reserves_thres values for each individual.}
 
 \item{extent}{NumericVector with spatial extent of the seafloor raster.}
 }
@@ -27,3 +27,4 @@ metaecosystem with a certain probability each timestep. The probability increase
 depending on the residence value and how long individuals already stayed on local
 metaecosystem. To avoid this movement set \code{parameters$move_residence <= 0}.
 }
+\keyword{internal}

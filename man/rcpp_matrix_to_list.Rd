@@ -20,3 +20,4 @@ Rcpp matrix to list.
 \details{
 Converts fish population matrix to a list split by metaecosystems.
 }
+\keyword{internal}
