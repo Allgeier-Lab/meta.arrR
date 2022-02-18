@@ -36,18 +36,22 @@ parameters <- meta.arrR::meta.arrR_parameters
 min_per_i <- 120
 
 # run the model for n years
-years <- 1
+years <- 10
 max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every m days
-days <- 5
+days <- 50 # which((max_i %% ((24 / (min_per_i / 60)) * 1:365)) == 0)
 save_each <- (24 / (min_per_i / 60)) * days
 
-n <- 5
+n <- 9
 
-starting_values$pop_n <- rep(x = 5, n = n)
+# starting_values$pop_n <- rep(x = 5, n = n)
 
-parameters$move_residence <- max_i / (5 * 4)
+days <- 15
+parameters$move_residence <- (24 / (min_per_i / 60)) * days
+# parameters$move_residence_var <- 0.5
+
+parameters$move_lambda <- 0
 ```
 
 ### 2. Setup simulation enviroment
@@ -56,6 +60,14 @@ parameters$move_residence <- max_i / (5 * 4)
 # create 5 reef cells in center of seafloor
 reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
                       ncol = 2, byrow = TRUE)
+
+seafloor_xy <- cbind(id = 1:n, expand.grid(seq(from = -0.75, to = 0.75, length.out = 3),
+                                           seq(from = -0.75, to = 0.75, length.out = 3)))
+
+# seafloor_xy <- cbind(id = 1:n, x = c(runif(n = 8, min = -1, max = 0), 
+#                                      runif(n = 1, min = 0.75, max = 1)), 
+#                      y = c(runif(n = 8, min = -1, max = 0), 
+#                            runif(n = 1, min = 0.75, max = 1)))
 
 # setup extent and grain
 dimensions <- c(50, 50)
@@ -70,17 +82,20 @@ starting_values$nutrients_pool <- stable_vals$nutrients_pool
 
 starting_values$detritus_pool <- stable_vals$detritus_pool
 
-metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain, 
-                       reef = reef_matrix, starting_values = starting_values, parameters = parameters)
+metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL, 
+                       dimensions = dimensions, grain = grain, max_i = max_i,
+                       starting_values = starting_values, parameters = parameters)
 
-nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_pool,
-                                  freq_mn = 5, variability = 0.1)
+plot(metasyst, lambda = parameters$move_lambda)
+
+nutrients_input <- sim_nutr_input(n = n, max_i = max_i, seagrass_each = seagrass_each, 
+                                  input_mn = stable_vals$nutrients_pool, freq_mn = 5)
 ```
 
-```{r run_model}
+```{r run_model, eval = FALSE}
 result <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_input,
                               parameters = parameters, movement = "rand",
-                              max_i = max_i, save_each = max_i, min_per_i = min_per_i)
+                              max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 ```
 
 ### 3. Analyze results
@@ -90,5 +105,7 @@ plot(result, what = "seafloor")
 
 plot_local_abund(result)
 
-get_abundance(result)
+get_abundance(result) %>% 
+  dplyr::group_by(meta) %>% 
+  dplyr::summarise(abundance = mean(abundance))
 ```
