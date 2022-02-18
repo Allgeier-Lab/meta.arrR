@@ -11,7 +11,6 @@
 #' @param limits Vector with minium and maximum value of \code{fill} values.
 #' @param burn_in If TRUE, line to indicate burn-in time is plotted.
 #' @param viridis_option Character with \code{viridis} color palette.
-#' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
 #' @details
@@ -32,7 +31,7 @@
 #'
 #' @export
 plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_biomass", gamma = FALSE,
-                         limits = NULL, burn_in = FALSE, base_size = 10, viridis_option = "C", ...) {
+                         limits = NULL, burn_in = FALSE, viridis_option = "C", ...) {
 
   if (!what %in% c("seafloor", "fishpop")) {
 
@@ -135,9 +134,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
       ggplot2::labs(x = "Timestep", y = y_labels[1]) +
-      ggplot2::theme_classic(base_size = base_size) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                     legend.position = "bottom")
+      ggplot2::theme_classic() +
+      ggplot2::theme(legend.position = "bottom")
 
     # create plot
     gg_top_right <- ggplot2::ggplot(data = result_aggr) +
@@ -147,8 +145,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[2]) +
-      ggplot2::theme_classic(base_size = base_size) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+      ggplot2::theme_classic()
 
     # create plot
     gg_bottom_left <- ggplot2::ggplot(data = result_aggr) +
@@ -158,8 +155,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[3]) +
-      ggplot2::theme_classic(base_size = base_size) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+      ggplot2::theme_classic()
 
     # create plot
     gg_bottom_right <- ggplot2::ggplot(data = result_aggr) +
@@ -169,8 +165,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[4]) +
-      ggplot2::theme_classic(base_size = base_size) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+      ggplot2::theme_classic()
 
     legend_top_left <- cowplot::get_legend(gg_top_left)
 
@@ -182,7 +177,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
     # now add the title
     title <- cowplot::ggdraw() +
-      cowplot::draw_label(label = plot_title, x = 0, hjust = 0, size = base_size) +
+      cowplot::draw_label(label = plot_title, x = 0, hjust = 0) +
       ggplot2::theme(plot.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 1, "cm"))
 
     # combine to one grid
@@ -229,9 +224,8 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
                                       name = fill) +
         ggplot2::coord_equal() +
         ggplot2::labs(x = "", y = "", title = title) +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                       legend.position = "bottom", legend.key.width = ggplot2::unit(10, 'mm'))
+        ggplot2::theme_classic() +
+        ggplot2::theme(legend.position = "bottom", legend.key.width = ggplot2::unit(10, 'mm'))
 
     } else if (what == "fishpop") {
 
@@ -241,7 +235,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       # get reef matrix
       coords_reef <- lapply(X = x$seafloor, FUN = function(i) {
 
-        arrR::rcpp_get_reef(as.matrix(i[i$timestep == 0, -18]))
+        arrR:::rcpp_get_reef(as.matrix(i[i$timestep == 0, -18]))
 
       })
 
@@ -272,8 +266,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
                                       name = "Density") +
         ggplot2::coord_equal() +
         ggplot2::labs(x = "", y = "", title = title) +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+        ggplot2::theme_classic()
     }
   }
 

@@ -6,7 +6,6 @@
 #' @param x \code{nutr_input} object simulated with \code{sim_nutr_input_*}.
 #' @param alpha,gamma Logical if TRUE alpha and/or gamma are plotted.
 #' @param viridis_option Character with option of viridis color option.
-#' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
 #' @details
@@ -26,8 +25,7 @@
 #' @importFrom rlang .data
 #'
 #' @export
-plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
-                            base_size = 10, viridis_option = "C", ...) {
+plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, viridis_option = "C", ...) {
 
   # check if both are FALSE
   if (!alpha && !gamma) {
@@ -79,9 +77,8 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE,
                                     color = .data$Meta)) +
     ggplot2::geom_hline(yintercept = 0, color = "darkgrey", linetype = 2) +
     ggplot2::labs(x = "Timestep", y = "Nutrient input [g/cell]") +
-    ggplot2::theme_classic(base_size = base_size) +
-    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                   legend.position = "bottom") +
+    ggplot2::theme_classic() +
+    ggplot2::theme(legend.position = "bottom") +
     ggplot2::facet_wrap(. ~ .data$Facet, ncol = 1, scales = "free_y") +
     ggplot2::scale_color_manual(name = "", values = col_viridis) +
     ggplot2::theme(strip.background = ggplot2::element_blank(),

@@ -12,7 +12,6 @@
   gamma = FALSE,
   limits = NULL,
   burn_in = FALSE,
-  base_size = 10,
   viridis_option = "C",
   ...
 )
@@ -31,8 +30,6 @@
 \item{limits}{Vector with minium and maximum value of \code{fill} values.}
 
 \item{burn_in}{If TRUE, line to indicate burn-in time is plotted.}
-
-\item{base_size}{Numeric to specify base font size.}
 
 \item{viridis_option}{Character with \code{viridis} color palette.}
 

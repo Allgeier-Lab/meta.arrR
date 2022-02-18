@@ -4,7 +4,7 @@
 #' Plot local abundance.
 #'
 #' @param result \code{meta_rn} object simulated with \code{run_simulation_meta}.
-#' @param base_size Numeric to specify base font size.
+#' @param viridis_option Character with option of viridis color option.
 #'
 #' @details
 #' The resulting plot describes the number of individuals within each local metaecosystem
@@ -24,7 +24,7 @@
 #' @importFrom rlang .data
 #'
 #' @export
-plot_local_abund <- function(result, base_size = 10) {
+plot_local_abund <- function(result, viridis_option = "C") {
 
   # get abundance of all metaecosystems
   abundance <- get_abundance(result = result)
@@ -57,14 +57,13 @@ plot_local_abund <- function(result, base_size = 10) {
     ggplot2::geom_path(ggplot2::aes(x = .data$timestep, y = .data$abundance,
                                     col = factor(.data$meta)),
                        alpha = 1/3) +
-    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "D") +
+    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = viridis_option) +
     ggplot2::scale_linetype_manual(name = "", values = c("Min" = 2, "Max" = 2, "Mean" = 1)) +
     ggplot2::scale_y_continuous(limits = c(0, abundance_max + abundance_min),
                                 breaks = 0:(abundance_max + abundance_min)) +
     ggplot2::labs(x = "Timestep", y = "Local abundance", title = title) +
-    ggplot2::theme_classic(base_size = base_size) +
-    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                   legend.position = "bottom")
+    ggplot2::theme_classic() +
+    ggplot2::theme(legend.position = "bottom")
 
   return(gg_input)
 

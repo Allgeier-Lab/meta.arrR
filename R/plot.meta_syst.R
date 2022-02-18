@@ -5,7 +5,6 @@
 #'
 #' @param x \code{meta_syst} object simulated with \code{setup_meta}.
 #' @param lambda Distance decay parameter.
-#' @param base_size Numeric to specify base font size.
 #' @param viridis_option Character with \code{viridis} color palette.
 #' @param ... Not used.
 #'
@@ -25,7 +24,7 @@
 #' @importFrom rlang .data
 #'
 #' @export
-plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", ...) {
+plot.meta_syst <- function(x, lambda = 1, viridis_option = "C", ...) {
 
   # create data.frame with polygon coordinates
   poly_xy <- data.frame(x = c(-1, 1, 1, -1), y = c(-1, -1, 1, 1))
@@ -64,7 +63,7 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
     ggplot2::coord_equal() +
     ggplot2::scale_color_manual(name = "Ecosystem", values = col_viridis) +
     ggplot2::labs(x = "x coordinate", y = "y coordinate") +
-    ggplot2::theme_void(base_size = base_size) +
+    ggplot2::theme_void() +
     ggplot2::theme(legend.position = "bottom", axis.title = ggplot2::element_text(),
                    axis.title.y = ggplot2::element_text(angle = 90))
 
@@ -78,7 +77,7 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
                          colors = viridis::viridis(n = 255, option = viridis_option),
                          na.value = "white") +
     ggplot2::labs(x = "Ecosystem origin", y = "Ecosystem reach") +
-    ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::theme_classic() +
     ggplot2::theme(legend.position = "bottom")
 
   gg_function <- ggplot2::ggplot(data = local_prob) +
@@ -90,7 +89,7 @@ plot.meta_syst <- function(x, lambda = 1, base_size = 10, viridis_option = "C", 
     ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 3, by = 0.5), limits = c(0, 3)) +
     ggplot2::scale_y_continuous(limits = c(0, 1)) +
     ggplot2::labs(x = "Distance", y = "Probability") +
-    ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::theme_classic() +
     ggplot2::theme(legend.position = "bottom")
 
   # combine to one grid

@@ -4,14 +4,12 @@
 \alias{plot_meta_production}
 \title{plot_meta_production}
 \usage{
-plot_meta_production(result, lag = c(FALSE, TRUE), base_size = 10)
+plot_meta_production(result, lag = c(FALSE, TRUE))
 }
 \arguments{
 \item{result}{\code{meta_rn} object simulated with \code{run_simulation_meta}.}
 
 \item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
-
-\item{base_size}{Numeric to specify base font size.}
 }
 \value{
 ggplot
