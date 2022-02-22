@@ -43,6 +43,9 @@ max_i <- (60 * 24 * 365 * years) / min_per_i
 days <- 50 # which((max_i %% ((24 / (min_per_i / 60)) * 1:365)) == 0)
 save_each <- (24 / (min_per_i / 60)) * days
 
+days <- 1
+seagrass_each <- (24 / (min_per_i / 60)) * days
+
 n <- 9
 
 # starting_values$pop_n <- rep(x = 5, n = n)
