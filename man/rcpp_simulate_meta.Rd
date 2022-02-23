@@ -75,9 +75,6 @@ For a detailed description of all sub-processes (with exception of (i)), see the
 \pkg{arrR} package.
 }
 \references{
-For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
-In preparation. Mechanistic support for increased primary production around artificial reefs.
-
-Add references about meta approach.
+Add references
 }
 \keyword{internal}

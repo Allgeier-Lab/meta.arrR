@@ -46,10 +46,7 @@ using namespace Rcpp;
 //' \pkg{arrR} package.
 //'
 //' @references
-//' For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
-//' In preparation. Mechanistic support for increased primary production around artificial reefs.
-//'
-//' Add references about meta approach.
+//' Add references
 //'
 //' @return void
 //'
@@ -68,18 +65,29 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
 
   // init all flags to run processes //
 
+  // init flag if fish are present
+  bool flag_fish = fishpop_attr.nrow() > 0;
+
   // init flag for movement across metasystem
-  bool flag_move = (as<double>(parameters["move_residence"]) > 0.0) &&
-    (fishpop_attr.nrow() > 0);
+  bool flag_move = (as<double>(parameters["move_residence"]) > 0.0) && flag_fish;
 
   // flag if diffusion needs to be run
   bool flag_diffuse = (as<double>(parameters["nutrients_diffusion"]) > 0.0) ||
     (as<double>(parameters["detritus_diffusion"]) > 0.0) ||
     (as<double>(parameters["detritus_fish_diffusion"])) > 0.0;
 
+  // vector to store sum of nutrient inputs for flag
+  Rcpp::NumericVector nutr_sum (nutrients_input.length());
+
+  // loop and sum all nutrient inputs
+  for (int i = 0; i < nutr_sum.length(); i++) {
+
+    nutr_sum(i) = Rcpp::sum(as<Rcpp::NumericVector>(nutrients_input[i]));
+
+  }
+
   // flag if nutrient input is present
-  // MH: nutrients_input is a list and not a vector!
-  // bool flag_input = Rcpp::sum(nutrients_input) > 0.0;
+  bool flag_input = Rcpp::sum(nutr_sum) > 0.0;
 
   // flag if nutrient output needs to be run
   bool flag_output = (as<double>(parameters["nutrients_loss"]) > 0.0) ||
@@ -107,7 +115,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
   double max_dist = 0.0;
 
   // calculate maximum movement distance
-  if (fishpop_attr.nrow() > 0) {
+  if (flag_fish) {
 
     max_dist = arrR::rcpp_get_max_dist(movement, parameters, 1000000);
 
@@ -145,7 +153,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
     }
 
     // check if individuals move between meta systems
-    if (flag_move) {
+    if (flag_move && (i > burn_in)) {
 
       fishpop = rcpp_move_meta(fishpop, seafloor_probs, fishpop_attr, extent);
 
@@ -157,18 +165,22 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
       // simulate seagrass only each seagrass_each iterations
       if ((i % seagrass_each) == 0) {
 
-        // calculate counter for nutrient input vector
-        int i_temp = (i / seagrass_each) - 1;
+        // nutrient input present
+        if (flag_input) {
 
-        // get current nutrients input
-        Rcpp::NumericVector nutrients_input_temp = nutrients_input(j);
+          // calculate counter for nutrient input vector
+          int i_temp = (i / seagrass_each) - 1;
 
-        // simulate nutrient input if present
-        if (nutrients_input_temp(i_temp) > 0.0) {
+          // get current nutrients input
+          Rcpp::NumericVector nutrients_input_temp = nutrients_input[j];
 
-          // simulate nutrient input
-          arrR::rcpp_nutr_input(seafloor[j], nutrients_input_temp(i_temp));
+          // simulate nutrient input if present at current timestep
+          if (nutrients_input_temp(i_temp) > 0.0) {
 
+            // simulate nutrient input
+            arrR::rcpp_nutr_input(seafloor[j], nutrients_input_temp(i_temp));
+
+          }
         }
 
         // simulate seagrass growth
@@ -185,58 +197,62 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
 
       }
 
-      // get current number of individuals
-      int pop_n_temp = as<Rcpp::NumericMatrix>(fishpop[j]).nrow();
+      // run if fish are present
+      if (flag_fish) {
 
-      // if set pop_n_temp to zero if row is actually NA
-      if ((pop_n_temp == 1) && (NumericVector::is_na(as<Rcpp::NumericMatrix>(fishpop[j])(0,0)))) {
+        // get current number of individuals
+        int pop_n_temp = as<Rcpp::NumericMatrix>(fishpop[j]).nrow();
 
-        pop_n_temp = 0;
+        // if set pop_n_temp to zero if row is actually NA
+        if ((pop_n_temp == 1) && (NumericVector::is_na(as<Rcpp::NumericMatrix>(fishpop[j])(0,0)))) {
 
-      }
-
-      // fish individuals are present and i above burn_in
-      if ((i > burn_in) && (pop_n_temp > 0)) {
-
-        // creating final matrix
-        Rcpp::NumericMatrix fishpop_start_temp(pop_n_temp, as<Rcpp::NumericMatrix>(fishpop[j]).ncol());
-
-        // loop through all individuals
-        for (int k = 0; k < pop_n_temp; k++) {
-
-          // get row id of current individual. Same id for fishpop_attr & fishpop_start
-          int id_temp = arrR::rcpp_which(as<Rcpp::NumericMatrix>(fishpop[j])(k, 0),
-                                         fishpop_attr(_, 0));
-
-          // fill matrix with inital fishpop values for reincarnation
-          fishpop_start_temp(k, _) = fishpop_start(id_temp, _);
+          pop_n_temp = 0;
 
         }
 
-        // calculate new coordinates and activity
-        arrR::rcpp_move_wrap(fishpop[j], fishpop_attr, movement,
-                             parameters["move_mean"], parameters["move_var"],
-                             parameters["move_reef"], parameters["move_border"],
-                             parameters["move_return"], max_dist, coords_reef[j],
-                             extent, dimensions);
+        // fish individuals are present and i above burn_in
+        if ((i > burn_in) && (pop_n_temp > 0)) {
 
-        // simulate fish respiration (26°C is mean water temperature in the Bahamas)
-        arrR::rcpp_respiration(fishpop[j], parameters["resp_intercept"], parameters["resp_slope"],
-                               parameters["resp_temp_low"], parameters["resp_temp_max"],
-                               parameters["resp_temp_optm"], 26.0, min_per_i);
+          // creating final matrix
+          Rcpp::NumericMatrix fishpop_start_temp(pop_n_temp, as<Rcpp::NumericMatrix>(fishpop[j]).ncol());
 
-        // simulate fishpop growth and including change of seafloor pools
-        arrR::rcpp_fishpop_growth(fishpop[j], fishpop_start_temp, seafloor[j],
-                                  parameters["pop_k"], parameters["pop_linf"],
-                                  parameters["pop_a"], parameters["pop_b"],
-                                  parameters["pop_n_body"], parameters["pop_reserves_max"],
-                                  parameters["pop_reserves_consump"], extent, dimensions, min_per_i);
+          // loop through all individuals
+          for (int k = 0; k < pop_n_temp; k++) {
 
-        // simulate mortality
-        arrR::rcpp_mortality(fishpop[j], fishpop_start_temp, seafloor[j],
-                             parameters["pop_linf"], parameters["pop_n_body"],
-                             parameters["pop_reserves_max"], extent, dimensions);
+            // get row id of current individual. Same id for fishpop_attr & fishpop_start
+            int id_temp = arrR::rcpp_which(as<Rcpp::NumericMatrix>(fishpop[j])(k, 0),
+                                           fishpop_attr(_, 0));
 
+            // fill matrix with inital fishpop values for reincarnation
+            fishpop_start_temp(k, _) = fishpop_start(id_temp, _);
+
+          }
+
+          // calculate new coordinates and activity
+          arrR::rcpp_move_wrap(fishpop[j], fishpop_attr, movement,
+                               parameters["move_mean"], parameters["move_var"],
+                               parameters["move_reef"], parameters["move_border"],
+                               parameters["move_return"], max_dist, coords_reef[j],
+                               extent, dimensions);
+
+          // simulate fish respiration (26°C is mean water temperature in the Bahamas)
+          arrR::rcpp_respiration(fishpop[j], parameters["resp_intercept"], parameters["resp_slope"],
+                                 parameters["resp_temp_low"], parameters["resp_temp_max"],
+                                 parameters["resp_temp_optm"], 26.0, min_per_i);
+
+          // simulate fishpop growth and including change of seafloor pools
+          arrR::rcpp_fishpop_growth(fishpop[j], fishpop_start_temp, seafloor[j],
+                                    parameters["pop_k"], parameters["pop_linf"],
+                                    parameters["pop_a"], parameters["pop_b"],
+                                    parameters["pop_n_body"], parameters["pop_reserves_max"],
+                                    parameters["pop_reserves_consump"], extent, dimensions, min_per_i);
+
+          // simulate mortality
+          arrR::rcpp_mortality(fishpop[j], fishpop_start_temp, seafloor[j],
+                               parameters["pop_linf"], parameters["pop_n_body"],
+                               parameters["pop_reserves_max"], extent, dimensions);
+
+        }
       }
 
       // simulate seagrass only each seagrass_each iterations

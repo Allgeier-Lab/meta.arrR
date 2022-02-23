@@ -127,10 +127,7 @@ rcpp_move_meta <- function(fishpop, seafloor_probs, fishpop_attr, extent) {
 #' \pkg{arrR} package.
 #'
 #' @references
-#' For a detailed model description, see Esquivel, K., Hesselbarth, M.H.K., Allgeier, J.E.
-#' In preparation. Mechanistic support for increased primary production around artificial reefs.
-#'
-#' Add references about meta approach.
+#' Add references
 #'
 #' @return void
 #'
