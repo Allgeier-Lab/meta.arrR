@@ -40,21 +40,20 @@ years <- 10
 max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every m days
-days <- 50 # which((max_i %% ((24 / (min_per_i / 60)) * 1:365)) == 0)
+days <- 365 # which((max_i %% ((24 / (min_per_i / 60)) * 1:365)) == 0)
 save_each <- (24 / (min_per_i / 60)) * days
 
 days <- 1
 seagrass_each <- (24 / (min_per_i / 60)) * days
 
-n <- 9
-
-# starting_values$pop_n <- rep(x = 5, n = n)
+n <- 3
 
 days <- 15
 parameters$move_residence <- (24 / (min_per_i / 60)) * days
-# parameters$move_residence_var <- 0.5
-
+parameters$move_residence_var <- 0.05
 parameters$move_lambda <- 0
+
+parameters$seagrass_thres <- -1/4
 ```
 
 ### 2. Setup simulation enviroment
@@ -64,16 +63,8 @@ parameters$move_lambda <- 0
 reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
                       ncol = 2, byrow = TRUE)
 
-seafloor_xy <- cbind(id = 1:n, expand.grid(seq(from = -0.75, to = 0.75, length.out = 3),
-                                           seq(from = -0.75, to = 0.75, length.out = 3)))
-
-# seafloor_xy <- cbind(id = 1:n, x = c(runif(n = 8, min = -1, max = 0), 
-#                                      runif(n = 1, min = 0.75, max = 1)), 
-#                      y = c(runif(n = 8, min = -1, max = 0), 
-#                            runif(n = 1, min = 0.75, max = 1)))
-
 # setup extent and grain
-dimensions <- c(50, 50)
+dimensions <- c(100, 100)
 
 grain <- c(1, 1)
 
@@ -89,15 +80,15 @@ metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL,
                        dimensions = dimensions, grain = grain, max_i = max_i,
                        starting_values = starting_values, parameters = parameters)
 
-plot(metasyst, lambda = parameters$move_lambda)
+plot(metasyst)
 
-nutrients_input <- sim_nutr_input(n = n, max_i = max_i, seagrass_each = seagrass_each, 
-                                  input_mn = stable_vals$nutrients_pool, freq_mn = 5)
+nutrients_input <- 0.0 # sim_nutr_input(n = n, max_i = max_i, seagrass_each = seagrass_each, 
+# input_mn = stable_vals$nutrients_pool, freq_mn = 5)
 ```
 
 ```{r run_model, eval = FALSE}
 result <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_input,
-                              parameters = parameters, movement = "rand",
+                              parameters = parameters, movement = "attr",
                               max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 ```
 

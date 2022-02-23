@@ -19,14 +19,14 @@ meta.arrR_parameters <- list(
   # seagrass
   seagrass_thres = 1/2,
   seagrass_slope = 2.0,
-  seagrass_slough = 0.001,
+  seagrass_slough = 0.0001,
 
   # nutrients
   nutrients_diffusion = 2/3,
   nutrients_loss = 0.0,
 
   # detritus
-  detritus_mineralization = 0.001,
+  detritus_mineralization = 0.0001,
   detritus_diffusion = 1/3,
   detritus_fish_decomp = 0.5,
   detritus_fish_diffusion = 1/3,
@@ -50,9 +50,9 @@ meta.arrR_parameters <- list(
   pop_n_body = 0.02999,
 
   # fishpop reserves
-  pop_reserves_max = 0.5,
-  pop_reserves_thres_lo = 0.5,
-  pop_reserves_thres_hi = 0.5,
+  pop_reserves_max = 0.1,
+  pop_reserves_thres_lo = 0.0,
+  pop_reserves_thres_hi = 0.0,
   pop_reserves_consump = 1.0,
 
   # fishpop respiration
