@@ -4,7 +4,6 @@
 #' Plotting method for meta_syst object.
 #'
 #' @param x \code{meta_syst} object simulated with \code{setup_meta}.
-#' @param lambda Distance decay parameter.
 #' @param viridis_option Character with \code{viridis} color palette.
 #' @param ... Not used.
 #'
@@ -24,7 +23,7 @@
 #' @importFrom rlang .data
 #'
 #' @export
-plot.meta_syst <- function(x, lambda = 1, viridis_option = "C", ...) {
+plot.meta_syst <- function(x, viridis_option = "C", ...) {
 
   # create data.frame with polygon coordinates
   poly_xy <- data.frame(x = c(-1, 1, 1, -1), y = c(-1, -1, 1, 1))
@@ -33,10 +32,11 @@ plot.meta_syst <- function(x, lambda = 1, viridis_option = "C", ...) {
   local_xy <- as.data.frame(x$seafloor_xy)
 
   # calculate probabilities
-  local_prob <- calc_probability(metasyst = x, lambda = lambda, full = FALSE)
+  prob_dist <- calc_probability(metasyst = x, lambda = x$parameters$move_lambda,
+                                full = FALSE, dist = TRUE)
 
   # add id col for reshaping
-  local_prob <- data.frame(id_origin = 1:x$n, id_reach = local_prob)
+  local_prob <- data.frame(id_origin = 1:x$n, id_reach = prob_dist$probs)
 
   # reshape long
   local_prob <- stats::reshape(data = local_prob, direction = "long",
@@ -44,8 +44,11 @@ plot.meta_syst <- function(x, lambda = 1, viridis_option = "C", ...) {
                                idvar = "id_origin", ids = local_prob[, 1], timevar = "id_reach",
                                times = 1:x$n, new.row.names = seq(from = 1, to = x$n ^ 2))
 
-  # back-calculate distance
-  local_prob$distance <- -log(local_prob$probability) / lambda
+  # add distance vector
+  local_prob$distance <- as.vector(prob_dist$dist)
+
+  # use only complete cases
+  local_prob <- local_prob[stats::complete.cases(local_prob), ]
 
   # create color scale
   col_viridis <- viridis::viridis(n = x$n, option = viridis_option)
@@ -86,7 +89,7 @@ plot.meta_syst <- function(x, lambda = 1, viridis_option = "C", ...) {
     ggplot2::geom_point(ggplot2::aes(x = .data$distance, y = .data$probability,
                                      col = factor(.data$id_origin)), shape = 1, size = 2) +
     ggplot2::scale_color_manual(name = "Ecoystem", values = col_viridis) +
-    ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 3, by = 0.5), limits = c(0, 3)) +
+    ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 3, by = 0.5), limits = c(0, 3)) + # 2.828427m is diagonal dist
     ggplot2::scale_y_continuous(limits = c(0, 1)) +
     ggplot2::labs(x = "Distance", y = "Probability") +
     ggplot2::theme_classic() +

@@ -7,11 +7,15 @@
 #' @param lambda Distance decay parameter.
 #' @param diag_value Numeric with value to be used on diagonal.
 #' @param full Logical if full matrix should be returned.
+#' @param dist Logical if TRUE list is returned.
 #'
 #' @details
 #' Calculate probability matrix for local ecosystems based on distances between them
 #' using a negative exponential function I = exp(-d*lambda). If \code{lambda=0},
 #' movement across metaecosystems is random.
+#'
+#' If code{dist=TRUE}, a list with the probabilities and the distance between local
+#' ecosystems is returned.
 #'
 #' @references
 #' https://en.wikipedia.org/wiki/Exponential_decay
@@ -32,7 +36,7 @@
 #' @rdname calc_probability
 #'
 #' @export
-calc_probability <- function(metasyst, lambda = 1, diag_value = NA, full = TRUE) {
+calc_probability <- function(metasyst, lambda = 1, diag_value = NA, full = TRUE, dist = FALSE) {
 
   if (!inherits(x = metasyst, what = "meta_syst")) stop("Please provide 'meta_syst' object.", call. = FALSE)
 
@@ -49,6 +53,13 @@ calc_probability <- function(metasyst, lambda = 1, diag_value = NA, full = TRUE)
   # set lower tri to NA
   if (!full) local_prob[upper.tri(local_prob)] <- NA
 
-  return(local_prob)
+  if (dist) {
 
+    return(list(probs = local_prob, dist = local_dist))
+
+  } else {
+
+    return(local_prob)
+
+  }
 }

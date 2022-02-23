@@ -4,7 +4,13 @@
 \alias{calc_probability}
 \title{calc_probability}
 \usage{
-calc_probability(metasyst, lambda = 1, diag_value = NA, full = TRUE)
+calc_probability(
+  metasyst,
+  lambda = 1,
+  diag_value = NA,
+  full = TRUE,
+  dist = FALSE
+)
 }
 \arguments{
 \item{metasyst}{\code{meta_syst} object simulated with \code{setup_meta}.}
@@ -14,6 +20,8 @@ calc_probability(metasyst, lambda = 1, diag_value = NA, full = TRUE)
 \item{diag_value}{Numeric with value to be used on diagonal.}
 
 \item{full}{Logical if full matrix should be returned.}
+
+\item{dist}{Logical if TRUE list is returned.}
 }
 \value{
 matrix
@@ -25,6 +33,9 @@ Calculate probability
 Calculate probability matrix for local ecosystems based on distances between them
 using a negative exponential function I = exp(-d*lambda). If \code{lambda=0},
 movement across metaecosystems is random.
+
+If code{dist=TRUE}, a list with the probabilities and the distance between local
+ecosystems is returned.
 }
 \examples{
 \dontrun{
