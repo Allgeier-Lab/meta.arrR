@@ -153,11 +153,11 @@ sim_nutr_input <- function(n, max_i, seagrass_each = 1, input_mn, freq_mn, varia
   }
 
   # set names
-  names(values_input) <- paste0("Meta_", 1:n)
+  names(values_input) <- paste0("meta_", 1:n)
 
-  names(amplitude_i) <- paste0("Meta_", 1:n)
+  names(amplitude_i) <- paste0("meta_", 1:n)
 
-  names(phase_i) <- paste0("Meta_", 1:n)
+  names(phase_i) <- paste0("meta_", 1:n)
 
   # store results in final list
   result_list <- list(values = values_input, n = n, max_i = max_i, freq_mn = freq_mn,

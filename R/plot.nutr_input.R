@@ -41,15 +41,15 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, viridis_option = "C",
   col_viridis <- c(viridis::viridis(n = x$n, option = viridis_option), "black")
 
   # create factor for facet plotting
-  input_df$Facet <- ifelse(input_df$Meta == "Gamma",
-                           yes = "Gamma scale", no = "Alpha scale")
+  input_df$facet <- ifelse(input_df$meta == "gamma",
+                           yes = "gamma scale", no = "alpha scale")
 
-  input_df$Facet <- factor(input_df$Facet, levels = c("Alpha scale", "Gamma scale"))
+  input_df$facet <- factor(input_df$facet, levels = c("alpha scale", "gamma scale"))
 
   # subset data depending on alpha and gamma option
   if (!alpha) {
 
-    input_df <- input_df[input_df$Facet == "Gamma scale", ]
+    input_df <- input_df[input_df$facet == "gamma scale", ]
 
     # remove black color
     col_viridis <- "black"
@@ -58,7 +58,7 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, viridis_option = "C",
 
   if (!gamma) {
 
-    input_df <- input_df[input_df$Facet == "Alpha scale", ]
+    input_df <- input_df[input_df$facet == "alpha scale", ]
 
     # remove black color
     col_viridis <- col_viridis[-length(col_viridis)]
@@ -73,13 +73,13 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, viridis_option = "C",
 
   # create plot
   gg_input <- ggplot2::ggplot(data = input_df) +
-    ggplot2::geom_line(ggplot2::aes(x = .data$Timestep, y = .data$Value,
-                                    color = .data$Meta)) +
+    ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$value,
+                                    color = .data$meta)) +
     ggplot2::geom_hline(yintercept = 0, color = "darkgrey", linetype = 2) +
     ggplot2::labs(x = "Timestep", y = "Nutrient input [g/cell]") +
     ggplot2::theme_classic() +
     ggplot2::theme(legend.position = "bottom") +
-    ggplot2::facet_wrap(. ~ .data$Facet, ncol = 1, scales = "free_y") +
+    ggplot2::facet_wrap(. ~ .data$facet, ncol = 1, scales = "free_y") +
     ggplot2::scale_color_manual(name = "", values = col_viridis) +
     ggplot2::theme(strip.background = ggplot2::element_blank(),
                    strip.text = ggplot2::element_blank()) +
