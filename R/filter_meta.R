@@ -17,8 +17,7 @@
 #' @return nutr_input, meta_rn
 #'
 #' @examples
-#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-#' variability = 0.5, seagrass_each = 12)
+#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3, variability = 0.5)
 #' filter_meta(x = nutrients_input, filter = c(4380 / 2, 4380))
 #'
 #' \dontrun{
