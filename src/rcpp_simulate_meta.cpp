@@ -168,11 +168,14 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
         // get current nutrients input
         Rcpp::NumericVector nutrients_input_temp = nutrients_input[j];
 
+        // adapt i index to C++
+        int i_temp = i - 1;
+
         // simulate nutrient input if present at current timestep
-        if (nutrients_input_temp(i) > 0.0) {
+        if (nutrients_input_temp(i_temp) > 0.0) {
 
           // simulate nutrient input
-          arrR::rcpp_nutr_input(seafloor[j], nutrients_input_temp(i));
+          arrR::rcpp_nutr_input(seafloor[j], nutrients_input_temp(i_temp));
 
         }
       }

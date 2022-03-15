@@ -36,11 +36,11 @@ parameters <- meta.arrR::meta.arrR_parameters
 min_per_i <- 120
 
 # run the model for n years
-years <- 10
+years <- 1
 max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every m days
-days <- 365 # which((max_i %% ((24 / (min_per_i / 60)) * 1:365)) == 0)
+days <- 5 # which((max_i %% ((24 / (min_per_i / 60)) * 1:365)) == 0)
 save_each <- (24 / (min_per_i / 60)) * days
 
 days <- 1
@@ -68,6 +68,8 @@ dimensions <- c(100, 100)
 
 grain <- c(1, 1)
 
+parameters$nutrients_loss <- 0.01
+
 stable_vals <- arrR::get_stable_values(bg_biomass = starting_values$bg_biomass,
                                        ag_biomass = starting_values$ag_biomass,
                                        parameters = parameters)
@@ -76,14 +78,16 @@ starting_values$nutrients_pool <- stable_vals$nutrients_pool
 
 starting_values$detritus_pool <- stable_vals$detritus_pool
 
+nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_pool, 
+                                  freq_mn = 5)
+
 metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL, 
                        dimensions = dimensions, grain = grain, max_i = max_i,
                        starting_values = starting_values, parameters = parameters)
 
 plot(metasyst)
 
-nutrients_input <- 0.0 # sim_nutr_input(n = n, max_i = max_i, seagrass_each = seagrass_each, 
-# input_mn = stable_vals$nutrients_pool, freq_mn = 5)
+plot(nutrients_input, gamma = FALSE)
 ```
 
 ```{r run_model, eval = FALSE}
