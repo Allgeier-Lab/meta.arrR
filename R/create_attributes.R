@@ -51,8 +51,9 @@ create_attributes <- function(fishpop, parameters, max_i) {
       }
 
       # sample random pop_reserves_thres value
-      reserves_thres <- stats::runif(n = pop_n, min = parameters$pop_reserves_thres_lo,
-                                     max = parameters$pop_reserves_thres_hi)
+      reserves_thres <- vapply(1:pop_n, function(i) arrR::rcpp_rnorm(parameters$pop_reserves_thres_mean,
+                                                                     parameters$pop_reserves_thres_var, 0.0, 1.0),
+                               FUN.VALUE = numeric(i))
 
       # combine to one matrix
       cbind(id = i[, 1], reserves_thres = reserves_thres, residence = residence)
