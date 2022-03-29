@@ -27,10 +27,10 @@ library(meta.arrR)
 ```{r load_parameters}
 
 # get starting values
-starting_values <- meta.arrR::meta.arrR_starting_values
+starting_values <- meta.arrR::default_starting
 
 # get parameters
-parameters <- meta.arrR::meta.arrR_parameters
+parameters <- meta.arrR::default_parameters
 
 # set time per iterations
 min_per_i <- 120
@@ -92,7 +92,7 @@ plot(nutrients_input, gamma = FALSE)
 
 ```{r run_model, eval = FALSE}
 result <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_input,
-                              parameters = parameters, movement = "attr",
+                              parameters = parameters, movement = "behav",
                               max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 ```
 
