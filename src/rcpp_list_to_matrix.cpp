@@ -27,20 +27,15 @@ using namespace Rcpp;
 Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool id) {
 
   // number of col
-  // MH: Set automatically using ncol(fishpop)
-  int n_col = 17;
+  int n_col = as<Rcpp::NumericMatrix>(fishpop[0]).ncol();
 
   // set col names
-  // MH: Set automatically using colnames(fishpop);
-  Rcpp::CharacterVector col_names = Rcpp::CharacterVector::create("id", "age", "x", "y",
-    "heading", "length", "weight", "activity", "respiration", "reserves", "reserves_max",
-    "behavior", "consumption", "excretion", "died_consumption", "died_background",
-    "residence");
+  Rcpp::CharacterVector col_names = Rcpp::colnames(fishpop[0]);
 
   // one more col needed for id
   if (id) {
 
-    n_col = 18;
+    n_col++;
 
     col_names.push_back("metasystem");
 
