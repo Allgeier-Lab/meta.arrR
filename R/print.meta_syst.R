@@ -12,7 +12,7 @@
 #'
 #' @examples
 #' metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
-#' starting_values = meta.arrR_starting_values, parameters = meta.arrR_parameters)
+#' starting_values = default_starting, parameters = default_parameters)
 #' print(metasyst)
 #'
 #' @aliases print.meta_sys
@@ -22,18 +22,12 @@
 print.meta_syst <- function(x, digits = 3, ...) {
 
   # get number of reef cells
-  no_reefs <- paste(c(vapply(x$reef, FUN = function(i) {
-
-    ifelse(test = is.null(i), yes = 0, no = nrow(i))
-
-  }, FUN.VALUE = numeric(1))),  collapse = ", ")
+  no_reefs <- paste(c(vapply(x$reef, FUN = function(i) ifelse(test = is.null(i), yes = 0, no = nrow(i)),
+                             FUN.VALUE = numeric(1))),  collapse = ", ")
 
   # get number of individuals
-  no_fish <- paste(c(vapply(x$fishpop, FUN = function(i) {
-
-    ifelse(test = all(is.na(i)), yes = 0, no = nrow(i))
-
-  } , FUN.VALUE = numeric(1))),  collapse = ", ")
+  no_fish <- paste(c(vapply(x$fishpop, FUN = function(i) ifelse(test = all(is.na(i)), yes = 0, no = nrow(i)),
+                            FUN.VALUE = numeric(1))),  collapse = ", ")
 
   # get extent
   extent <- paste(as.vector(terra::ext(x = x$seafloor[[1]])), collapse = ", ")

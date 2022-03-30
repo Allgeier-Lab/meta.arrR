@@ -21,7 +21,7 @@
 #' @aliases create_attributes
 #' @rdname create_attributes
 #'
-#' @export
+#' @keywords internal
 create_attributes <- function(fishpop, parameters, max_i) {
 
   # loop through all metaecosystems
@@ -43,19 +43,20 @@ create_attributes <- function(fishpop, parameters, max_i) {
 
         # draw from rlognorm with Inf maximum
         residence <- vapply(1:pop_n, function(i)
-          arrR::rcpp_rlognorm(mean = parameters$move_residence,
-                              sd = parameters$move_residence * parameters$move_residence_var,
-                              min = 0, max = max_i),
+          arrR:::rcpp_rlognorm(mean = parameters$move_residence,
+                               sd = parameters$move_residence * parameters$move_residence_var,
+                               min = 0, max = max_i),
           FUN.VALUE = numeric(1))
 
       }
 
       # sample random pop_reserves_thres value
-      reserves_thres <- stats::runif(n = pop_n, min = parameters$pop_reserves_thres_lo,
-                                     max = parameters$pop_reserves_thres_hi)
+      reserves_thres <- vapply(1:pop_n, function(i) arrR:::rcpp_rnorm(parameters$pop_reserves_thres_mean,
+                                                                      parameters$pop_reserves_thres_var, 0.0, 1.0),
+                               FUN.VALUE = numeric(1))
 
       # combine to one matrix
-      cbind(id = i[, 1], residence = residence, reserves_thres = reserves_thres)
+      cbind(id = i[, 1], reserves_thres = reserves_thres, residence = residence)
 
     # no fish present
     } else {

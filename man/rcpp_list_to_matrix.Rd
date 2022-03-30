@@ -14,7 +14,7 @@ rcpp_list_to_matrix(fishpop, pop_n_sum, id)
 \item{id}{If TRUE, column with metaecosystem id is added.}
 }
 \value{
-matrix
+NumericMatrix
 }
 \description{
 Rcpp list to matrix.
@@ -23,3 +23,4 @@ Rcpp list to matrix.
 Converts list with individuals within a local metaecosystem to one matrix. If
 \code{id = TRUE} a column identifying the metaecosystem is added.
 }
+\keyword{internal}

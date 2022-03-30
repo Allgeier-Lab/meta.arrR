@@ -6,12 +6,13 @@
 \usage{
 setup_meta(
   n,
-  max_i,
+  reef = NULL,
+  seafloor_xy = NULL,
   dimensions,
   grain = c(1, 1),
-  reef = NULL,
   starting_values,
   parameters,
+  max_i,
   random = 0,
   use_log = TRUE,
   verbose = TRUE,
@@ -21,17 +22,19 @@ setup_meta(
 \arguments{
 \item{n}{Integer with number of metaecosystems to setup.}
 
-\item{max_i}{Integer with maximum number of simulation time steps.}
+\item{reef}{2-Column matrix with coordinates of artificial reefs.}
+
+\item{seafloor_xy}{3-Column matrix with ID and x,y coordinates of local ecosystems.}
 
 \item{dimensions}{Vector with number of rows and columns (spatial dimensions).}
 
 \item{grain}{Vector with size of cells in x- and y-direction (spatial grain).}
 
-\item{reef}{2-Column matrix with coordinates of artificial reefs.}
-
 \item{starting_values}{List with all starting value.}
 
 \item{parameters}{List with all parameters.}
+
+\item{max_i}{Integer with maximum number of simulation time steps.}
 
 \item{random}{Numeric to randomize input values by 0 = 0 percent to 1 = 100 percent.}
 
@@ -48,11 +51,13 @@ meta_syst
 Setup metaecosystems.
 }
 \details{
-Function to setup the fish population. If no fish should be created, set
-\code{starting_values$pop_n = 0}.
+Function to create metaecosystem including environmental raster grids and fish
+populations.
+
+If \code{seafloor_xy = NULL}, coordinates are simulated random (range: 0-1).
 }
 \examples{
 metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
-starting_values = meta.arrR_starting_values, parameters = meta.arrR_parameters)
+starting_values = default_starting, parameters = default_parameters)
 
 }

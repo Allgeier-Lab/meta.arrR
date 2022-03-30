@@ -3,7 +3,7 @@
 #' @description
 #' Plotting method for meta_rn object.
 #'
-#' @param x \code{meta_rn} object simulated with \code{run_meta}.
+#' @param x \code{meta_rn} object simulated with \code{run_simulation_meta}.
 #' @param what Character specifying what to plot.
 #' @param summarize Logical if TRUE values over time steps are plotted.
 #' @param fill Character specifying which column to use for plotting.
@@ -11,12 +11,13 @@
 #' @param limits Vector with minium and maximum value of \code{fill} values.
 #' @param burn_in If TRUE, line to indicate burn-in time is plotted.
 #' @param viridis_option Character with \code{viridis} color palette.
-#' @param base_size Numeric to specify base font size.
 #' @param ... Not used.
 #'
 #' @details
 #' Plotting method for result of metaecosystem model run created
-#' with \code{run_meta}.
+#' with \code{run_simulation_meta}.
+#'
+#' @return ggplot
 #'
 #' @examples
 #' \dontrun{
@@ -26,9 +27,11 @@
 #' @aliases plot.meta_rn
 #' @rdname plot.meta_rn
 #'
+#' @importFrom rlang .data
+#'
 #' @export
 plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_biomass", gamma = FALSE,
-                         limits = NULL, burn_in = FALSE, base_size = 10, viridis_option = "C", ...) {
+                         limits = NULL, burn_in = FALSE, viridis_option = "C", ...) {
 
   if (!what %in% c("seafloor", "fishpop")) {
 
@@ -126,43 +129,43 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     # create plot
     gg_top_left <- ggplot2::ggplot(data = result_aggr) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_left, col = factor(meta))) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$top_left,
+                                      col = factor(.data$meta))) +
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
       ggplot2::labs(x = "Timestep", y = y_labels[1]) +
-      ggplot2::theme_classic(base_size = base_size) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                     legend.position = "bottom")
+      ggplot2::theme_classic() +
+      ggplot2::theme(legend.position = "bottom")
 
     # create plot
     gg_top_right <- ggplot2::ggplot(data = result_aggr) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = top_right, col = factor(meta))) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$top_right,
+                                      col = factor(.data$meta))) +
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[2]) +
-      ggplot2::theme_classic(base_size = base_size) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+      ggplot2::theme_classic()
 
     # create plot
     gg_bottom_left <- ggplot2::ggplot(data = result_aggr) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_left, col = factor(meta))) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$bottom_left,
+                                      col = factor(.data$meta))) +
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[3]) +
-      ggplot2::theme_classic(base_size = base_size) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+      ggplot2::theme_classic()
 
     # create plot
     gg_bottom_right <- ggplot2::ggplot(data = result_aggr) +
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
-      ggplot2::geom_line(ggplot2::aes(x = timestep, y = bottom_right, col = factor(meta))) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$bottom_right,
+                                      col = factor(.data$meta))) +
       ggplot2::scale_color_manual(name = "", values = col_viridis) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[4]) +
-      ggplot2::theme_classic(base_size = base_size) +
-      ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+      ggplot2::theme_classic()
 
     legend_top_left <- cowplot::get_legend(gg_top_left)
 
@@ -174,7 +177,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
     # now add the title
     title <- cowplot::ggdraw() +
-      cowplot::draw_label(label = plot_title, x = 0, hjust = 0, size = base_size) +
+      cowplot::draw_label(label = plot_title, x = 0, hjust = 0) +
       ggplot2::theme(plot.margin = ggplot2::margin(t = 0, r = 0, b = 0, l = 1, "cm"))
 
     # combine to one grid
@@ -199,8 +202,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
         id <- paste0("Metaecosystem ", j)
 
-        cbind(subset(x$seafloor[[j]], timestep == max_i,
-                     select = c("x", "y", fill)), id)
+        cbind(x$seafloor[[j]][x$seafloor[[j]]$timestep == max_i, c("x", "y", fill)], id)
 
       }))
 
@@ -215,27 +217,33 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
 
       # create ggplot
       gg_all <- ggplot2::ggplot(data = seafloor) +
-        ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = fill)) +
-        ggplot2::facet_wrap(. ~ id, nrow = 1) +
+        ggplot2::geom_raster(ggplot2::aes(x = .data$x, y = .data$y, fill = .data$fill)) +
+        ggplot2::facet_wrap(. ~ .data$id, nrow = 1) +
         ggplot2::scale_fill_gradientn(colours = c("#368AC0", "#F4B5BD", "#EC747F"),
                                       na.value = "#9B964A", limits = limits,
                                       name = fill) +
         ggplot2::coord_equal() +
         ggplot2::labs(x = "", y = "", title = title) +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                       legend.position = "bottom", legend.key.width = ggplot2::unit(10, 'mm'))
+        ggplot2::theme_classic() +
+        ggplot2::theme(legend.position = "bottom", legend.key.width = ggplot2::unit(10, 'mm'))
 
     } else if (what == "fishpop") {
 
       # get density within each cell
       densities <- get_meta_densities(result = x)
 
-      # get number of reefs
-      no_reefs <- vapply(x$coords_reef, nrow, FUN.VALUE = numeric(1))
+      # get reef matrix
+      coords_reef <- lapply(X = x$seafloor, FUN = function(i) {
+
+        arrR:::rcpp_get_reef(as.matrix(i[i$timestep == 0, -18]))
+
+      })
+
+      # count number of reef cells
+      no_reefs <- vapply(X = coords_reef, nrow, FUN.VALUE = numeric(1))
 
       # get coords of reefs
-      coords_reef <- data.frame(do.call(rbind, x$coords_reef))
+      coords_reef <- data.frame(do.call(rbind, coords_reef))
 
       # add metaecosystem id
       coords_reef$id <- rep(x = 1:x$n, times = no_reefs)
@@ -250,16 +258,15 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
                       " indiv [Movement : ", x$movement, "]")
 
       gg_all <- ggplot2::ggplot(data = densities) +
-        ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = density)) +
-        ggplot2::geom_raster(data = coords_reef, ggplot2::aes(x = x, y = y),
+        ggplot2::geom_raster(ggplot2::aes(x = .data$x, y = .data$y, fill = .data$density)) +
+        ggplot2::geom_raster(data = coords_reef, ggplot2::aes(x = .data$x, y = .data$y),
                              fill = "#9B964A") +
-        ggplot2::facet_wrap(. ~ id) +
+        ggplot2::facet_wrap(. ~ .data$id, nrow = 1) +
         ggplot2::scale_fill_gradientn(colours = c("#368AC0", "#F4B5BD", "#EC747F"),
                                       name = "Density") +
         ggplot2::coord_equal() +
         ggplot2::labs(x = "", y = "", title = title) +
-        ggplot2::theme_classic(base_size = base_size) +
-        ggplot2::theme(plot.title = ggplot2::element_text(size = base_size))
+        ggplot2::theme_classic()
     }
   }
 

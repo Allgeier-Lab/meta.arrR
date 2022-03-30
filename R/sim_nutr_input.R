@@ -5,7 +5,6 @@
 #'
 #' @param n Integer with number of metaecosystems to setup.
 #' @param max_i Integer with maximum number of simulation time steps.
-#' @param seagrass_each Integer how often (each i * x) seagrass dynamics will be simulated.
 #' @param input_mn,freq_mn Numeric with mean input amount and frequency.
 #' @param variability Variability of nutrient input.
 #' @param amplitude_mod Numeric to modify amplituded (instead of random variability).
@@ -31,11 +30,11 @@
 #' @rdname sim_nutr_input
 #'
 #' @export
-sim_nutr_input <- function(n, max_i, seagrass_each = 1, input_mn, freq_mn, variability = c(0.0, 0.0),
+sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0),
                            amplitude_mod = NULL, phase_mod = NULL, verbose = TRUE) {
 
   # create vector from 1 to max_i for nutrient input
-  timesteps <- seq(from = 1, to = max_i, by = seagrass_each)
+  timesteps <- seq(from = 1, to = max_i, by = 1)
 
   # check if only one variability parameter is provided
   if (length(variability) == 1) {
@@ -153,11 +152,11 @@ sim_nutr_input <- function(n, max_i, seagrass_each = 1, input_mn, freq_mn, varia
   }
 
   # set names
-  names(values_input) <- paste0("Meta_", 1:n)
+  names(values_input) <- paste0("meta_", 1:n)
 
-  names(amplitude_i) <- paste0("Meta_", 1:n)
+  names(amplitude_i) <- paste0("meta_", 1:n)
 
-  names(phase_i) <- paste0("Meta_", 1:n)
+  names(phase_i) <- paste0("meta_", 1:n)
 
   # store results in final list
   result_list <- list(values = values_input, n = n, max_i = max_i, freq_mn = freq_mn,

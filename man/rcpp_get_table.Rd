@@ -7,12 +7,12 @@
 rcpp_get_table(x, n)
 }
 \arguments{
-\item{x}{Vector with values.}
+\item{x}{NumericVector with values.}
 
 \item{n}{Integer with maximum number of classes.}
 }
 \value{
-vector
+IntegerVector
 }
 \description{
 Rcpp get table.
@@ -20,3 +20,4 @@ Rcpp get table.
 \details{
 Returns table with value count. Only values x > 0 are allowed.
 }
+\keyword{internal}

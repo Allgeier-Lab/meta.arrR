@@ -1,5 +1,5 @@
 # create vector with names
-present_names <- c("seafloor", "fishpop", "n", "fishpop_attributes",
+present_names <- c("n", "seafloor", "fishpop", "seafloor_xy", "fishpop_attr",
                    "starting_values", "parameters", "reef", "extent",
                    "grain", "dimensions")
 

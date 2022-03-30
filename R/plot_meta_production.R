@@ -3,12 +3,13 @@
 #' @description
 #' Plot local abundance.
 #'
-#' @param result \code{meta_rn} object simulated with \code{run_meta}.
+#' @param result \code{meta_rn} object simulated with \code{run_simulation_meta}.
 #' @param lag Logical if TRUE, the difference to the previous timestep is returned.
-#' @param base_size Numeric to specify base font size.
 #'
 #' @details
 #' Plot the production per meta ecosystem.
+#'
+#' @return ggplot
 #'
 #' @examples
 #' \dontrun{
@@ -18,8 +19,10 @@
 #' @aliases plot_meta_production
 #' @rdname plot_meta_production
 #'
+#' @importFrom rlang .data
+#'
 #' @export
-plot_meta_production <- function(result, lag = c(FALSE, TRUE), base_size = 10) {
+plot_meta_production <- function(result, lag = c(FALSE, TRUE)) {
 
   # calculate production
   production <- summarize_meta(result = result, biomass = FALSE, production = TRUE,
@@ -45,13 +48,13 @@ plot_meta_production <- function(result, lag = c(FALSE, TRUE), base_size = 10) {
 
   # create plot
   gg_prod <- ggplot2::ggplot(data = production) +
-    ggplot2::geom_line(ggplot2::aes(x = timestep, y = value, col = factor(meta))) +
-    ggplot2::facet_wrap(. ~ part, scales = "free_y", nrow = 3, ncol = 1) +
+    ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$value,
+                                    col = factor(.data$meta))) +
+    ggplot2::facet_wrap(. ~ .data$part, scales = "free_y", nrow = 3, ncol = 1) +
     ggplot2::scale_color_viridis_d(name = "", option = "C") +
     ggplot2::labs(x = "Timestep", y = "Biomass production", title = plot_title) +
-    ggplot2::theme_classic(base_size = base_size) +
-    ggplot2::theme(plot.title = ggplot2::element_text(size = base_size),
-                   legend.position = "bottom")
+    ggplot2::theme_classic() +
+    ggplot2::theme(legend.position = "bottom")
 
   return(gg_prod)
 

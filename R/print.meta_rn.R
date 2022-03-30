@@ -3,12 +3,12 @@
 #' @description
 #' Printing method for meta_rn object.
 #'
-#' @param x \code{meta_rn} object simulated with \code{run_meta}.
+#' @param x \code{meta_rn} object simulated with \code{run_simulation_meta}.
 #' @param digits Numeric of decimal places (passed on to \code{round}).
 #' @param ... Not used.
 #'
 #' @details
-#' Printing method for metaecosystem model run created with \code{run_meta}.
+#' Printing method for metaecosystem model run created with \code{run_simulation_meta}.
 #' Returns the mean values for several seafloor and fish population values.
 #'
 #' @examples
@@ -37,15 +37,8 @@ print.meta_rn <- function(x, digits = 3, ...) {
   })
 
   # get number of reefs
-  no_reefs <- vapply(x$seafloor, function(seafloor_temp) {
-
-    # filter max_i timestep
-    seafloor_maxi <- seafloor_temp[seafloor_temp$timestep == x$max_i, ]
-
-    # get number of rows in which reef = 1
-    nrow(seafloor_maxi[seafloor_maxi$reef == 1, ])
-
-  }, FUN.VALUE = numeric(1))
+  no_reefs <- vapply(x$seafloor, function(i) nrow(i[i$timestep == 0 & i$reef == 1, ]),
+                     FUN.VALUE = numeric(1))
 
   # collapse to charachter string
   no_reefs <- paste(c(no_reefs), collapse = ", ")

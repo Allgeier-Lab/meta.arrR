@@ -4,7 +4,7 @@
 #'
 #' @format List
 #' @references ADD REFERENCES
-"meta.arrR_parameters"
+"default_parameters"
 
 #' Default starting values
 #'
@@ -12,4 +12,4 @@
 #'
 #' @format List
 #' @references ADD REFERENCES
-"meta.arrR_starting_values"
+"default_starting"

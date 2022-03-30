@@ -15,7 +15,7 @@ summarize_meta(
 )
 }
 \arguments{
-\item{result}{\code{meta_rn} object simulated \code{run_meta}.}
+\item{result}{\code{meta_rn} object simulated \code{run_simulation_meta}.}
 
 \item{biomass, production}{Logical to specifiy if biomass and/or production is summarize.d}
 

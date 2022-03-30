@@ -19,11 +19,11 @@ Get global range
 }
 \details{
 Returns the minimum and maximum of selected seafloor value of several model run results
-created with \code{run_meta}.
+created with \code{run_simulation_meta}.
 }
 \examples{
 \dontrun{
-get_global_range(result = result_rand)
+get_global_range(result = list(result_rand, result_rand), value = "ag_biomass")
 }
 
 }

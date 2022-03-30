@@ -3,11 +3,11 @@
 #' @description
 #' Get abundance of local metaecosystems.
 #'
-#' @param result \code{meta_rn} object simulated with \code{run_meta}.
+#' @param result \code{meta_rn} object simulated with \code{run_simulation_meta}.
 #'
 #' @details
 #' Get the number of individuals within each local metaecosystem of model run result
-#' created with \code{run_meta}.
+#' created with \code{run_simulation_meta}.
 #'
 #' @return data.frame
 #'
@@ -33,7 +33,7 @@ get_abundance <- function(result) {
   abundance <- do.call(rbind, lapply(X = seq_along(result$fishpop), function(i) {
 
     # get only needed cols
-    fishpop_temp <- subset(result$fishpop[[i]], select = c("id", "timestep"))
+    fishpop_temp <- result$fishpop[[i]][, c("id", "timestep")]
 
     # check which IDs are NA (no individual present)
     abundance_na <- fishpop_temp$timestep[is.na(fishpop_temp$id)]

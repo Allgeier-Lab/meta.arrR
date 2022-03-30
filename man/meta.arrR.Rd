@@ -4,11 +4,10 @@
 \name{meta.arrR}
 \alias{meta.arrR}
 \alias{meta.arrR-package}
-\title{meta.arrR}
+\title{meta.arrR: Metaecosystems of Artifical Reefs}
 \description{
-Metaecosystem of the arrR model
-
-For more information about how to use the model, please see \code{browseVignettes("meta.arrR")}.
+Simulate metaecosystem of artifical reefs. For more information about how to
+use the model, please see \code{browseVignettes("meta.arrR")}.
 }
 \author{
 \strong{Maintainer}: Maximillian H.K. Hesselbarth \email{mhk.hesselbarth@gmail.com} (\href{https://orcid.org/0000-0003-1125-9918}{ORCID})

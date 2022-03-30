@@ -1,6 +1,6 @@
 ## code to prepare `DATASET` dataset goes here
 
-meta.arrR_parameters <- list(
+default_parameters <- list(
 
   # belowground biomass
   bg_biomass_min = 275.89,
@@ -19,14 +19,14 @@ meta.arrR_parameters <- list(
   # seagrass
   seagrass_thres = 1/2,
   seagrass_slope = 2.0,
-  seagrass_slough = 0.001,
+  seagrass_slough = 0.0001,
 
   # nutrients
   nutrients_diffusion = 2/3,
   nutrients_loss = 0.0,
 
   # detritus
-  detritus_mineralization = 0.001,
+  detritus_mineralization = 0.0001,
   detritus_diffusion = 1/3,
   detritus_fish_decomp = 0.5,
   detritus_fish_diffusion = 1/3,
@@ -38,8 +38,9 @@ meta.arrR_parameters <- list(
   move_border = 2.0,
   move_reef = 0.5,
   move_return = 50.0,
-  move_residence = 0.0,
+  move_residence = 0.0, # MH: check again if that makes sense...
   move_residence_var = 0.0,
+  move_lambda = 0.0, # MH: what about var?
 
   # fishpop dimensions
   pop_a = 0.0121,
@@ -49,10 +50,10 @@ meta.arrR_parameters <- list(
   pop_n_body = 0.02999,
 
   # fishpop reserves
-  pop_reserves_max = 0.5,
-  pop_reserves_thres_lo = 0.5,
-  pop_reserves_thres_hi = 0.5,
-  pop_reserves_consump = 1.0,
+  pop_reserves_max = 0.05,
+  pop_reserves_thres_mean = 0.1,
+  pop_reserves_thres_var = 0.0,
+  pop_reserves_consump = 0.1,
 
   # fishpop respiration
   resp_intercept = 0.0108,
@@ -62,13 +63,13 @@ meta.arrR_parameters <- list(
   resp_temp_max = 40
 )
 
-ag <- meta.arrR_parameters$ag_biomass_min +
-  (meta.arrR_parameters$ag_biomass_max - meta.arrR_parameters$ag_biomass_min) * 0.5
+ag <- default_parameters$ag_biomass_min +
+  (default_parameters$ag_biomass_max - default_parameters$ag_biomass_min) * 0.5
 
-bg <- meta.arrR_parameters$bg_biomass_min +
-  (meta.arrR_parameters$bg_biomass_max - meta.arrR_parameters$bg_biomass_min) * 0.5
+bg <- default_parameters$bg_biomass_min +
+  (default_parameters$bg_biomass_max - default_parameters$bg_biomass_min) * 0.5
 
-meta.arrR_starting_values <- list(
+default_starting <- list(
 
   # biomass
   bg_biomass = bg,
@@ -84,4 +85,4 @@ meta.arrR_starting_values <- list(
   pop_var_size = 10.0
 )
 
-usethis::use_data(meta.arrR_parameters, meta.arrR_starting_values, overwrite = TRUE)
+usethis::use_data(default_parameters, default_starting, overwrite = TRUE)

@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+
 #include "rcpp_list_to_matrix.h"
 
 using namespace Rcpp;
@@ -16,29 +17,25 @@ using namespace Rcpp;
 //' Converts list with individuals within a local metaecosystem to one matrix. If
 //' \code{id = TRUE} a column identifying the metaecosystem is added.
 //'
-//' @return matrix
+//' @return NumericMatrix
 //'
 //' @aliases rcpp_list_to_matrix
 //' @rdname rcpp_list_to_matrix
 //'
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool id) {
 
   // number of col
-  int n_col = 17;
+  int n_col = as<Rcpp::NumericMatrix>(fishpop[0]).ncol();
 
   // set col names
-  // MH: Set automaticall using colnames(fishpop);
-  Rcpp::CharacterVector col_names = Rcpp::CharacterVector::create("id", "age", "x", "y",
-    "heading", "length", "weight", "activity", "respiration", "reserves", "reserves_max",
-    "behavior", "consumption", "excretion", "died_consumption", "died_background",
-    "residence");
+  Rcpp::CharacterVector col_names = Rcpp::colnames(fishpop[0]);
 
   // one more col needed for id
   if (id) {
 
-    n_col = 18;
+    n_col++;
 
     col_names.push_back("metasystem");
 
@@ -89,10 +86,8 @@ Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool 
 
 /*** R
 fishpop <- lapply(metasyst$fishpop, function(i) as.matrix(i, xy = TRUE))
-
 rcpp_list_to_matrix(fishpop = fishpop, pop_n_sum = sum(metasyst$starting_values$pop_n),
                     id = TRUE)
-
 rcpp_list_to_matrix(fishpop = fishpop, pop_n_sum = sum(metasyst$starting_values$pop_n),
                     id = FALSE)
 */
