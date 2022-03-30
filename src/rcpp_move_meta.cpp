@@ -54,8 +54,14 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
     // get random number between 0 and 1
     double prob_random = arrR::rcpp_runif(0.0, 1.0);
 
-    // move if probability is below random number
-    if (prob_random <= prob_move) {
+    // fish stay in current metasystem
+    if ((fishpop_attr(id_attr, 2) == 0.0) || (prob_random > prob_move)) {
+
+      // increase residence by one
+      fishpop_mat(i, 16) += 1;
+
+    // fish move to new metaecosystem
+    } else {
 
       // get current id
       int meta_temp = fishpop_mat(i, 17);
@@ -77,12 +83,6 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
 
       // set residence to zero
       fishpop_mat(i, 16) = 0;
-
-    // fish stay in current metasyst
-    } else {
-
-      // increase residence by one
-      fishpop_mat(i, 16) += 1;
 
     }
   }
