@@ -52,7 +52,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
     double prob_move = fishpop_mat(i, 16) / fishpop_attr(id_attr, 2);
 
     // get random number between 0 and 1
-    double prob_random = runif(1, 0.0, 1.0)(0);
+    double prob_random = arrR::rcpp_runif(0.0, 1.0);
 
     // move if probability is below random number
     if (prob_random <= prob_move) {
@@ -70,10 +70,10 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
       fishpop_mat(i, 17) = id_random;
 
       // random x coord
-      fishpop_mat(i, 2) = Rcpp::runif(1, extent[0], extent[1])(0);
+      fishpop_mat(i, 2) = arrR::rcpp_runif(extent[0], extent[1]);
 
       // random y coord
-      fishpop_mat(i, 3) = Rcpp::runif(1, extent[2], extent[3])(0);
+      fishpop_mat(i, 3) = arrR::rcpp_runif(extent[0], extent[1]);
 
       // set residence to zero
       fishpop_mat(i, 16) = 0;
