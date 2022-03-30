@@ -77,6 +77,13 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
   }
 
+  # check if more than one local ecosystem is present
+  if (metasyst$n < 2) {
+
+    stop("The metaecosystem must have at least two local ecosystems.", call. = FALSE)
+
+  }
+
   # check if max_i can be divided by provided save_each without reminder
   if (max_i %% save_each != 0) {
 
