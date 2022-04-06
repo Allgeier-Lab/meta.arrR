@@ -63,10 +63,8 @@ parameters$seagrass_thres <- -1/4
 reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
                       ncol = 2, byrow = TRUE)
 
-# setup extent and grain
-dimensions <- c(100, 100)
-
-grain <- c(1, 1)
+# setup extent
+dimensions <- c(50, 50)
 
 parameters$nutrients_loss <- 0.01
 
@@ -82,7 +80,7 @@ nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$n
                                   freq_mn = 5)
 
 metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL, 
-                       dimensions = dimensions, grain = grain, max_i = max_i,
+                       dimensions = dimensions, max_i = max_i,
                        starting_values = starting_values, parameters = parameters)
 
 plot(metasyst)

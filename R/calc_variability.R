@@ -109,6 +109,9 @@ calc_variability.meta_rn <- function(x, biomass = TRUE, production = TRUE, lag =
         values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
                                    direction = "wide")[, -1, drop = FALSE]
 
+        # use only 6 significant digits
+        values_i <- signif(values_i)
+
         # calculate sum of each timestep
         values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
@@ -164,8 +167,7 @@ calc_variability_internal <- function(values_i, values_m) {
   synchrony <- stats::var(values_m, na.rm = TRUE) / sum(alpha_sd_i) ^ 2
 
   # check if NaN because division by zero
-  synchrony <- ifelse(test = is.finite(synchrony),
-                      yes = synchrony, no = 0)
+  synchrony <- ifelse(test = is.finite(synchrony), yes = synchrony, no = 0)
 
   # final list #
 
