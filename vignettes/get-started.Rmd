@@ -68,7 +68,7 @@ dimensions <- c(50, 50)
 
 parameters$nutrients_loss <- 0.01
 
-stable_vals <- arrR::get_stable_values(bg_biomass = starting_values$bg_biomass,
+stable_vals <- arrR::get_req_nutrients(bg_biomass = starting_values$bg_biomass,
                                        ag_biomass = starting_values$ag_biomass,
                                        parameters = parameters)
 
@@ -76,7 +76,9 @@ starting_values$nutrients_pool <- stable_vals$nutrients_pool
 
 starting_values$detritus_pool <- stable_vals$detritus_pool
 
-nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_pool, 
+input_values <- stable_vals$nutrients_pool * parameters$nutrients_loss
+
+nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = input_values, 
                                   freq_mn = 5)
 
 metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL, 

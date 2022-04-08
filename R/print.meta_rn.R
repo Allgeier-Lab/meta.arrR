@@ -46,16 +46,16 @@ print.meta_rn <- function(x, digits = 3, ...) {
   # calculate number of fish
   fish <- lapply(x$fishpop, function(fish_temp) {
 
+    # filter max_i timestep
+    fishpop_maxi <- fish_temp[fish_temp$timestep == x$max_i, ]
+
     # no individual present, set to 0 and NA
-    if (all(is.na(fish_temp[1, -c(18, 19)]))) {
+    if (all(is.na(fishpop_maxi[1, -c(18, 19)]))) {
 
       c(no = 0, length = NA, mort = NA)
 
     # calculate number of fish, mean length and mortality
     } else {
-
-      # filter max_i timestep
-      fishpop_maxi <- fish_temp[fish_temp$timestep == x$max_i, ]
 
       c(no = length(fishpop_maxi$id),
         length = round(mean(fishpop_maxi$length), digits = digits),
