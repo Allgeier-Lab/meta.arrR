@@ -4,12 +4,10 @@
 \alias{plot_local_abund}
 \title{plot_local_abund}
 \usage{
-plot_local_abund(result, viridis_option = "C")
+plot_local_abund(result)
 }
 \arguments{
 \item{result}{\code{meta_rn} object simulated with \code{run_simulation_meta}.}
-
-\item{viridis_option}{Character with option of viridis color option.}
 }
 \value{
 ggplot

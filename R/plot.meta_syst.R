@@ -4,7 +4,6 @@
 #' Plotting method for meta_syst object.
 #'
 #' @param x \code{meta_syst} object simulated with \code{setup_meta}.
-#' @param viridis_option Character with \code{viridis} color palette.
 #' @param ... Not used.
 #'
 #' @details
@@ -23,7 +22,7 @@
 #' @importFrom rlang .data
 #'
 #' @export
-plot.meta_syst <- function(x, viridis_option = "C", ...) {
+plot.meta_syst <- function(x, ...) {
 
   # create data.frame with polygon coordinates
   poly_xy <- data.frame(x = c(-1, 1, 1, -1), y = c(-1, -1, 1, 1))
@@ -51,7 +50,7 @@ plot.meta_syst <- function(x, viridis_option = "C", ...) {
   local_prob <- local_prob[stats::complete.cases(local_prob), ]
 
   # create color scale
-  col_viridis <- viridis::viridis(n = x$n, option = viridis_option)
+  col_palette <- grDevices::palette.colors(n = x$n, palette = "Okabe-Ito")
 
   gg_map <- ggplot2::ggplot(data = local_xy) +
     ggplot2::geom_polygon(data = poly_xy, ggplot2::aes(x = .data$x, y = .data$y),
@@ -64,7 +63,7 @@ plot.meta_syst <- function(x, viridis_option = "C", ...) {
     ggplot2::geom_text(ggplot2::aes(x = .data$x, y = .data$y, label = factor(.data$id)),
                        col = "black") +
     ggplot2::coord_equal() +
-    ggplot2::scale_color_manual(name = "Ecosystem", values = col_viridis) +
+    ggplot2::scale_color_manual(name = "Ecosystem", values = col_palette) +
     ggplot2::labs(x = "x coordinate", y = "y coordinate") +
     ggplot2::theme_void() +
     ggplot2::theme(legend.position = "bottom", axis.title = ggplot2::element_text(),
@@ -77,7 +76,7 @@ plot.meta_syst <- function(x, viridis_option = "C", ...) {
     #                    fill = NA, colour = "black", size = 0.75) +
     ggplot2::coord_equal() +
     ggplot2::scale_fill_gradientn(name = "Probability", limits = c(0, 1), breaks = c(0, 0.5, 1),
-                         colors = viridis::viridis(n = 255, option = viridis_option),
+                         colors = grDevices::topo.colors(n = 255),
                          na.value = "white") +
     ggplot2::labs(x = "Ecosystem origin", y = "Ecosystem reach") +
     ggplot2::theme_classic() +
@@ -88,7 +87,7 @@ plot.meta_syst <- function(x, viridis_option = "C", ...) {
                                     col = factor(.data$id_origin)) ) +
     ggplot2::geom_point(ggplot2::aes(x = .data$distance, y = .data$probability,
                                      col = factor(.data$id_origin)), shape = 1, size = 2) +
-    ggplot2::scale_color_manual(name = "Ecoystem", values = col_viridis) +
+    ggplot2::scale_color_manual(name = "Ecoystem", values = col_palette) +
     ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 3, by = 0.5), limits = c(0, 3)) + # 2.828427m is diagonal dist
     ggplot2::scale_y_continuous(limits = c(0, 1)) +
     ggplot2::labs(x = "Distance", y = "Probability") +

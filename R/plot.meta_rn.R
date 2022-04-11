@@ -10,7 +10,6 @@
 #' @param gamma Logical if TRUE gamma input line is added.
 #' @param limits Vector with minium and maximum value of \code{fill} values.
 #' @param burn_in If TRUE, line to indicate burn-in time is plotted.
-#' @param viridis_option Character with \code{viridis} color palette.
 #' @param ... Not used.
 #'
 #' @details
@@ -31,7 +30,7 @@
 #'
 #' @export
 plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_biomass", gamma = FALSE,
-                         limits = NULL, burn_in = FALSE, viridis_option = "C", ...) {
+                         limits = NULL, burn_in = FALSE, ...) {
 
   if (!what %in% c("seafloor", "fishpop")) {
 
@@ -53,11 +52,11 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
     # setup color scale
     if (gamma) {
 
-      col_viridis <- "black"
+      col_palette <- "black"
 
     } else {
 
-      col_viridis <- viridis::viridis(n = x$n, option = viridis_option)
+      col_palette <- grDevices::palette.colors(n = x$n, palette = "Okabe-Ito")
 
     }
 
@@ -131,7 +130,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
       ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$top_left,
                                       col = factor(.data$meta))) +
-      ggplot2::scale_color_manual(name = "", values = col_viridis) +
+      ggplot2::scale_color_manual(name = "", values = col_palette) +
       ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
       ggplot2::labs(x = "Timestep", y = y_labels[1]) +
       ggplot2::theme_classic() +
@@ -142,7 +141,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
       ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$top_right,
                                       col = factor(.data$meta))) +
-      ggplot2::scale_color_manual(name = "", values = col_viridis) +
+      ggplot2::scale_color_manual(name = "", values = col_palette) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[2]) +
       ggplot2::theme_classic()
@@ -152,7 +151,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
       ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$bottom_left,
                                       col = factor(.data$meta))) +
-      ggplot2::scale_color_manual(name = "", values = col_viridis) +
+      ggplot2::scale_color_manual(name = "", values = col_palette) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[3]) +
       ggplot2::theme_classic()
@@ -162,7 +161,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       ggplot2::geom_vline(xintercept = burn_in_itr, col = col_burn, linetype = 3) +
       ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$bottom_right,
                                       col = factor(.data$meta))) +
-      ggplot2::scale_color_manual(name = "", values = col_viridis) +
+      ggplot2::scale_color_manual(name = "", values = col_palette) +
       ggplot2::guides(col = "none", linetype = "none") +
       ggplot2::labs(x = "Timestep", y = y_labels[4]) +
       ggplot2::theme_classic()

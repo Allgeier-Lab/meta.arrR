@@ -4,14 +4,12 @@
 \alias{plot.nutr_input}
 \title{plot.nutr_input}
 \usage{
-\method{plot}{nutr_input}(x, alpha = TRUE, gamma = TRUE, viridis_option = "C", ...)
+\method{plot}{nutr_input}(x, alpha = TRUE, gamma = TRUE, ...)
 }
 \arguments{
 \item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
 
 \item{alpha, gamma}{Logical if TRUE alpha and/or gamma are plotted.}
-
-\item{viridis_option}{Character with option of viridis color option.}
 
 \item{...}{Not used.}
 }

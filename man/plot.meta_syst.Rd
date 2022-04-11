@@ -4,12 +4,10 @@
 \alias{plot.meta_syst}
 \title{plot.meta_syst}
 \usage{
-\method{plot}{meta_syst}(x, viridis_option = "C", ...)
+\method{plot}{meta_syst}(x, ...)
 }
 \arguments{
 \item{x}{\code{meta_syst} object simulated with \code{setup_meta}.}
-
-\item{viridis_option}{Character with \code{viridis} color palette.}
 
 \item{...}{Not used.}
 }

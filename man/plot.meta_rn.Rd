@@ -12,7 +12,6 @@
   gamma = FALSE,
   limits = NULL,
   burn_in = FALSE,
-  viridis_option = "C",
   ...
 )
 }
@@ -30,8 +29,6 @@
 \item{limits}{Vector with minium and maximum value of \code{fill} values.}
 
 \item{burn_in}{If TRUE, line to indicate burn-in time is plotted.}
-
-\item{viridis_option}{Character with \code{viridis} color palette.}
 
 \item{...}{Not used.}
 }

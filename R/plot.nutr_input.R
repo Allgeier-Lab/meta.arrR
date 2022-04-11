@@ -5,7 +5,6 @@
 #'
 #' @param x \code{nutr_input} object simulated with \code{sim_nutr_input_*}.
 #' @param alpha,gamma Logical if TRUE alpha and/or gamma are plotted.
-#' @param viridis_option Character with option of viridis color option.
 #' @param ... Not used.
 #'
 #' @details
@@ -25,7 +24,7 @@
 #' @importFrom rlang .data
 #'
 #' @export
-plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, viridis_option = "C", ...) {
+plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, ...) {
 
   # check if both are FALSE
   if (!alpha && !gamma) {
@@ -38,7 +37,7 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, viridis_option = "C",
   input_df <- get_input_df(x = x, long = TRUE)
 
   # setup color scale
-  col_viridis <- c(viridis::viridis(n = x$n, option = viridis_option), "black")
+  col_palette <- c(grDevices::palette.colors(n = x$n, palette = "Okabe-Ito"), "black")
 
   # create factor for facet plotting
   input_df$facet <- ifelse(input_df$meta == "gamma",
@@ -52,7 +51,7 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, viridis_option = "C",
     input_df <- input_df[input_df$facet == "gamma scale", ]
 
     # remove black color
-    col_viridis <- "black"
+    col_palette <- "black"
 
   }
 
@@ -61,7 +60,7 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, viridis_option = "C",
     input_df <- input_df[input_df$facet == "alpha scale", ]
 
     # remove black color
-    col_viridis <- col_viridis[-length(col_viridis)]
+    col_palette <- col_palette[-length(col_palette)]
 
   }
 
@@ -80,7 +79,7 @@ plot.nutr_input <- function(x, alpha = TRUE, gamma = TRUE, viridis_option = "C",
     ggplot2::theme_classic() +
     ggplot2::theme(legend.position = "bottom") +
     ggplot2::facet_wrap(. ~ .data$facet, ncol = 1, scales = "free_y") +
-    ggplot2::scale_color_manual(name = "", values = col_viridis) +
+    ggplot2::scale_color_manual(name = "", values = col_palette) +
     ggplot2::theme(strip.background = ggplot2::element_blank(),
                    strip.text = ggplot2::element_blank()) +
     ggplot2::guides(color = ggplot2::guide_legend(nrow = 1, ncol = ncol))
