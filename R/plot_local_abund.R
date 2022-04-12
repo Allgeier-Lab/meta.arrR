@@ -56,7 +56,7 @@ plot_local_abund <- function(result) {
     ggplot2::geom_path(ggplot2::aes(x = .data$timestep, y = .data$abundance,
                                     col = factor(.data$meta)),
                        alpha = 1/3) +
-    ggplot2::scale_color_viridis_d(name = "Metaecosystem") +
+    ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "A") +
     ggplot2::scale_linetype_manual(name = "", values = c("Min" = 2, "Max" = 2, "Mean" = 1)) +
     ggplot2::scale_y_continuous(limits = c(0, abundance_max + abundance_min),
                                 breaks = 0:(abundance_max + abundance_min)) +

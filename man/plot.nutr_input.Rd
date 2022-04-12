@@ -4,12 +4,12 @@
 \alias{plot.nutr_input}
 \title{plot.nutr_input}
 \usage{
-\method{plot}{nutr_input}(x, alpha = TRUE, gamma = TRUE, ...)
+\method{plot}{nutr_input}(x, gamma = FALSE, ...)
 }
 \arguments{
 \item{x}{\code{nutr_input} object simulated with \code{sim_nutr_input_*}.}
 
-\item{alpha, gamma}{Logical if TRUE alpha and/or gamma are plotted.}
+\item{gamma}{Logical if TRUE gamma values are plotted.}
 
 \item{...}{Not used.}
 }

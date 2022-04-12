@@ -51,7 +51,7 @@ plot_meta_production <- function(result, lag = c(FALSE, TRUE)) {
     ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$value,
                                     col = factor(.data$meta))) +
     ggplot2::facet_wrap(. ~ .data$part, scales = "free_y", nrow = 3, ncol = 1) +
-    ggplot2::scale_color_viridis_d(name = "", option = "C") +
+    ggplot2::scale_color_viridis_d(name = "", option = "A") +
     ggplot2::labs(x = "Timestep", y = "Biomass production", title = plot_title) +
     ggplot2::theme_classic() +
     ggplot2::theme(legend.position = "bottom")
