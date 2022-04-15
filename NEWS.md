@@ -1,3 +1,7 @@
+# meta.arrR 0.5.1
+* Changes to `simulate_nutr_input()`
+* Changes to `rcpp_move_meta()`
+
 # meta.arrR 0.5
 * Place local ecosystems in "empty space"
 * Move some code to `Rcpp`
@@ -11,7 +15,7 @@
 # meta.arrR 0.3
 * Move only across neighboring ecosystems
 * Add `calc_variability()` and `sample_variability()` function
-* Add `sim_nutr_input()` function
+* Add `simulate_nutr_input()` function
 * Add `get_input_df()` function
 * Add `filter_meta()` function
 * Simplified code for `plot.meta_rn()`

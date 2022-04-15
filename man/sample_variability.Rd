@@ -51,7 +51,7 @@ resample the data n times to capture differences based on different orders in wh
 the metaecosystems are sampled.
 }
 \examples{
-nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
+nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
 amplitude_sd = 0.5)
 sample_variability(nutrients_input)
 

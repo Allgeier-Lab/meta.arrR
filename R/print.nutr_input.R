@@ -3,15 +3,15 @@
 #' @description
 #' Printing method for nutr_input object.
 #'
-#' @param x \code{nutr_input} object simulated with \code{sim_nutr_input_*}.
+#' @param x \code{nutr_input} object simulated with \code{simulate_nutr_input_*}.
 #' @param digits Numeric of decimal places (passed on to \code{round}).
 #' @param ... Not used.
 #'
 #' @details
-#' Printing method for \code{nutr_input} created with \code{sim_nutr_input_*}.
+#' Printing method for \code{nutr_input} created with \code{simulate_nutr_input_*}.
 #'
 #' @examples
-#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
+#' nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
 #' amplitude_sd = 0.5)
 #' print(nutrients_input)
 #'

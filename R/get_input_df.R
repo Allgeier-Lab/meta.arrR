@@ -3,7 +3,7 @@
 #' @description
 #' Get input data.frame
 #'
-#' @param x \code{nutr_input} object simulated with \code{sim_nutr_input}.
+#' @param x \code{nutr_input} object simulated with \code{simulate_nutr_input}.
 #' @param gamma Logical if TRUE, the sum of gamma (regional) scale will be added.
 #' @param long Logical if TRUE, \code{data.frame} will be reshaped to long format.
 #'
@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
+#' nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
 #' amplitude_sd = 0.5)
 #' get_input_df(nutrients_input)
 #' }

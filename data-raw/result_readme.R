@@ -44,7 +44,7 @@ starting_values$nutrients_pool <- stable_vals$nutrients_pool
 
 starting_values$detritus_pool <- stable_vals$detritus_pool
 
-nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_input,
+nutrients_input <- simulate_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_input,
                                   freq_mn = 5, amplitude_sd = 0.5)
 
 metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain,

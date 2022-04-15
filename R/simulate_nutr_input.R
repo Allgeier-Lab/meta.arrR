@@ -1,4 +1,4 @@
-#' sim_nutr_input
+#' simulate_nutr_input
 #'
 #' @description
 #' Simulate nutrient input.
@@ -21,15 +21,15 @@
 #' @return nutr_input
 #'
 #' @examples
-#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, frequency = 5, input_mn = 1)
+#' nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, frequency = 5, input_mn = 1)
 #'
-#' @aliases sim_nutr_input
-#' @rdname sim_nutr_input
+#' @aliases simulate_nutr_input
+#' @rdname simulate_nutr_input
 #'
 #' @export
-sim_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0,
-                           amplitude_mn = 0.0, phase_mn = 0.0,
-                           amplitude_sd = 0.0, phase_sd = 0.0, verbose = TRUE) {
+simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0,
+                                amplitude_mn = 0.0, phase_mn = 0.0,
+                                amplitude_sd = 0.0, phase_sd = 0.0, verbose = TRUE) {
 
   # check amplitude argument
   if (amplitude_mn < 0.0 || amplitude_mn > 1.0) {

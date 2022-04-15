@@ -3,7 +3,7 @@
 #' @description
 #' Plotting method for nutr_input object.
 #'
-#' @param x \code{nutr_input} object simulated with \code{sim_nutr_input_*}.
+#' @param x \code{nutr_input} object simulated with \code{simulate_nutr_input_*}.
 #' @param gamma Logical if TRUE gamma values are plotted.
 #' @param ... Not used.
 #'
@@ -14,7 +14,7 @@
 #' @return ggplot
 #'
 #' @examples
-#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
+#' nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
 #' amplitude_sd = 0.5)
 #' plot(nutrients_input)
 #'

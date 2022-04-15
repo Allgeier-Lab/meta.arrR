@@ -79,7 +79,7 @@ starting_values$detritus_pool <- stable_vals$detritus_pool
 
 input_values <- stable_vals$nutrients_pool * parameters$nutrients_loss
 
-nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = input_values, 
+nutrients_input <- simulate_nutr_input(n = n, max_i = max_i, input_mn = input_values, 
                                   frequency = 5)
 
 metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL, 
