@@ -24,8 +24,8 @@ Plotting method for metaecosystem created with \code{setup_meta}. If \code{gamma
 the sum of all local metaecosystems is plotted additionally.
 }
 \examples{
-nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-variability = 0.5)
+nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
+amplitude_sd = 0.5)
 plot(nutrients_input)
 
 }

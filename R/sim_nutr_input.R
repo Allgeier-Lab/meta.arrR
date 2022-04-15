@@ -5,72 +5,48 @@
 #'
 #' @param n Integer with number of metaecosystems to setup.
 #' @param max_i Integer with maximum number of simulation time steps.
-#' @param input_mn,freq_mn Numeric with mean input amount and frequency.
-#' @param variability Variability of nutrient input.
-#' @param amplitude_mod Numeric to modify amplituded (instead of random variability).
-#' @param phase_mod Numeric to modify phase (instead of random variability).
+#' @param frequency Numeric frequency.
+#' @param input_mn Numeric with mean input amount and frequency.
+#' @param amplitude_mn,phase_mn Numeric with mean amplitude and phase.
+#' @param amplitude_sd,phase_sd Numeric with sd amplitude and phase.
 #' @param verbose If TRUE, progress reports are printed.
 #'
 #' @details
-#' Simulating nutrient input based on sine curves. The \code{freq_mn} argument quantifies
+#' Simulating nutrient input based on sine curves. The \code{frequency} argument quantifies
 #' how many complete cycles of the sine function are present for a given \code{max_i},
 #' i.e., how many "peaks" are present. The \code{input_mn} argument quantifies the
-#' mean input values.
-#'
-#' If two \code{variability} parameters are provided, the first one is used for \code{input_mn},
-#' the second one for \code{freq_mn}.
+#' mean input values. Ampliude and phase mean and sd can be controlled by the corresponding
+#' arguments.
 #'
 #' @return nutr_input
 #'
 #' @examples
-#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-#' variability = c(1.0, 1.0))
+#' nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, frequency = 5, input_mn = 1)
 #'
 #' @aliases sim_nutr_input
 #' @rdname sim_nutr_input
 #'
 #' @export
-sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0),
-                           amplitude_mod = NULL, phase_mod = NULL, verbose = TRUE) {
+sim_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0,
+                           amplitude_mn = 0.0, phase_mn = 0.0,
+                           amplitude_sd = 0.0, phase_sd = 0.0, verbose = TRUE) {
+
+  # check amplitude argument
+  if (amplitude_mn < 0.0 || amplitude_mn > 1.0) {
+
+    stop("'amplitude_mn' should be 0.0 <= x <= 1.0", call. = FALSE)
+
+  }
+
+  # check phase_mn argument
+  if (phase_mn < 0.0 || phase_mn > 1.0) {
+
+    stop("'phase_mn' should be 0.0 <= x <= 1.0", call. = FALSE)
+
+  }
 
   # create vector from 1 to max_i for nutrient input
   timesteps <- seq(from = 1, to = max_i, by = 1)
-
-  # check if only one variability parameter is provided
-  if (length(variability) == 1) {
-
-    variability <- rep(x = variability, times = 2)
-
-  }
-
-  # check length of amplitude modifier
-  if (length(amplitude_mod) == 1 && n != 1) {
-
-    amplitude_mod <- rep(x = amplitude_mod, times = n)
-
-  } else if (!is.null(amplitude_mod) && length(amplitude_mod) != n) {
-
-    stop("'amplitude_mod' must have the same length as n.", call. = FALSE)
-
-  }
-
-  # check length of phase modifier
-  if (length(phase_mod) == 1 && n != 1) {
-
-    phase_mod <- rep(x = phase_mod, times = n)
-
-  } else if (!is.null(phase_mod) && length(phase_mod) != n) {
-
-    stop("'phase_mod' must have the same length as n.", call. = FALSE)
-
-  }
-
-  # warning if variability values are outside boundary
-  if (any(variability > 1.0) || any(variability < 0.0)) {
-
-    warning("'variability' values should be 0 <= x <= 1.", call. = FALSE)
-
-  }
 
   # init results
   values_input <- vector(mode = "list", length = n)
@@ -80,35 +56,24 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   phase_i <- vector(mode = "numeric", length = n)
 
   # calculate period for number of input peaks (period = 2 * pi / b)
-  period <- freq_mn / (max_i / (2 * pi))
+  period <- frequency / (max_i / (2 * pi))
 
   for (i in 1:n) {
 
-    # sample random amplitude
-    if (is.null(amplitude_mod)) {
+    # draw random numbers from norm distribution
+    amplitude_mod <- arrR:::rcpp_rnorm(mean = amplitude_mn, sd = amplitude_sd,
+                                       min = 0.0, max = 1.0)
 
-      amplitude_temp <- input_mn * (1 - stats::runif(n = 1, min = 0.0,
-                                                     max = variability[1]))
+    phase_mod <- arrR:::rcpp_rnorm(mean = phase_mn, sd = phase_sd,
+                                   min = 0.0, max = 1.0)
 
-    # use amplitude_mod
-    } else {
+    # calculate values for sine curve
+    amplitude_temp <- input_mn * amplitude_mod
 
-      amplitude_temp <- input_mn * amplitude_mod[i]
+    phase_temp <- ((2 * pi) / period) * phase_mod
 
-    }
-
-    # sample random phase
-    if (is.null(phase_mod)) {
-
-      # sample random phase shift
-      phase_temp <- stats::runif(n = 1, min = 0, max = max_i * variability[2])
-
-      # use amplitude_mod
-    } else {
-
-      phase_temp <- max_i * phase_mod[i]
-
-    }
+    # set phase to 0 if NaN
+    phase_temp <- ifelse(test = is.finite(phase_temp), yes = phase_temp, no = 0)
 
     # calculate sine curve; vertical shift to make sure x > 0
     # amplitude * sin(period * (x + phase)) + vertical
@@ -118,37 +83,15 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
     values_input[[i]] <- data.frame(timestep = timesteps,
                                     input = values_temp)
 
-    amplitude_i[i] <- amplitude_temp
+    amplitude_i[i] <- amplitude_mod
 
-    phase_i[i] <- phase_temp
+    phase_i[i] <- phase_mod
 
     if (any(values_temp < 0) && verbose) {
 
-      warning("Negative input value created. Please check arguments.", call. = FALSE)
+      stop("Negative input value created. Please check arguments.", call. = FALSE)
 
     }
-  }
-
-  # print warning
-  if (!is.null(amplitude_mod) && variability[1] != 0 && verbose) {
-
-    warning("Using 'amplitude_mod' instead of variability.", call. = FALSE)
-
-  }
-
-  # print warning
-  if (!is.null(phase_mod) && variability[2] != 0 && verbose) {
-
-    warning("Using 'phase_mod' instead of variability.", call. = FALSE)
-
-  }
-
-  # print warning
-  if (any(c(amplitude_mod, phase_mod) > 1.0) || any(c(amplitude_mod, phase_mod) < 0.0)) {
-
-    warning("'amplitude_mod' and 'phase_mod' values should be 0 <= x <= 1.",
-            call. = FALSE)
-
   }
 
   # set names
@@ -159,8 +102,8 @@ sim_nutr_input <- function(n, max_i, input_mn, freq_mn, variability = c(0.0, 0.0
   names(phase_i) <- paste0("meta_", 1:n)
 
   # store results in final list
-  result_list <- list(values = values_input, n = n, max_i = max_i, freq_mn = freq_mn,
-                      amplitude_i = amplitude_i, phase_i = phase_i, variability = variability)
+  result_list <- list(values = values_input, n = n, max_i = max_i, frequency = frequency,
+                      amplitude = amplitude_i, phase = phase_i)
 
   # specify class of list
   class(result_list) <- "nutr_input"

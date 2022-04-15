@@ -130,7 +130,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
     } else {
 
       nutrients_input <- sim_nutr_input(n = metasyst$n, max_i = max_i, input_mn = nutrients_input,
-                                        freq_mn = 0.0, verbose = FALSE)
+                                        verbose = FALSE)
 
     }
   }

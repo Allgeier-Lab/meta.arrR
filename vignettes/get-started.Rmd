@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(meta.arrR)
+library(dplyr)
 ```
 
 ### 1. Load parameters
@@ -46,7 +47,7 @@ save_each <- (24 / (min_per_i / 60)) * days
 days <- 1
 seagrass_each <- (24 / (min_per_i / 60)) * days
 
-n <- 9
+n <- 3
 
 days <- 15
 parameters$move_residence <- (24 / (min_per_i / 60)) * days
@@ -79,7 +80,7 @@ starting_values$detritus_pool <- stable_vals$detritus_pool
 input_values <- stable_vals$nutrients_pool * parameters$nutrients_loss
 
 nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = input_values, 
-                                  freq_mn = 5)
+                                  frequency = 5)
 
 metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL, 
                        dimensions = dimensions, max_i = max_i,
@@ -90,7 +91,7 @@ plot(metasyst)
 plot(nutrients_input)
 ```
 
-```{r run_model, eval = FALSE}
+```{r run_model}
 result <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_input,
                               parameters = parameters, movement = "behav",
                               max_i = max_i, save_each = save_each, min_per_i = min_per_i)
@@ -98,7 +99,7 @@ result <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_i
 
 ### 3. Analyze results
 
-```{r analyze_results, eval = FALSE}
+```{r analyze_results}
 plot(result, what = "seafloor")
 
 plot_local_abund(result)

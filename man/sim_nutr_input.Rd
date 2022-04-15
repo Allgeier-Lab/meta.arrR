@@ -7,11 +7,12 @@
 sim_nutr_input(
   n,
   max_i,
-  input_mn,
-  freq_mn,
-  variability = c(0, 0),
-  amplitude_mod = NULL,
-  phase_mod = NULL,
+  frequency = 0,
+  input_mn = 0,
+  amplitude_mn = 0,
+  phase_mn = 0,
+  amplitude_sd = 0,
+  phase_sd = 0,
   verbose = TRUE
 )
 }
@@ -20,13 +21,13 @@ sim_nutr_input(
 
 \item{max_i}{Integer with maximum number of simulation time steps.}
 
-\item{input_mn, freq_mn}{Numeric with mean input amount and frequency.}
+\item{frequency}{Numeric frequency.}
 
-\item{variability}{Variability of nutrient input.}
+\item{input_mn}{Numeric with mean input amount and frequency.}
 
-\item{amplitude_mod}{Numeric to modify amplituded (instead of random variability).}
+\item{amplitude_mn, phase_mn}{Numeric with mean amplitude and phase.}
 
-\item{phase_mod}{Numeric to modify phase (instead of random variability).}
+\item{amplitude_sd, phase_sd}{Numeric with sd amplitude and phase.}
 
 \item{verbose}{If TRUE, progress reports are printed.}
 }
@@ -37,16 +38,13 @@ nutr_input
 Simulate nutrient input.
 }
 \details{
-Simulating nutrient input based on sine curves. The \code{freq_mn} argument quantifies
+Simulating nutrient input based on sine curves. The \code{frequency} argument quantifies
 how many complete cycles of the sine function are present for a given \code{max_i},
 i.e., how many "peaks" are present. The \code{input_mn} argument quantifies the
-mean input values.
-
-If two \code{variability} parameters are provided, the first one is used for \code{input_mn},
-the second one for \code{freq_mn}.
+mean input values. Ampliude and phase mean and sd can be controlled by the corresponding
+arguments.
 }
 \examples{
-nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-variability = c(1.0, 1.0))
+nutrients_input <- sim_nutr_input(n = 3, max_i = 4380, frequency = 5, input_mn = 1)
 
 }
