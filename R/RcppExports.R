@@ -77,10 +77,9 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @param extent NumericVector with spatial extent of the seafloor raster.
 #'
 #' @details
-#' Simulate movement across local metaecosystem. Individuals move to a new local
-#' metaecosystem with a certain probability each timestep. The probability increases
-#' depending on the residence value and how long individuals already stayed on local
-#' metaecosystem. To avoid this movement set \code{parameters$move_residence <= 0}.
+#' Simulate movement across local metaecosystem. Individuals move if their residence
+#' counter equals the maximum residence time specified for each individual in the
+#' attributes table. To avoid this movement set \code{parameters$move_residence <= 0}.
 #'
 #' @return list
 #'

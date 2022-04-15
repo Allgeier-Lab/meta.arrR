@@ -20,10 +20,9 @@ using namespace Rcpp;
 //' @param extent NumericVector with spatial extent of the seafloor raster.
 //'
 //' @details
-//' Simulate movement across local metaecosystem. Individuals move to a new local
-//' metaecosystem with a certain probability each timestep. The probability increases
-//' depending on the residence value and how long individuals already stayed on local
-//' metaecosystem. To avoid this movement set \code{parameters$move_residence <= 0}.
+//' Simulate movement across local metaecosystem. Individuals move if their residence
+//' counter equals the maximum residence time specified for each individual in the
+//' attributes table. To avoid this movement set \code{parameters$move_residence <= 0}.
 //'
 //' @return list
 //'
@@ -48,14 +47,20 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
     // get row id of current individual
     int id_attr = arrR::rcpp_which(fishpop_mat(i, 0), fishpop_attr(_, 0));
 
-    // prob_move
-    double prob_move = fishpop_mat(i, 16) / fishpop_attr(id_attr, 2);
+    // MH: Add function argument here
+    // // prob_move
+    // double prob_move = fishpop_mat(i, 16) / fishpop_attr(id_attr, 2);
+    //
+    // // get random number between 0 and 1
+    // double prob_random = arrR::rcpp_runif(0.0, 1.0);
+    //
+    // bool flag_move = prob_random > prob_move;
 
-    // get random number between 0 and 1
-    double prob_random = arrR::rcpp_runif(0.0, 1.0);
+    // check if residence counter is smaller than residence threshold
+    bool flag_move = fishpop_mat(i, 16) < fishpop_attr(id_attr, 2);
 
     // fish stay in current metasystem
-    if ((fishpop_attr(id_attr, 2) == 0.0) || (prob_random > prob_move)) {
+    if ((fishpop_attr(id_attr, 2) == 0.0) || flag_move) {
 
       // increase residence by one
       fishpop_mat(i, 16) += 1;
@@ -82,7 +87,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
       fishpop_mat(i, 3) = arrR::rcpp_runif(extent[0], extent[1]);
 
       // set residence to zero
-      fishpop_mat(i, 16) = 0;
+      fishpop_mat(i, 16) = 1;
 
     }
   }
