@@ -22,7 +22,7 @@ using namespace Rcpp;
 //' @details
 //' Simulate movement across local metaecosystem. Individuals move if their residence
 //' counter equals the maximum residence time specified for each individual in the
-//' attributes table. To avoid this movement set \code{parameters$move_residence <= 0}.
+//' attributes table. To avoid this movement set \code{parameters$move_residence_mean <= 0}.
 //'
 //' @return list
 //'
@@ -47,7 +47,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
     // get row id of current individual
     int id_attr = arrR::rcpp_which(fishpop_mat(i, 0), fishpop_attr(_, 0));
 
-    // MH: Add function argument here
+    // MH: Add function argument here to switch between fixed and probability meta movement
     // // prob_move
     // double prob_move = fishpop_mat(i, 16) / fishpop_attr(id_attr, 2);
     //

@@ -69,7 +69,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
   bool flag_fish = fishpop_attr.nrow() > 0;
 
   // init flag for movement across metasystem
-  bool flag_move = (as<double>(parameters["move_residence"]) > 0.0) && flag_fish;
+  bool flag_move = (as<double>(parameters["move_residence_mean"]) > 0.0) && flag_fish;
 
   // flag if diffusion needs to be run
   bool flag_diffuse = (as<double>(parameters["nutrients_diffusion"]) > 0.0) ||
@@ -230,7 +230,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
 
           // calculate new coordinates and activity
           arrR::rcpp_move_wrap(fishpop[j], fishpop_attr, movement,
-                               parameters["move_mean"], parameters["move_var"],
+                               parameters["move_mean"], parameters["move_sd"],
                                parameters["move_reef"], parameters["move_border"],
                                parameters["move_return"], max_dist, coords_reef[j],
                                extent, dimensions);

@@ -79,7 +79,7 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @details
 #' Simulate movement across local metaecosystem. Individuals move if their residence
 #' counter equals the maximum residence time specified for each individual in the
-#' attributes table. To avoid this movement set \code{parameters$move_residence <= 0}.
+#' attributes table. To avoid this movement set \code{parameters$move_residence_mean <= 0}.
 #'
 #' @return list
 #'

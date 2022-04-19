@@ -50,8 +50,8 @@ seagrass_each <- (24 / (min_per_i / 60)) * days
 n <- 3
 
 days <- 15
-parameters$move_residence <- (24 / (min_per_i / 60)) * days
-parameters$move_residence_var <- 0.05
+parameters$move_residence_mean <- (24 / (min_per_i / 60)) * days
+parameters$move_residence_sd <- 0.05
 parameters$move_lambda <- 0
 
 parameters$seagrass_thres <- -1/4
@@ -80,7 +80,7 @@ starting_values$detritus_pool <- stable_vals$detritus_pool
 input_values <- stable_vals$nutrients_pool * parameters$nutrients_loss
 
 nutrients_input <- simulate_nutr_input(n = n, max_i = max_i, input_mn = input_values, 
-                                  frequency = 5)
+                                       frequency = 5)
 
 metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL, 
                        dimensions = dimensions, max_i = max_i,

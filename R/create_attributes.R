@@ -34,7 +34,7 @@ create_attributes <- function(fishpop, parameters, max_i) {
       pop_n <- nrow(i)
 
       # return 0 for mean is zero
-      if (parameters$move_residence == 0) {
+      if (parameters$move_residence_mean == 0) {
 
         residence <- rep(x = 0.0, times = pop_n)
 
@@ -43,17 +43,16 @@ create_attributes <- function(fishpop, parameters, max_i) {
 
         # draw from rlognorm with Inf maximum
         residence <- vapply(1:pop_n, function(i)
-          arrR:::rcpp_rlognorm(mean = parameters$move_residence,
-                               sd = parameters$move_residence * parameters$move_residence_var,
-                               min = 0, max = max_i),
+          arrR:::rcpp_rlognorm(mean = parameters$move_residence_mean, sd = parameters$move_residence_sd,
+                               min = 0.0, max = max_i),
           FUN.VALUE = numeric(1))
 
       }
 
       # sample random pop_reserves_thres value
-      reserves_thres <- vapply(1:pop_n, function(i) arrR:::rcpp_rnorm(parameters$pop_reserves_thres_mean,
-                                                                      parameters$pop_reserves_thres_var, 0.0, 1.0),
-                               FUN.VALUE = numeric(1))
+      reserves_thres <- vapply(1:pop_n, function(i)
+        arrR:::rcpp_rnorm(mean = parameters$pop_reserves_thres_mean, sd = parameters$pop_reserves_thres_sd,
+                          min = 0.0, max = 1.0), FUN.VALUE = numeric(1))
 
       # combine to one matrix
       cbind(id = i[, 1], reserves_thres = reserves_thres, residence = residence)

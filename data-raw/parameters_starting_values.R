@@ -34,13 +34,13 @@ default_parameters <- list(
 
   # fishpop movement
   move_mean = 10.0,
-  move_var = 5.0,
+  move_sd = 5.0,
   move_border = 2.0,
   move_reef = 0.5,
   move_return = 50.0,
-  move_residence = 0.0, # MH: check again if that makes sense...
-  move_residence_var = 0.0,
-  move_lambda = 0.0, # MH: what about var?
+  move_residence_mean = 0.0,
+  move_residence_sd = 0.0,
+  move_lambda = 0.0,
 
   # fishpop dimensions
   pop_a = 0.0121,
@@ -52,7 +52,7 @@ default_parameters <- list(
   # fishpop reserves
   pop_reserves_max = 0.05,
   pop_reserves_thres_mean = 0.1,
-  pop_reserves_thres_var = 0.0,
+  pop_reserves_thres_sd = 0.0,
   pop_reserves_consump = 0.1,
 
   # fishpop respiration
@@ -82,7 +82,7 @@ default_starting <- list(
   # fishpop related
   pop_n = 8,
   pop_mean_size = 9.0,
-  pop_var_size = 10.0
+  pop_sd_size = 10.0
 )
 
 usethis::use_data(default_parameters, default_starting, overwrite = TRUE)

@@ -1,6 +1,7 @@
 # meta.arrR 0.5.1
 * Changes to `simulate_nutr_input()`
 * Changes to `rcpp_move_meta()`
+* Rename all `*_var` parameters with `*_sd`
 
 # meta.arrR 0.5
 * Place local ecosystems in "empty space"
