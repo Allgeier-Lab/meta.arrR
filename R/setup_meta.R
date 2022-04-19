@@ -212,8 +212,8 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c
   }
 
   # create look-up table for residence value
-  fishpop_attr <- create_attributes(fishpop = fishpop_list, parameters = parameters,
-                                    max_i = max_i)
+  fishpop_attr <- setup_attributes(fishpop = fishpop_list, parameters = parameters,
+                                   max_i = max_i)
 
   # get extent
   extent <- as.vector(terra::ext(x = seafloor_list[[1]]))

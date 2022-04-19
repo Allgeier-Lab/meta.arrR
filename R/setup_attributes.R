@@ -1,4 +1,4 @@
-#' create_attributes
+#' setup_attributes
 #'
 #' @description
 #' Create attribute values.
@@ -15,14 +15,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' create_attributes(fishpop = fishpop_list, parameters = parameters, max_i = 4380)
+#' setup_attributes(fishpop = fishpop_list, parameters = parameters, max_i = 4380)
 #' }
 #'
-#' @aliases create_attributes
-#' @rdname create_attributes
+#' @aliases setup_attributes
+#' @rdname setup_attributes
 #'
 #' @keywords internal
-create_attributes <- function(fishpop, parameters, max_i) {
+setup_attributes <- function(fishpop, parameters, max_i) {
 
   # loop through all metaecosystems
   result <- do.call(rbind, lapply(fishpop, function(i) {
@@ -41,11 +41,13 @@ create_attributes <- function(fishpop, parameters, max_i) {
       # if create random number if mean != 0
       } else {
 
-        # draw from rlognorm with Inf maximum
+        # draw from rnorm with Inf maximum
         residence <- vapply(1:pop_n, function(i)
-          arrR:::rcpp_rlognorm(mean = parameters$move_residence_mean, sd = parameters$move_residence_sd,
-                               min = 0.0, max = max_i),
+          arrR:::rcpp_rnorm(mean = parameters$move_residence_mean, sd = parameters$move_residence_sd,
+                            min = 0.0, max = max_i),
           FUN.VALUE = numeric(1))
+
+        residence <- floor(residence)
 
       }
 
