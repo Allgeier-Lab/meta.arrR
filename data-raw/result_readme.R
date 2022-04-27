@@ -34,7 +34,7 @@ save_each <- (24 / (min_per_i / 60)) * days
 
 parameters$nutrients_loss <- 0.1
 
-parameters$move_residence <- max_i / 10
+parameters$move_residence_mean <- max_i / 10
 
 stable_vals <- arrR::get_stable_values(bg_biomass = starting_values$bg_biomass,
                                        ag_biomass = starting_values$ag_biomass,
@@ -44,8 +44,8 @@ starting_values$nutrients_pool <- stable_vals$nutrients_pool
 
 starting_values$detritus_pool <- stable_vals$detritus_pool
 
-nutrients_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_input,
-                                  freq_mn = 5, variability = 0.5)
+nutrients_input <- simulate_nutr_input(n = n, max_i = max_i, input_mn = stable_vals$nutrients_input,
+                                  freq_mn = 5, amplitude_sd = 0.5)
 
 metasyst <- setup_meta(n = n, max_i = max_i, dimensions = dimensions, grain = grain,
                        reef = reef, starting_values = starting_values, parameters = parameters)

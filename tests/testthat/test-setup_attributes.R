@@ -4,21 +4,21 @@ seafloor <- arrR::setup_seafloor(dimensions = dimensions, grain = grain, reef = 
 
 starting_values$pop_n <- 8
 
-# setupt fishpop
+# setup fishpop
 fishpop <- lapply(1:n, function(i)
   arrR::setup_fishpop(seafloor = seafloor, starting_values = starting_values,
                       parameters = parameters, verbose = FALSE))
 
 # create attributes
-attributes_matrix <- create_attributes(fishpop = fishpop, parameters = parameters)
+attributes_matrix <- setup_attributes(fishpop = fishpop, parameters = parameters)
 
-test_that("create_attributes returns matrix", {
+test_that("setup_attributes returns matrix", {
 
   expect_is(object = attributes_matrix, class = "matrix")
 
 })
 
-test_that("create_attributes has correct dimensions", {
+test_that("setup_attributes has correct dimensions", {
 
   expect_equal(object = nrow(attributes_matrix), expected = n * starting_values$pop_n)
 

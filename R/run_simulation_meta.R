@@ -129,8 +129,8 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
     } else {
 
-      nutrients_input <- sim_nutr_input(n = metasyst$n, max_i = max_i, input_mn = nutrients_input,
-                                        freq_mn = 0.0, verbose = FALSE)
+      nutrients_input <- simulate_nutr_input(n = metasyst$n, max_i = max_i, input_mn = nutrients_input,
+                                        verbose = FALSE)
 
     }
   }
@@ -272,7 +272,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
                                            yes = "yes", no = "no")
 
     # individuals did not move across ecosystems
-    if (parameters$move_residence == 0 && all(!is.na(fishpop_track[[i]][, -c(18, 19)]))) {
+    if (parameters$move_residence_mean == 0 && all(!is.na(fishpop_track[[i]][, -c(18, 19)]))) {
 
       fishpop_track[[i]]$residence <- fishpop_track[[i]]$timestep
 

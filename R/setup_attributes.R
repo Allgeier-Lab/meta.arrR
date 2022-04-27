@@ -1,4 +1,4 @@
-#' create_attributes
+#' setup_attributes
 #'
 #' @description
 #' Create attribute values.
@@ -15,14 +15,14 @@
 #'
 #' @examples
 #' \dontrun{
-#' create_attributes(fishpop = fishpop_list, parameters = parameters, max_i = 4380)
+#' setup_attributes(fishpop = fishpop_list, parameters = parameters, max_i = 4380)
 #' }
 #'
-#' @aliases create_attributes
-#' @rdname create_attributes
+#' @aliases setup_attributes
+#' @rdname setup_attributes
 #'
 #' @keywords internal
-create_attributes <- function(fishpop, parameters, max_i) {
+setup_attributes <- function(fishpop, parameters, max_i) {
 
   # loop through all metaecosystems
   result <- do.call(rbind, lapply(fishpop, function(i) {
@@ -34,25 +34,27 @@ create_attributes <- function(fishpop, parameters, max_i) {
       pop_n <- nrow(i)
 
       # return 0 for mean is zero
-      if (parameters$move_residence == 0) {
+      if (parameters$move_residence_mean == 0) {
 
         residence <- rep(x = 0.0, times = pop_n)
 
       # if create random number if mean != 0
       } else {
 
-        # draw from rlognorm with Inf maximum
+        # draw from rnorm with Inf maximum
         residence <- vapply(1:pop_n, function(i)
           arrR:::rcpp_rnorm(mean = parameters$move_residence_mean, sd = parameters$move_residence_sd,
                             min = 1.0, max = max_i),
           FUN.VALUE = numeric(1))
 
+        residence <- floor(residence)
+
       }
 
       # sample random pop_reserves_thres value
-      reserves_thres <- vapply(1:pop_n, function(i) arrR:::rcpp_rnorm(parameters$pop_reserves_thres_mean,
-                                                                      parameters$pop_reserves_thres_var, 0.0, 1.0),
-                               FUN.VALUE = numeric(1))
+      reserves_thres <- vapply(1:pop_n, function(i)
+        arrR:::rcpp_rnorm(mean = parameters$pop_reserves_thres_mean, sd = parameters$pop_reserves_thres_sd,
+                          min = 0.0, max = 1.0), FUN.VALUE = numeric(1))
 
       # combine to one matrix
       cbind(id = i[, 1], reserves_thres = reserves_thres, residence = residence)
