@@ -44,7 +44,7 @@ setup_attributes <- function(fishpop, parameters, max_i) {
         # draw from rnorm with Inf maximum
         residence <- vapply(1:pop_n, function(i)
           arrR:::rcpp_rnorm(mean = parameters$move_residence_mean, sd = parameters$move_residence_sd,
-                            min = 0.0, max = max_i),
+                            min = 1.0, max = max_i),
           FUN.VALUE = numeric(1))
 
         residence <- floor(residence)
