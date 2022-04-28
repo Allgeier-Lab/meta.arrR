@@ -2,6 +2,7 @@
 * Changes to `simulate_nutr_input()`
 * Changes to `rcpp_move_meta()`
 * Rename all `*_var` parameters with `*_sd`
+* Adding noise parameter to nutrients input
 
 # meta.arrR 0.5
 * Place local ecosystems in "empty space"

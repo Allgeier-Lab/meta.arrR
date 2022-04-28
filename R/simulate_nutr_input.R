@@ -7,6 +7,7 @@
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param frequency Numeric frequency.
 #' @param input_mn Numeric with mean input amount and frequency.
+#' @param noise_sd Numeric with noise added to sine functions.
 #' @param amplitude_mn,phase_mn Numeric with mean amplitude and phase.
 #' @param amplitude_sd,phase_sd Numeric with sd amplitude and phase.
 #' @param verbose If TRUE, progress reports are printed.
@@ -27,7 +28,7 @@
 #' @rdname simulate_nutr_input
 #'
 #' @export
-simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0,
+simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0, noise_sd = 0.0,
                                 amplitude_mn = 0.0, phase_mn = 0.0,
                                 amplitude_sd = 0.0, phase_sd = 0.0, verbose = TRUE) {
 
@@ -42,6 +43,13 @@ simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0,
   if (phase_mn < 0.0 || phase_mn > 1.0) {
 
     stop("'phase_mn' should be 0.0 <= x <= 1.0", call. = FALSE)
+
+  }
+
+  # check noise_sd argument
+  if (noise_sd < 0.0 || noise_sd > 1.0) {
+
+    stop("'noise_sd' should be 0.0 <= x <= 1.0", call. = FALSE)
 
   }
 
@@ -79,19 +87,54 @@ simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0,
     # amplitude * sin(period * (x + phase)) + vertical
     values_temp <- amplitude_temp * sin(period * (timesteps + phase_temp)) + input_mn
 
-    # save values for resulting object
-    values_input[[i]] <- data.frame(timestep = timesteps,
-                                    input = values_temp)
+    if (noise_sd > 0) {
 
-    amplitude_i[i] <- amplitude_mod
+      # calculate number of values of full frequency
+      frequency_full <- max_i / frequency
 
-    phase_i[i] <- phase_mod
+      # first ald last full frequency are shifted based on phase; create id vector
+      frequency_id <- rep(x = c(1:frequency, 1),
+                          times = c(ceiling(frequency_full * (1 - phase_mod)),
+                                    frequency_full , frequency_full, frequency_full, frequency_full,
+                                    floor(frequency_full * phase_mod)))
 
+      # split max_i into frequency chunks
+      chunks <- split(timesteps, frequency_id)
+
+      # loop through all chunks
+      for (j in seq_along(chunks)) {
+
+        # get values of chunk
+        values_chunk <- values_temp[chunks[[j]]]
+
+        # sample random noise modifier; this cant be x < 0 if amplitude_mn = 1
+        noise_rnd <- ifelse(test = amplitude_temp == input_mn,
+                            yes = stats::runif(n = 1, min = 0.0, max = noise_sd),
+                            no = stats::runif(n = 1, min = -noise_sd, max = noise_sd))
+
+        # calculate curve factor (values_temp - input_mn) / (max(values_temp) - input_mn)
+        noise_factor <- (values_chunk - input_mn) / (max(values_chunk) - input_mn)
+
+        # change values of current chunk
+        values_temp[chunks[[j]]] <- values_chunk - (amplitude_temp * (noise_rnd * noise_factor))
+
+      }
+    }
+
+    # check if any values are below zero or above amplitude
     if (any(values_temp < 0) && verbose) {
 
       stop("Negative input value created. Please check arguments.", call. = FALSE)
 
     }
+
+    # save values for resulting object
+    values_input[[i]] <- data.frame(timestep = timesteps, input = values_temp)
+
+    amplitude_i[i] <- amplitude_mod
+
+    phase_i[i] <- phase_mod
+
   }
 
   # set names
@@ -102,7 +145,8 @@ simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0,
   names(phase_i) <- paste0("meta_", 1:n)
 
   # store results in final list
-  result_list <- list(values = values_input, n = n, max_i = max_i, frequency = frequency,
+  result_list <- list(values = values_input, n = n, max_i = max_i,
+                      frequency = frequency, input_mn = input_mn, noise_sd = noise_sd,
                       amplitude = amplitude_i, phase = phase_i)
 
   # specify class of list

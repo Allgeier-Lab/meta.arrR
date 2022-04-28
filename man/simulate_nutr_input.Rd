@@ -9,6 +9,7 @@ simulate_nutr_input(
   max_i,
   frequency = 0,
   input_mn = 0,
+  noise_sd = 0,
   amplitude_mn = 0,
   phase_mn = 0,
   amplitude_sd = 0,
@@ -24,6 +25,8 @@ simulate_nutr_input(
 \item{frequency}{Numeric frequency.}
 
 \item{input_mn}{Numeric with mean input amount and frequency.}
+
+\item{noise_sd}{Numeric with noise added to sine functions.}
 
 \item{amplitude_mn, phase_mn}{Numeric with mean amplitude and phase.}
 
