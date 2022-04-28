@@ -43,12 +43,23 @@ get_input_df <- function(x, gamma = TRUE, long = FALSE) {
   # reshape to long format
   if (long) {
 
-    input_df <- stats::reshape(data = input_df, direction = "long",
-                               v.names = "value", varying = list(names(input_df[, -1])),
-                               idvar = "timestep", ids = input_df[, 1],
-                               timevar = "meta", times = names(input_df[, -1]),
-                               new.row.names = seq(from = 1, to = nrow(input_df) *
-                                                     (ncol(input_df) - 1)))
+    # only one meta-ecosystem present so reshape not working due to not-unique ids
+    if (x$n == 1) {
+
+      input_df <- data.frame(timestep = input_df$timestep,
+                             meta = "meta_1", value = input_df$meta_1)
+
+    # reshape from wide to long
+    } else {
+
+      input_df <- stats::reshape(data = input_df, direction = "long",
+                                 v.names = "value", varying = list(names(input_df[, -1])),
+                                 idvar = "timestep", ids = input_df[, 1],
+                                 timevar = "meta", times = names(input_df[, -1]),
+                                 new.row.names = seq(from = 1, to = nrow(input_df) *
+                                                       (ncol(input_df) - 1)))
+
+    }
 
     # set factor levels (gamma always last even if not present)
     input_df$meta <- factor(input_df$meta,

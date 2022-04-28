@@ -14,8 +14,8 @@
 #' @return ggplot
 #'
 #' @examples
-#' nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
-#' amplitude_sd = 0.5)
+#' nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1,
+#' frequency = 3, amplitude_sd = 0.5)
 #' plot(nutrients_input)
 #'
 #' @aliases plot.nutr_input
@@ -51,6 +51,7 @@ plot.nutr_input <- function(x, gamma = FALSE, ...) {
     ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$value,
                                     color = .data$meta)) +
     ggplot2::geom_hline(yintercept = 0, color = "darkgrey", linetype = 2) +
+    ggplot2::geom_hline(yintercept = x$input_mn * 2, color = "darkgrey", linetype = 2) +
     ggplot2::labs(x = "Timestep", y = "Nutrient input [g/cell]") +
     ggplot2::theme_classic() +
     ggplot2::theme(legend.position = "bottom") +
