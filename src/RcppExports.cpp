@@ -61,6 +61,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rcpp_sample
+int rcpp_sample(Rcpp::IntegerVector x, Rcpp::NumericVector probs);
+RcppExport SEXP _meta_arrR_rcpp_sample(SEXP xSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(rcpp_sample(x, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_simulate_meta
 void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutrients_input, Rcpp::NumericMatrix fishpop_attr, Rcpp::NumericMatrix seafloor_probs, Rcpp::List seafloor_track, Rcpp::List fishpop_track, Rcpp::List parameters, Rcpp::String movement, Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions, int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in, bool verbose);
 RcppExport SEXP _meta_arrR_rcpp_simulate_meta(SEXP seafloorSEXP, SEXP fishpopSEXP, SEXP nutrients_inputSEXP, SEXP fishpop_attrSEXP, SEXP seafloor_probsSEXP, SEXP seafloor_trackSEXP, SEXP fishpop_trackSEXP, SEXP parametersSEXP, SEXP movementSEXP, SEXP extentSEXP, SEXP dimensionsSEXP, SEXP max_iSEXP, SEXP min_per_iSEXP, SEXP save_eachSEXP, SEXP seagrass_eachSEXP, SEXP burn_inSEXP, SEXP verboseSEXP) {
@@ -93,6 +105,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_meta_arrR_rcpp_list_to_matrix", (DL_FUNC) &_meta_arrR_rcpp_list_to_matrix, 3},
     {"_meta_arrR_rcpp_matrix_to_list", (DL_FUNC) &_meta_arrR_rcpp_matrix_to_list, 2},
     {"_meta_arrR_rcpp_move_meta", (DL_FUNC) &_meta_arrR_rcpp_move_meta, 4},
+    {"_meta_arrR_rcpp_sample", (DL_FUNC) &_meta_arrR_rcpp_sample, 2},
     {"_meta_arrR_rcpp_simulate_meta", (DL_FUNC) &_meta_arrR_rcpp_simulate_meta, 17},
     {NULL, NULL, 0}
 };

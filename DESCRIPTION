@@ -20,8 +20,7 @@ Imports:
     ggplot2,
     Rcpp,
     rlang, 
-    terra,
-    utils
+    terra
 Suggests:
     dplyr,
     knitr,
@@ -31,6 +30,5 @@ Remotes:
     Allgeier-Lab/arrR
 LinkingTo: 
     Rcpp,
-    RcppDist, 
     RcppProgress,
     arrR

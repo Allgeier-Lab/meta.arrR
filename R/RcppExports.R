@@ -91,6 +91,28 @@ rcpp_move_meta <- function(fishpop, seafloor_probs, fishpop_attr, extent) {
     .Call(`_meta_arrR_rcpp_move_meta`, fishpop, seafloor_probs, fishpop_attr, extent)
 }
 
+#' rcpp_sample
+#'
+#' @description
+#' Rcpp sample vector
+#'
+#' @param x IntegerVector with values.
+#' @param probs NumericVector with relative probabilities.
+#'
+#' @details
+#' Samples one value from provided vector with given probabilities. The probabilities
+#' must sum up to sum(probs) == 1.
+#'
+#' @return double
+#'
+#' @aliases rcpp_sample
+#' @rdname rcpp_sample
+#'
+#' @keywords internal
+rcpp_sample <- function(x, probs) {
+    .Call(`_meta_arrR_rcpp_sample`, x, probs)
+}
+
 #' rcpp_simulate_meta
 #'
 #' @description

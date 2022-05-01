@@ -47,14 +47,12 @@ save_each <- (24 / (min_per_i / 60)) * days
 days <- 1
 seagrass_each <- (24 / (min_per_i / 60)) * days
 
-n <- 3
+n <- 8
 
 days <- 15
 parameters$move_residence_mean <- (24 / (min_per_i / 60)) * days
-parameters$move_residence_sd <- 0.05
-parameters$move_lambda <- 0
-
-parameters$seagrass_thres <- -1/4
+parameters$move_residence_sd <- 0.0
+parameters$move_lambda <- 0.0
 ```
 
 ### 2. Setup simulation enviroment
@@ -107,4 +105,7 @@ plot_local_abund(result)
 get_abundance(result) %>% 
   dplyr::group_by(meta) %>% 
   dplyr::summarise(abundance = mean(abundance))
+
+# get_abundance(result) %>%
+#   tidyr::pivot_wider(values_from = abundance, names_from = meta, names_prefix = "meta")
 ```

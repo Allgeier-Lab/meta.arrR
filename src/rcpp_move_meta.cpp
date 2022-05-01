@@ -2,9 +2,11 @@
 
 #include <Rcpp.h>
 #include <arrR.h>
+#include <chrono>
 
 #include "rcpp_move_meta.h"
 #include "rcpp_list_to_matrix.h"
+#include "rcpp_sample.h"
 #include "rcpp_matrix_to_list.h"
 
 using namespace Rcpp;
@@ -48,6 +50,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
     int id_attr = arrR::rcpp_which(fishpop_mat(i, 0), fishpop_attr(_, 0));
 
     // MH: Add function argument here to switch between fixed and probability meta movement
+
     // // prob_move
     // double prob_move = fishpop_mat(i, 16) / fishpop_attr(id_attr, 2);
     //
@@ -57,10 +60,10 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
     // bool flag_move = prob_random > prob_move;
 
     // check if residence counter is smaller than residence threshold
-    bool flag_move = fishpop_mat(i, 16) < fishpop_attr(id_attr, 2);
+    bool flag_stay = fishpop_mat(i, 16) < fishpop_attr(id_attr, 2);
 
     // fish stay in current metasystem
-    if ((fishpop_attr(id_attr, 2) == 0.0) || flag_move) {
+    if ((fishpop_attr(id_attr, 2) == 0.0) || flag_stay) {
 
       // increase residence by one
       fishpop_mat(i, 16) += 1;
@@ -72,10 +75,10 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
       int meta_temp = fishpop_mat(i, 17);
 
       // get probs of starting ecosystem
-      Rcpp::NumericVector p = seafloor_probs(_, meta_temp - 1);
+      Rcpp::NumericVector probs = seafloor_probs(_, meta_temp - 1);
 
       // sample new random id
-      int id_random = Rcpp::sample(meta_ids, 1, false, p)(0);
+      int id_random = rcpp_sample(meta_ids, probs);
 
       // update meta id
       fishpop_mat(i, 17) = id_random;
