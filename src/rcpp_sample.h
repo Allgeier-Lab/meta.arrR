@@ -1,6 +1,6 @@
 //#ifndef RCPP_SAMPLE
 //#define RCPP_SAMPLE
 
-int rcpp_sample(Rcpp::IntegerVector x, Rcpp::NumericVector p);
+double rcpp_sample(Rcpp::NumericVector x, Rcpp::NumericVector probs);
 
 //#endif // RCPP_SAMPLE

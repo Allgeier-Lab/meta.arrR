@@ -96,12 +96,15 @@ rcpp_move_meta <- function(fishpop, seafloor_probs, fishpop_attr, extent) {
 #' @description
 #' Rcpp sample vector
 #'
-#' @param x IntegerVector with values.
+#' @param x NumericVector with values.
 #' @param probs NumericVector with relative probabilities.
 #'
 #' @details
 #' Samples one value from provided vector with given probabilities. The probabilities
 #' must sum up to sum(probs) == 1.
+#'
+#' @references
+#' How to use time-based seed based on <http://www.cplusplus.com/reference/algorithm/shuffle/>
 #'
 #' @return double
 #'

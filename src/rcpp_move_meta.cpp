@@ -41,7 +41,15 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
                                                         true);
 
   // create vector with all possible meta ids
-  Rcpp::IntegerVector meta_ids = Rcpp::seq(1, seafloor_probs.nrow());
+  Rcpp::NumericVector meta_id (seafloor_probs.nrow());
+
+  // fill vector with id
+  // MH: This could be easier using Rcpp::seq (need to cast IntegerVec to NumericVec)
+  for(int i = 0; i < meta_id.length(); i++) {
+
+    meta_id[i] = i + 1;
+
+  }
 
   // loop through all individuals
   for (int i = 0; i < fishpop_mat.nrow(); i++) {
@@ -78,10 +86,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
       Rcpp::NumericVector probs = seafloor_probs(_, meta_temp - 1);
 
       // sample new random id
-      int id_random = rcpp_sample(meta_ids, probs);
-
-      // update meta id
-      fishpop_mat(i, 17) = id_random;
+      fishpop_mat(i, 17) = rcpp_sample(meta_id, probs);
 
       // random x coord
       fishpop_mat(i, 2) = arrR::rcpp_runif(extent[0], extent[1]);
@@ -89,7 +94,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
       // random y coord
       fishpop_mat(i, 3) = arrR::rcpp_runif(extent[0], extent[1]);
 
-      // set residence to zero
+      // set residence to one
       fishpop_mat(i, 16) = 1;
 
     }

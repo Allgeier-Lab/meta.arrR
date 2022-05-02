@@ -47,9 +47,9 @@ save_each <- (24 / (min_per_i / 60)) * days
 days <- 1
 seagrass_each <- (24 / (min_per_i / 60)) * days
 
-n <- 8
+n <- 9
 
-days <- 15
+days <- 1
 parameters$move_residence_mean <- (24 / (min_per_i / 60)) * days
 parameters$move_residence_sd <- 0.0
 parameters$move_lambda <- 0.0
@@ -84,9 +84,8 @@ metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL,
                        dimensions = dimensions, max_i = max_i,
                        starting_values = starting_values, parameters = parameters)
 
-plot(metasyst)
-
-plot(nutrients_input)
+# plot(metasyst)
+# plot(nutrients_input)
 ```
 
 ```{r run_model}

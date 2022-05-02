@@ -204,7 +204,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
         int pop_n_temp = as<Rcpp::NumericMatrix>(fishpop[j]).nrow();
 
         // if set pop_n_temp to zero if row is actually NA
-        if ((pop_n_temp == 1) && (NumericVector::is_na(as<Rcpp::NumericMatrix>(fishpop[j])(0,0)))) {
+        if ((pop_n_temp == 1) && (NumericVector::is_na(as<Rcpp::NumericMatrix>(fishpop[j])(0, 0)))) {
 
           pop_n_temp = 0;
 

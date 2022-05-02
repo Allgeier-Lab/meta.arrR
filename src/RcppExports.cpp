@@ -62,12 +62,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_sample
-int rcpp_sample(Rcpp::IntegerVector x, Rcpp::NumericVector probs);
+double rcpp_sample(Rcpp::NumericVector x, Rcpp::NumericVector probs);
 RcppExport SEXP _meta_arrR_rcpp_sample(SEXP xSEXP, SEXP probsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type probs(probsSEXP);
     rcpp_result_gen = Rcpp::wrap(rcpp_sample(x, probs));
     return rcpp_result_gen;
