@@ -44,8 +44,8 @@ calc_probability <- function(metasyst, lambda = 1, diag_value = NA, full = TRUE,
   local_dist <- as.matrix(stats::dist(metasyst$seafloor_xy[, 2:3], diag = TRUE, upper = TRUE,
                                       method = "euclidean"))
 
-  # calculate probability and standarize by n - 1 because of diagonal not allowed
-  local_prob <- exp(-local_dist * lambda) / ( metasyst$n - 1)
+  # calculate probability
+  local_prob <- exp(-local_dist * lambda)
 
   # replace diag with diag value
   diag(local_prob) <- diag_value

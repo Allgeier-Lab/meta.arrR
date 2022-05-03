@@ -81,7 +81,7 @@ plot.meta_syst <- function(x, ...) {
     ggplot2::geom_point(ggplot2::aes(x = .data$distance, y = .data$probability,
                                      col = factor(.data$id_origin)), shape = 1, size = 2) +
     ggplot2::scale_colour_viridis_d(name = "Ecosystem", option = "A") +
-    ggplot2::scale_x_continuous(breaks = seq(from = 0, to = 3, by = 0.5), limits = c(0, 3)) + # 2.828427m is diagonal dist
+    ggplot2::scale_x_continuous(limits = c(0, max(prob_dist$dist))) + # 2.828427m is diagonal dist
     ggplot2::scale_y_continuous(limits = c(0, 1)) +
     ggplot2::labs(x = "Distance", y = "Probability") +
     ggplot2::theme_classic() +

@@ -82,8 +82,8 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
       // get current id
       int meta_temp = fishpop_mat(i, 17);
 
-      // get probs of starting ecosystem
-      Rcpp::NumericVector probs = seafloor_probs(_, meta_temp - 1);
+      // get probs of starting ecosystem normalized by number of possible target ecosystems
+      Rcpp::NumericVector probs = seafloor_probs(_, meta_temp - 1) / (seafloor_probs.nrow() - 1);
 
       // sample new random id
       fishpop_mat(i, 17) = rcpp_sample(meta_id, probs);
