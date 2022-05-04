@@ -84,8 +84,8 @@ metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL,
                        dimensions = dimensions, max_i = max_i,
                        starting_values = starting_values, parameters = parameters)
 
-# plot(metasyst)
-# plot(nutrients_input)
+plot(metasyst)
+plot(nutrients_input)
 ```
 
 ```{r run_model}
@@ -96,7 +96,7 @@ result <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_i
 
 ### 3. Analyze results
 
-```{r analyze_results}
+```{r analyze_results, eval = FALSE}
 plot(result, what = "seafloor")
 
 plot_local_abund(result)

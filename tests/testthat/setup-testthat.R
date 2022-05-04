@@ -1,6 +1,5 @@
 library(arrR)
 library(dplyr)
-library(terra)
 
 # get parameters
 parameters <- meta.arrR::default_parameters

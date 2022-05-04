@@ -9,7 +9,7 @@ setup_meta(
   reef = NULL,
   seafloor_xy = NULL,
   dimensions,
-  grain = c(1, 1),
+  grain = 1,
   starting_values,
   parameters,
   max_i,
@@ -57,7 +57,7 @@ populations.
 If \code{seafloor_xy = NULL}, coordinates are simulated random (range: 0-1).
 }
 \examples{
-metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
+metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(50, 50), grain = 1,
 starting_values = default_starting, parameters = default_parameters)
 
 }

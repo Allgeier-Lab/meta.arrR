@@ -108,9 +108,10 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
   # setup seafloor #
 
+  seafloor_dim <- arrR::get_seafloor_dim(metasyst$seafloor[[1]])
+
   # convert seafloor to matrix
-  seafloor_values <- lapply(metasyst$seafloor, function(i)
-    as.matrix(terra::as.data.frame(i, xy = TRUE, na.rm = FALSE)))
+  seafloor_values <- lapply(metasyst$seafloor, as.matrix)
 
   # create lists to store results for each timestep
   seafloor_track <- vector(mode = "list", length = metasyst$n)
@@ -246,7 +247,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
     # add timestep to  seafloor/fishpop counter
     seafloor_track[[i]]$timestep <- rep(x = seq(from = 0, to = max_i, by = save_each),
-                                        each = terra::ncell(metasyst$seafloor[[i]]))
+                                        each = nrow(metasyst$seafloor[[i]]))
 
     # add burn_in col
     seafloor_track[[i]]$burn_in <- ifelse(test = seafloor_track[[i]]$timestep < burn_in,
@@ -297,7 +298,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track, nutrients_input = nutrients_input,
                  n = metasyst$n, movement = movement, fishpop_attr = metasyst$fishpop_attr,
                  parameters = parameters, starting_values = metasyst$starting_values,
-                 extent = metasyst$extent, grain = terra::res(metasyst$seafloor[[1]]), dimensions = metasyst$dimensions,
+                 dimensions = seafloor_dim$dimensions, extent = seafloor_dim$extent, grain = seafloor_dim$grain,
                  max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  seagrass_each = seagrass_each, save_each = save_each)
 

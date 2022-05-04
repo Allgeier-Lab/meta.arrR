@@ -1,6 +1,6 @@
 # create vector with names
 present_names <- c("seafloor", "fishpop", "nutrients_input", "n", "movement", "fishpop_attr",
-                   "parameters", "starting_values", "extent", "grain", "dimensions",
+                   "parameters", "starting_values", "dimensions", "extent", "grain",
                    "max_i" , "min_per_i", "burn_in", "seagrass_each", "save_each")
 
 test_that("run_meta returns meta_rn", {
@@ -33,12 +33,14 @@ test_that("run_meta returns correct information", {
 
   expect_equal(object = result_rand$n, expected = n)
 
-  expect_equal(object = terra::ext(result_rand$extent),
-               expected = terra::ext(metasyst$seafloor[[1]]))
+  seafloor_dim <- arrR::get_seafloor_dim(metasyst$seafloor[[1]])
 
-  expect_equal(object = result_rand$grain, expected = c(grain, grain))
+  expect_equal(object = result_rand$extent,
+               expected = seafloor_dim$extent)
 
-  expect_equal(object = result_rand$dimensions, expected = dimensions)
+  expect_equal(object = result_rand$grain, expected = grain)
+
+  expect_equal(object = unname(result_rand$dimensions), expected = dimensions)
 
   expect_equal(object = result_rand$max_i, expected = max_i)
 
