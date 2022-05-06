@@ -9,7 +9,7 @@ rcpp_move_meta(fishpop, fishpop_attr, seafloor_probs, extent)
 \arguments{
 \item{fishpop}{List with fish population.}
 
-\item{fishpop_attr}{NumericMatrix with residence and reserves_thres values for each individual.}
+\item{fishpop_attr}{NumericMatrix with reserves_thres and prob_move values for each individual.}
 
 \item{seafloor_probs}{NumericMatrix with local ecosystems probabilities.}
 

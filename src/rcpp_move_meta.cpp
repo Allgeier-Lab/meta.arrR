@@ -17,7 +17,7 @@ using namespace Rcpp;
 //' Rcpp move meta.
 //'
 //' @param fishpop List with fish population.
-//' @param fishpop_attr NumericMatrix with residence and reserves_thres values for each individual.
+//' @param fishpop_attr NumericMatrix with reserves_thres and prob_move values for each individual.
 //' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 //' @param extent NumericVector with spatial extent of the seafloor raster.
 //'
@@ -63,10 +63,8 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix fishpop_attr,
     // drawn random number between 0 and 1 to check movement probability against
     double prob_random = arrR::rcpp_runif(0.0, 1.0);
 
-    bool flag_stay = prob_random > prob_attr;
-
     // fish stay in current metasystem
-    if ((fishpop_attr(id_attr, 2) == 0.0) || flag_stay) {
+    if (prob_random > prob_attr) {
 
       // // increase residence by one
       // fishpop_mat(i, 16) += 1;

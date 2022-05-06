@@ -72,7 +72,7 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' Rcpp move meta.
 #'
 #' @param fishpop List with fish population.
-#' @param fishpop_attr NumericMatrix with residence and reserves_thres values for each individual.
+#' @param fishpop_attr NumericMatrix with reserves_thres and prob_move values for each individual.
 #' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 #' @param extent NumericVector with spatial extent of the seafloor raster.
 #'
@@ -123,7 +123,7 @@ rcpp_sample <- function(x, probs) {
 #'
 #' @param seafloor,fishpop List with seafloor and fishpop data of metaecosystems.
 #' @param nutrients_input List with amount of nutrient input each timestep.
-#' @param fishpop_attr NumericMatrix with residence and reserves_thres values for each individual
+#' @param fishpop_attr NumericMatrix with reserves_thres and prob_move values for each individual.
 #' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 #' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
 #' @param parameters List with parameters.
