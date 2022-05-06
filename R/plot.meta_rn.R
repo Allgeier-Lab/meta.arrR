@@ -212,7 +212,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       # create ggplot
       gg_all <- ggplot2::ggplot(data = seafloor) +
         ggplot2::geom_raster(ggplot2::aes(x = .data$x, y = .data$y, fill = .data$fill)) +
-        ggplot2::facet_wrap(. ~ .data$id, nrow = 1) +
+        ggplot2::facet_wrap(. ~ .data$id) +
         ggplot2::scale_fill_gradientn(colours = c("#368AC0", "#F4B5BD", "#EC747F"),
                                       na.value = "#9B964A", limits = limits,
                                       name = fill) +
@@ -255,7 +255,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
         ggplot2::geom_raster(ggplot2::aes(x = .data$x, y = .data$y, fill = .data$density)) +
         ggplot2::geom_raster(data = coords_reef, ggplot2::aes(x = .data$x, y = .data$y),
                              fill = "#9B964A") +
-        ggplot2::facet_wrap(. ~ .data$id, nrow = 1) +
+        ggplot2::facet_wrap(. ~ .data$id) +
         ggplot2::scale_fill_gradientn(colours = c("#368AC0", "#F4B5BD", "#EC747F"),
                                       name = "Density") +
         ggplot2::coord_equal() +

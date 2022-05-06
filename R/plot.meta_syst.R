@@ -63,33 +63,38 @@ plot.meta_syst <- function(x, ...) {
     ggplot2::scale_colour_viridis_d(name = "Ecosystem", option = "A") +
     ggplot2::labs(x = "x coordinate", y = "y coordinate") +
     ggplot2::theme_void() +
-    ggplot2::theme(legend.position = "bottom", axis.title = ggplot2::element_text(),
+    ggplot2::theme(legend.position = "none", axis.title = ggplot2::element_text(),
                    axis.title.y = ggplot2::element_text(angle = 90))
 
   gg_raster <- ggplot2::ggplot(data = local_prob) +
-    ggplot2::geom_tile(ggplot2::aes(x = factor(.data$id_origin), y = factor(.data$id_reach),
-                                    fill = .data$probability)) +
+    ggplot2::geom_raster(ggplot2::aes(x = factor(.data$id_origin), y = factor(.data$id_reach),
+                                      fill = .data$probability)) +
+    ggplot2::geom_text(ggplot2::aes(x = factor(.data$id_origin), y = factor(.data$id_reach),
+                                    label = round(.data$probability, digits = 1))) +
     ggplot2::coord_equal() +
     ggplot2::scale_fill_viridis_c(name = "Probability", option = "D") +
     ggplot2::labs(x = "Ecosystem origin", y = "Ecosystem reach") +
     ggplot2::theme_classic() +
-    ggplot2::theme(legend.position = "bottom")
+    ggplot2::theme(legend.position = "none")
 
   gg_function <- ggplot2::ggplot(data = local_prob) +
-    ggplot2::geom_line(ggplot2::aes(x = .data$distance, y = .data$probability,
-                                    col = factor(.data$id_origin)) ) +
-    ggplot2::geom_point(ggplot2::aes(x = .data$distance, y = .data$probability,
-                                     col = factor(.data$id_origin)), shape = 1, size = 2) +
+    ggplot2::geom_line(ggplot2::aes(x = .data$distance, y = .data$probability)) +
+    ggplot2::geom_point(ggplot2::aes(x = .data$distance, y = .data$probability),
+                        shape = 1, size = 2) +
     ggplot2::scale_colour_viridis_d(name = "Ecosystem", option = "A") +
-    ggplot2::scale_x_continuous(limits = c(0, max(prob_dist$dist))) + # 2.828427m is diagonal dist
+    # ggplot2::scale_x_continuous(limits = c(0, max(prob_dist$dist))) + # 2.828427m is diagonal dist
     ggplot2::scale_y_continuous(limits = c(0, 1)) +
     ggplot2::labs(x = "Distance", y = "Probability") +
     ggplot2::theme_classic() +
-    ggplot2::theme(legend.position = "bottom")
+    ggplot2::theme(legend.position = "none")
 
   # combine to one grid
 
-  suppressWarnings(gg_all <- cowplot::plot_grid(gg_map, gg_raster, gg_function, ncol = 3))
+  gg_all <- cowplot::plot_grid(gg_map, gg_raster, ncol = 2)
+
+  gg_all <- cowplot::plot_grid(gg_all, gg_function, nrow = 2)
+
+  # suppressWarnings(gg_all <- cowplot::plot_grid(gg_map, gg_raster, gg_function, ncol = 3))
 
   return(gg_all)
 
