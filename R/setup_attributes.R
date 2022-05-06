@@ -34,7 +34,7 @@ setup_attributes <- function(fishpop, parameters, max_i) {
       pop_n <- nrow(i)
 
       # return 0 for mean is zero
-      if (parameters$move_residence_mean == 0) {
+      if (parameters$move_meta_mean == 0) {
 
         residence <- rep(x = 0.0, times = pop_n)
 
@@ -43,11 +43,9 @@ setup_attributes <- function(fishpop, parameters, max_i) {
 
         # draw from rnorm with Inf maximum
         residence <- vapply(1:pop_n, function(i)
-          arrR:::rcpp_rnorm(mean = parameters$move_residence_mean, sd = parameters$move_residence_sd,
-                            min = 1.0, max = max_i),
+          arrR:::rcpp_rnorm(mean = parameters$move_meta_mean, sd = parameters$move_meta_sd,
+                            min = 0.0, max = 1.0),
           FUN.VALUE = numeric(1))
-
-        residence <- floor(residence)
 
       }
 

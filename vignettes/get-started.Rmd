@@ -49,10 +49,11 @@ seagrass_each <- (24 / (min_per_i / 60)) * days
 
 n <- 9
 
-days <- 1
-parameters$move_residence_mean <- (24 / (min_per_i / 60)) * days
-parameters$move_residence_sd <- 0.0
-parameters$move_lambda <- 0.0
+parameters$move_meta_mean <- 0.5
+parameters$move_meta_sd <- 0.1
+
+hours <- 16
+parameters$move_meta_each <- hours / (min_per_i / 60)
 ```
 
 ### 2. Setup simulation enviroment
@@ -84,8 +85,8 @@ metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL,
                        dimensions = dimensions, max_i = max_i,
                        starting_values = starting_values, parameters = parameters)
 
-plot(metasyst)
-plot(nutrients_input)
+# plot(metasyst)
+# plot(nutrients_input)
 ```
 
 ```{r run_model}

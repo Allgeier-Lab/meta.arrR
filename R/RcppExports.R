@@ -72,14 +72,14 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' Rcpp move meta.
 #'
 #' @param fishpop List with fish population.
-#' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 #' @param fishpop_attr NumericMatrix with residence and reserves_thres values for each individual.
+#' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 #' @param extent NumericVector with spatial extent of the seafloor raster.
 #'
 #' @details
 #' Simulate movement across local metaecosystem. Individuals move if their residence
 #' counter equals the maximum residence time specified for each individual in the
-#' attributes table. To avoid this movement set \code{parameters$move_residence_mean <= 0}.
+#' attributes table. To avoid this movement set \code{parameters$move_meta_each = 0}.
 #'
 #' @return list
 #'
@@ -87,8 +87,8 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @rdname rcpp_move_meta
 #'
 #' @keywords internal
-rcpp_move_meta <- function(fishpop, seafloor_probs, fishpop_attr, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, seafloor_probs, fishpop_attr, extent)
+rcpp_move_meta <- function(fishpop, fishpop_attr, seafloor_probs, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, fishpop_attr, seafloor_probs, extent)
 }
 
 #' rcpp_sample

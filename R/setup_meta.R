@@ -166,8 +166,8 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = 1
 
       fishpop[1, ] <- NA
 
-      # add residence col
-      fishpop$residence <- NA
+      # add moved col
+      fishpop$moved <- NA
 
     } else {
 
@@ -178,7 +178,7 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = 1
       fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
 
       # add initial residence column
-      fishpop$residence <- 0
+      fishpop$moved <- 0
 
     }
 

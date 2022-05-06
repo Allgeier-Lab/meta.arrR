@@ -48,16 +48,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_move_meta
-Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs, Rcpp::NumericMatrix fishpop_attr, Rcpp::NumericVector extent);
-RcppExport SEXP _meta_arrR_rcpp_move_meta(SEXP fishpopSEXP, SEXP seafloor_probsSEXP, SEXP fishpop_attrSEXP, SEXP extentSEXP) {
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix fishpop_attr, Rcpp::NumericMatrix seafloor_probs, Rcpp::NumericVector extent);
+RcppExport SEXP _meta_arrR_rcpp_move_meta(SEXP fishpopSEXP, SEXP fishpop_attrSEXP, SEXP seafloor_probsSEXP, SEXP extentSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type fishpop(fishpopSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type seafloor_probs(seafloor_probsSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type fishpop_attr(fishpop_attrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type seafloor_probs(seafloor_probsSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type extent(extentSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_move_meta(fishpop, seafloor_probs, fishpop_attr, extent));
+    rcpp_result_gen = Rcpp::wrap(rcpp_move_meta(fishpop, fishpop_attr, seafloor_probs, extent));
     return rcpp_result_gen;
 END_RCPP
 }

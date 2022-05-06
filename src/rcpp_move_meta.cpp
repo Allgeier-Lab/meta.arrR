@@ -17,14 +17,14 @@ using namespace Rcpp;
 //' Rcpp move meta.
 //'
 //' @param fishpop List with fish population.
-//' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 //' @param fishpop_attr NumericMatrix with residence and reserves_thres values for each individual.
+//' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 //' @param extent NumericVector with spatial extent of the seafloor raster.
 //'
 //' @details
 //' Simulate movement across local metaecosystem. Individuals move if their residence
 //' counter equals the maximum residence time specified for each individual in the
-//' attributes table. To avoid this movement set \code{parameters$move_residence_mean <= 0}.
+//' attributes table. To avoid this movement set \code{parameters$move_meta_each = 0}.
 //'
 //' @return list
 //'
@@ -33,8 +33,8 @@ using namespace Rcpp;
 //'
 //' @keywords internal
 // [[Rcpp::export]]
-Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs,
-                          Rcpp::NumericMatrix fishpop_attr, Rcpp::NumericVector extent) {
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix fishpop_attr,
+                          Rcpp::NumericMatrix seafloor_probs, Rcpp::NumericVector extent) {
 
   // convert list to matrix
   Rcpp::NumericMatrix fishpop_mat = rcpp_list_to_matrix(fishpop, fishpop_attr.nrow(),
@@ -44,8 +44,8 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
   Rcpp::NumericVector meta_id (seafloor_probs.nrow());
 
   // fill vector with id
-  // MH: This could be easier using Rcpp::seq (need to cast IntegerVec to NumericVec)
-  for(int i = 0; i < meta_id.length(); i++) {
+  // MH: This could be easier using Rcpp::seq(); need to cast IntegerVec to NumericVec
+  for (int i = 0; i < meta_id.length(); i++) {
 
     meta_id[i] = i + 1;
 
@@ -57,24 +57,20 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
     // get row id of current individual
     int id_attr = arrR::rcpp_which(fishpop_mat(i, 0), fishpop_attr(_, 0));
 
-    // MH: Add function argument here to switch between fixed and probability meta movement
+    // get movement probability from attribute table
+    double prob_attr = fishpop_attr(id_attr, 2);
 
-    // // prob_move
-    // double prob_move = fishpop_mat(i, 16) / fishpop_attr(id_attr, 2);
-    //
-    // // get random number between 0 and 1
-    // double prob_random = arrR::rcpp_runif(0.0, 1.0);
-    //
-    // bool flag_move = prob_random > prob_move;
+    // drawn random number between 0 and 1 to check movement probability against
+    double prob_random = arrR::rcpp_runif(0.0, 1.0);
 
-    // check if residence counter is smaller than residence threshold
-    bool flag_stay = fishpop_mat(i, 16) < fishpop_attr(id_attr, 2);
+    bool flag_stay = prob_random > prob_attr;
 
     // fish stay in current metasystem
     if ((fishpop_attr(id_attr, 2) == 0.0) || flag_stay) {
 
-      // increase residence by one
-      fishpop_mat(i, 16) += 1;
+      // // increase residence by one
+      // fishpop_mat(i, 16) += 1;
+      continue;
 
     // fish move to new metaecosystem
     } else {
@@ -95,7 +91,7 @@ Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs
       fishpop_mat(i, 3) = arrR::rcpp_runif(extent[0], extent[1]);
 
       // set residence to one
-      fishpop_mat(i, 16) = 1;
+      fishpop_mat(i, 16) += 1;
 
     }
   }

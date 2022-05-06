@@ -69,7 +69,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
   bool flag_fish = fishpop_attr.nrow() > 0;
 
   // init flag for movement across metasystem
-  bool flag_move = (as<double>(parameters["move_residence_mean"]) > 0.0) && flag_fish;
+  bool flag_move = (as<int>(parameters["move_meta_each"]) > 0) && flag_fish;
 
   // flag if diffusion needs to be run
   bool flag_diffuse = (as<double>(parameters["nutrients_diffusion"]) > 0.0) ||
@@ -153,9 +153,9 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
     }
 
     // check if individuals move between meta systems
-    if (flag_move && (i > burn_in)) {
+    if (flag_move && (i > burn_in) && (i % as<int>(parameters["move_meta_each"]) == 0)) {
 
-      fishpop = rcpp_move_meta(fishpop, seafloor_probs, fishpop_attr, extent);
+      fishpop = rcpp_move_meta(fishpop, fishpop_attr, seafloor_probs, extent);
 
     }
 
@@ -181,7 +181,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
       }
 
       // simulate seagrass only each seagrass_each iterations
-      if ((i % seagrass_each) == 0) {
+      if (i % seagrass_each == 0) {
 
         // simulate seagrass growth
         arrR::rcpp_seagrass_growth(seafloor[j], parameters["bg_v_max"], parameters["bg_k_m"], parameters["bg_gamma"],
