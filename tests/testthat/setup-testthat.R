@@ -49,19 +49,6 @@ metasyst_nr <- meta.arrR::setup_meta(n = n, dimensions = dimensions, grain = gra
                                      verbose = FALSE)
 
 # run model
-result_rand <- meta.arrR::run_simulation_meta(metasyst = metasyst, parameters = parameters,
-                                              movement = "rand",  max_i = max_i, min_per_i = min_per_i,
-                                              save_each = save_each, seagrass_each = seagrass_each,
-                                              verbose = FALSE)
-
-# run w/o reef
-result_rand_nr <- meta.arrR::run_simulation_meta(metasyst = metasyst_nr, parameters = parameters,
-                                                 movement = "rand",  max_i = max_i, min_per_i = min_per_i,
-                                                 save_each = save_each, seagrass_each = seagrass_each,
-                                                 verbose = FALSE)
-
-# run with attracted movement
-result_attr <- meta.arrR::run_simulation_meta(metasyst = metasyst, parameters = parameters,
-                                              movement = "attr",  max_i = max_i, min_per_i = min_per_i,
-                                              save_each = save_each, seagrass_each = seagrass_each,
-                                              verbose = FALSE)
+result_behav <- meta.arrR::run_simulation_meta(metasyst = metasyst, parameters = parameters,
+                                               movement = "behav",  max_i = max_i, save_each = save_each,
+                                               min_per_i = min_per_i)

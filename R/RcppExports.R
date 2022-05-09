@@ -72,6 +72,7 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' Rcpp move meta.
 #'
 #' @param fishpop List with fish population.
+#' @param fishpop_behavior NumericMatrix with behavior state.
 #' @param fishpop_attr NumericMatrix with reserves_thres and prob_move values for each individual.
 #' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 #' @param extent NumericVector with spatial extent of the seafloor raster.
@@ -79,7 +80,7 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @details
 #' Simulate movement across local metaecosystem. Individuals move if their residence
 #' counter equals the maximum residence time specified for each individual in the
-#' attributes table. To avoid this movement set \code{parameters$move_meta_each = 0}.
+#' attributes table. To avoid this movement set \code{move_meta_mean = 0} & \code{move_meta_sd = 0}.
 #'
 #' @return list
 #'
@@ -87,8 +88,8 @@ rcpp_matrix_to_list <- function(fishpop, n) {
 #' @rdname rcpp_move_meta
 #'
 #' @keywords internal
-rcpp_move_meta <- function(fishpop, fishpop_attr, seafloor_probs, extent) {
-    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, fishpop_attr, seafloor_probs, extent)
+rcpp_move_meta <- function(fishpop, fishpop_behavior, fishpop_attr, seafloor_probs, extent) {
+    .Call(`_meta_arrR_rcpp_move_meta`, fishpop, fishpop_behavior, fishpop_attr, seafloor_probs, extent)
 }
 
 #' rcpp_sample
@@ -161,5 +162,26 @@ rcpp_sample <- function(x, probs) {
 #' @keywords internal
 rcpp_simulate_meta <- function(seafloor, fishpop, nutrients_input, fishpop_attr, seafloor_probs, seafloor_track, fishpop_track, parameters, movement, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
     invisible(.Call(`_meta_arrR_rcpp_simulate_meta`, seafloor, fishpop, nutrients_input, fishpop_attr, seafloor_probs, seafloor_track, fishpop_track, parameters, movement, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
+}
+
+#' rcpp_update_behavior
+#'
+#' @description
+#' Rcpp matrix to list.
+#'
+#' @param fishpop NumericMatrix with fish population.
+#' @param fishpop_behavior NumericMatrix with fishpop behavior
+#'
+#' @details
+#' Updates behavior column in fishpop behavior matrix.
+#'
+#' @return void
+#'
+#' @aliases rcpp_update_behavior
+#' @rdname rcpp_update_behavior
+#'
+#' @keywords internal
+rcpp_update_behavior <- function(fishpop, fishpop_behavior) {
+    invisible(.Call(`_meta_arrR_rcpp_update_behavior`, fishpop, fishpop_behavior))
 }
 

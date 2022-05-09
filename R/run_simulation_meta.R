@@ -57,7 +57,7 @@
 #' @rdname run_simulation_meta
 #'
 #' @export
-run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, movement = "rand",
+run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, movement = "behav",
                      max_i, min_per_i, burn_in = 0, seagrass_each = 1, save_each = 1,
                      return_burnin = TRUE, verbose = TRUE) {
 
@@ -106,6 +106,14 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
   }
 
+  # only behav movement supported because individuals switch across meta-ecosystems
+  # when they switch behaviors
+  if (movement != "behav") {
+
+    stop("Only 'movement=behav' supported currently.", call. = FALSE)
+
+  }
+
   # setup seafloor #
 
   seafloor_dim <- arrR::get_seafloor_dim(metasyst$seafloor[[1]])
@@ -144,35 +152,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
   # convert seafloor to matrix
   fishpop_values <- lapply(metasyst$fishpop, as.matrix)
 
-  # check if no fishpop is present but movement not rand
-  if ((sum(metasyst$starting_values$pop_n) == 0) && (movement %in% c("attr", "behav"))) {
-
-    movement <- "rand"
-
-    warning("No fishpop present. Setting 'movement' to 'rand'.", call. = FALSE)
-
-  }
-
-  # check if no reef is present but movement not rand
-  if ((sum(vapply(metasyst$reef, function(i) ifelse(test = is.null(i), yes = 0, no = nrow(i)),
-                  FUN.VALUE = numeric(1))) == 0) && movement %in% c("attr", "behav")) {
-
-    movement <- "rand"
-
-    warning("No reef cells present in any metaecosystem. Setting 'movement = rand'.", call. = FALSE)
-
-  }
-
-  # set behavior column to 3 for rand/attr movement
-  if ((sum(metasyst$starting_values$pop_n) > 0) && (movement %in% c("rand", "attr"))) {
-
-    for (i in 1:length(fishpop_values)) {
-
-      fishpop_values[[i]][, "behavior"] <- 3.0
-
-    }
-  }
-
+  # create lists to store results for each timestep
   fishpop_track <- vector(mode = "list", length = metasyst$n)
 
   fishpop_track <- lapply(seq_along(fishpop_track), function(i)

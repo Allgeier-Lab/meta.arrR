@@ -1,7 +1,7 @@
 
 nutr_filter <- filter_meta(x = nutrients_input, as.integer(c(50, 75)))
 
-result_filter <- filter_meta(x = result_rand, as.integer(c(50, 75)))
+result_filter <- filter_meta(x = result_behav, as.integer(c(50, 75)))
 
 test_that("filter_meta returns correct classes", {
 

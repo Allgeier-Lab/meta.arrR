@@ -28,19 +28,9 @@ plot_local_abund <- function(result) {
   # get abundance of all metaecosystems
   abundance <- get_abundance(result = result)
 
-  # get min and max values
-  abundance_max <- max(abundance$abundance)
+  abundance_mean <- mean(abundance$abundance)
 
-  abundance_min <- min(abundance$abundance)
-
-  # combine to one df
-  minmax_df <- rbind(data.frame(timestep = unique(abundance$timestep),
-                                value = abundance_min, measure = "Min"),
-                     data.frame(timestep = unique(abundance$timestep),
-                                value = abundance_max, measure = "Max"),
-                     data.frame(timestep = unique(abundance$timestep),
-                                value = mean(result$starting_values$pop_n),
-                                measure = "Mean"))
+  # abundance_max <- max(abundance$abundance)
 
   # create title
   title <- paste0("Fishpop (total) : ", sum(result$starting_values$pop_n),
@@ -48,18 +38,14 @@ plot_local_abund <- function(result) {
 
   # create plot
   gg_input <- ggplot2::ggplot(data = abundance) +
-    ggplot2::geom_line(data = minmax_df, col = "lightgrey",
-                       ggplot2::aes(x = .data$timestep, y = .data$value,
-                                    linetype = .data$measure)) +
-    ggplot2::geom_point(ggplot2::aes(x = .data$timestep, y = .data$abundance,
-                                     col = factor(.data$meta))) +
-    ggplot2::geom_path(ggplot2::aes(x = .data$timestep, y = .data$abundance,
-                                    col = factor(.data$meta)),
+    ggplot2::geom_hline(yintercept = 0, linetype = 2, color = "grey") +
+    ggplot2::geom_hline(yintercept = abundance_mean, linetype = 2, color = "grey") +
+    # ggplot2::geom_hline(yintercept = sum(result$starting_values$pop_n), linetype = 2, color = "grey") +
+    ggplot2::geom_point(ggplot2::aes(x = .data$timestep, y = .data$abundance, col = factor(.data$meta))) +
+    ggplot2::geom_path(ggplot2::aes(x = .data$timestep, y = .data$abundance, col = factor(.data$meta)),
                        alpha = 1/3) +
     ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "A") +
     ggplot2::scale_linetype_manual(name = "", values = c("Min" = 2, "Max" = 2, "Mean" = 1)) +
-    ggplot2::scale_y_continuous(limits = c(0, abundance_max + abundance_min),
-                                breaks = 0:(abundance_max + abundance_min)) +
     ggplot2::labs(x = "Timestep", y = "Local abundance", title = title) +
     ggplot2::theme_classic() +
     ggplot2::theme(legend.position = "bottom")

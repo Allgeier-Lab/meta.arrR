@@ -1,5 +1,5 @@
 # create plot
-result_gg <- plot_local_abund(result_rand)
+result_gg <- plot_local_abund(result_behav)
 
 test_that("plot_local_abund returns ggplot", {
 

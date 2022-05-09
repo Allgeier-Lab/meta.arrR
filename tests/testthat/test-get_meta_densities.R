@@ -1,4 +1,4 @@
-densities <- get_meta_densities(result = result_rand, verbose = FALSE)
+densities <- get_meta_densities(result = result_behav, verbose = FALSE)
 
 test_that("get_meta_densities returns data.frame", {
 

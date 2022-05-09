@@ -93,12 +93,6 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = 1
 
   }
 
-  if (verbose) {
-
-    message("> ...Creating ", paste(starting_values$pop_n, collapse = ", "), " individuals...")
-
-  }
-
   # check length of grain argument
   if (length(grain) != 1) {
 
@@ -128,6 +122,12 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = 1
 
     starting_values$pop_n <- rep(x = starting_values$pop_n, times = n)
 
+    if (verbose) {
+
+      message("> ...Creating ", paste(starting_values$pop_n, collapse = ", "), " individuals...")
+
+    }
+
   } else {
 
     # check if length makes sense
@@ -136,7 +136,6 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = 1
       stop("Length of provided 'pop_n' not allowed.", call. = FALSE)
 
     }
-
   }
 
   # loop through all metaecosystems

@@ -1,9 +1,7 @@
 #include <Rcpp.h>
 
 #include "rcpp_matrix_to_list.h"
-
 #include "rcpp_get_table.h"
-#include "rcpp_matrix_to_list.h"
 
 using namespace Rcpp;
 
