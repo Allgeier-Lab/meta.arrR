@@ -222,9 +222,6 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
     seafloor_track[[i]] <- data.frame(do.call(what = "rbind", args = seafloor_track[[i]]))
 
-    # MH: remove col names...not great
-    rownames(seafloor_track[[i]]) <- 1:nrow(seafloor_track[[i]])
-
     # add timestep to  seafloor/fishpop counter
     seafloor_track[[i]]$timestep <- rep(x = seq(from = 0, to = max_i, by = save_each),
                                         each = nrow(metasyst$seafloor[[i]]))
@@ -242,22 +239,12 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
     # combine list to data.frame
     fishpop_track[[i]] <- data.frame(do.call(what = "rbind", args = fishpop_track[[i]]))
 
-    # MH: remove col names...not great
-    rownames(fishpop_track[[i]]) <- 1:nrow(fishpop_track[[i]])
-
     # add timestep values
     fishpop_track[[i]]$timestep <- timestep_temp
 
     # add burn in col
     fishpop_track[[i]]$burn_in <- ifelse(test = fishpop_track[[i]]$timestep < burn_in,
                                            yes = "yes", no = "no")
-
-    # individuals did not move across ecosystems
-    if (parameters$move_meta_mean == 0 && all(!is.na(fishpop_track[[i]][, -c(18, 19)]))) {
-
-      fishpop_track[[i]]$residence <- fishpop_track[[i]]$timestep
-
-    }
 
     # remove all burn_in values
     if (!return_burnin) {
