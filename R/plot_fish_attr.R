@@ -18,19 +18,21 @@
 #' @aliases plot_fish_attr
 #' @rdname plot_fish_attr
 #'
+#' @importFrom rlang .data
+#'
 #' @export
 plot_fish_attr <- function(x) {
 
   fish_attr <- as.data.frame(x$fishpop_attr)
 
-  fish_attr <- stats::reshape(data = fish_attr, direction = "long", v.names = "value", ids = id,
+  fish_attr <- stats::reshape(data = fish_attr, direction = "long", v.names = "value", ids = "id",
                               varying = c("reserves_thres", "move_prob"),
                               timevar = "name", times = c("reserves_thres", "move_prob"),
                               new.row.names = 1:(nrow(fish_attr) * 2))
 
   # create plot
-  gg_attr <- ggplot2::ggplot(data = fish_attr, aes(x = value, y = ..density..)) +
-    ggplot2::geom_density() +
+  gg_attr <- ggplot2::ggplot(data = fish_attr, ggplot2::aes(x = .data$value, y = ..density..)) +
+    # ggplot2::geom_density() +
     ggplot2::geom_histogram(binwidth = 0.05, alpha = 0.25, color = "black") +
     ggplot2::facet_wrap(. ~ factor(name, labels = c("Meta move probability", "Reserves threshold"))) +
     ggplot2::labs(x = "Value", y = "Density individuals") +

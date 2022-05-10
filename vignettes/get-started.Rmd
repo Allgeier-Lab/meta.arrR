@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(meta.arrR)
 library(dplyr)
+library(ggplot2)
 ```
 
 ### 1. Load parameters
@@ -102,5 +103,5 @@ dplyr::bind_rows(result$fishpop, .id = "meta") %>%
   dplyr::arrange(-moved) %>% 
   dplyr::left_join(y = as.data.frame(metasyst$fishpop_attr), by = "id") %>%
   ggplot2::ggplot(ggplot2::aes(x = move_prob, y = moved)) + 
-  ggplot2::geom_point() + ggplot2::geom_smooth()
+  ggplot2::geom_point() + ggplot2::geom_smooth() + ggplot2::theme_classic()
 ```
