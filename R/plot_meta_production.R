@@ -22,11 +22,11 @@
 #' @importFrom rlang .data
 #'
 #' @export
-plot_meta_production <- function(result, lag = c(FALSE, TRUE)) {
+plot_meta_production <- function(result, lag = TRUE) {
 
   # calculate production
   production <- summarize_meta(result = result, biomass = FALSE, production = TRUE,
-                               lag = lag)[["production"]]
+                               lag = c(FALSE, lag))[["production"]]
 
   # remove NA rows (first row)
   production <- production[stats::complete.cases(production), ]
