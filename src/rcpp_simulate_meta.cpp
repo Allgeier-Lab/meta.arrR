@@ -242,6 +242,9 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
 
           }
 
+          // get moved counter before possible reset
+          Rcpp::NumericVector moved_col = as<Rcpp::NumericMatrix>(fishpop[j])(_, 16);
+
           // update behavior state
           if (flag_move_meta) {
 
@@ -272,6 +275,9 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
           arrR::rcpp_mortality(fishpop[j], fishpop_start_temp, seafloor[j],
                                parameters["pop_linf"], parameters["pop_n_body"],
                                parameters["pop_reserves_max"], extent, dimensions);
+
+          // reset moved counter
+          as<Rcpp::NumericMatrix>(fishpop[j])(_, 16) = moved_col;
 
         }
       }
