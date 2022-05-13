@@ -26,11 +26,11 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 Rcpp::NumericMatrix rcpp_list_to_matrix(Rcpp::List fishpop, int pop_n_sum, bool id) {
 
-  // number of col
-  int n_col = as<Rcpp::NumericMatrix>(fishpop[0]).ncol();
-
   // set col names
   Rcpp::CharacterVector col_names = Rcpp::colnames(fishpop[0]);
+
+  // number of col
+  int n_col = as<Rcpp::NumericMatrix>(fishpop[0]).ncol();
 
   // one more col needed for id
   if (id) {

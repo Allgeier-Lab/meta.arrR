@@ -15,7 +15,7 @@ rcpp_update_behavior(fishpop, fishpop_behavior)
 void
 }
 \description{
-Rcpp matrix to list.
+Rcpp update behavior.
 }
 \details{
 Updates behavior column in fishpop behavior matrix.

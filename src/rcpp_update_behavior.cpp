@@ -8,7 +8,7 @@ using namespace Rcpp;
 //' rcpp_update_behavior
 //'
 //' @description
-//' Rcpp matrix to list.
+//' Rcpp update behavior.
 //'
 //' @param fishpop NumericMatrix with fish population.
 //' @param fishpop_behavior NumericMatrix with fishpop behavior
