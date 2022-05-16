@@ -222,7 +222,7 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = 1
                                    max_i = max_i)
 
   # get extent
-  extent <- arrR::get_seafloor_dim(seafloor_list[[1]])$extent
+  extent <- arrR:::get_seafloor_dim(seafloor_list[[1]])$extent
 
   # combine everything to one list
   result_list <- list(n = n, seafloor = seafloor_list, fishpop = fishpop_list,

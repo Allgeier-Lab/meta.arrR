@@ -33,7 +33,7 @@ test_that("run_meta returns correct information", {
 
   expect_equal(object = result_behav$n, expected = n)
 
-  seafloor_dim <- arrR::get_seafloor_dim(metasyst$seafloor[[1]])
+  seafloor_dim <- arrR:::get_seafloor_dim(metasyst$seafloor[[1]])
 
   expect_equal(object = result_behav$extent,
                expected = seafloor_dim$extent)

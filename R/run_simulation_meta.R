@@ -116,7 +116,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
   # setup seafloor #
 
-  seafloor_dim <- arrR::get_seafloor_dim(metasyst$seafloor[[1]])
+  seafloor_dim <- arrR:::get_seafloor_dim(metasyst$seafloor[[1]])
 
   # convert seafloor to matrix
   seafloor_values <- lapply(metasyst$seafloor, as.matrix)
