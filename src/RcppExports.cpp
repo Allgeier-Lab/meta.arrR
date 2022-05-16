@@ -48,16 +48,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_move_meta
-Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix seafloor_probs, Rcpp::NumericMatrix fishpop_attr, Rcpp::NumericVector extent);
-RcppExport SEXP _meta_arrR_rcpp_move_meta(SEXP fishpopSEXP, SEXP seafloor_probsSEXP, SEXP fishpop_attrSEXP, SEXP extentSEXP) {
+Rcpp::List rcpp_move_meta(Rcpp::List fishpop, Rcpp::NumericMatrix fishpop_behavior, Rcpp::NumericMatrix fishpop_attr, Rcpp::NumericMatrix seafloor_probs, Rcpp::NumericVector extent);
+RcppExport SEXP _meta_arrR_rcpp_move_meta(SEXP fishpopSEXP, SEXP fishpop_behaviorSEXP, SEXP fishpop_attrSEXP, SEXP seafloor_probsSEXP, SEXP extentSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type fishpop(fishpopSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type seafloor_probs(seafloor_probsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type fishpop_behavior(fishpop_behaviorSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type fishpop_attr(fishpop_attrSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type seafloor_probs(seafloor_probsSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type extent(extentSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpp_move_meta(fishpop, seafloor_probs, fishpop_attr, extent));
+    rcpp_result_gen = Rcpp::wrap(rcpp_move_meta(fishpop, fishpop_behavior, fishpop_attr, seafloor_probs, extent));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -99,14 +100,26 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// rcpp_update_behavior
+void rcpp_update_behavior(Rcpp::NumericMatrix fishpop, Rcpp::NumericMatrix fishpop_behavior);
+RcppExport SEXP _meta_arrR_rcpp_update_behavior(SEXP fishpopSEXP, SEXP fishpop_behaviorSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type fishpop(fishpopSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type fishpop_behavior(fishpop_behaviorSEXP);
+    rcpp_update_behavior(fishpop, fishpop_behavior);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_meta_arrR_rcpp_get_table", (DL_FUNC) &_meta_arrR_rcpp_get_table, 2},
     {"_meta_arrR_rcpp_list_to_matrix", (DL_FUNC) &_meta_arrR_rcpp_list_to_matrix, 3},
     {"_meta_arrR_rcpp_matrix_to_list", (DL_FUNC) &_meta_arrR_rcpp_matrix_to_list, 2},
-    {"_meta_arrR_rcpp_move_meta", (DL_FUNC) &_meta_arrR_rcpp_move_meta, 4},
+    {"_meta_arrR_rcpp_move_meta", (DL_FUNC) &_meta_arrR_rcpp_move_meta, 5},
     {"_meta_arrR_rcpp_sample", (DL_FUNC) &_meta_arrR_rcpp_sample, 2},
     {"_meta_arrR_rcpp_simulate_meta", (DL_FUNC) &_meta_arrR_rcpp_simulate_meta, 17},
+    {"_meta_arrR_rcpp_update_behavior", (DL_FUNC) &_meta_arrR_rcpp_update_behavior, 2},
     {NULL, NULL, 0}
 };
 

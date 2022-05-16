@@ -10,7 +10,7 @@ summarize_meta(
   production = TRUE,
   fun = "sum",
   na.rm = TRUE,
-  lag = c(FALSE, FALSE),
+  lag = c(FALSE, TRUE),
   return_df = TRUE
 )
 }

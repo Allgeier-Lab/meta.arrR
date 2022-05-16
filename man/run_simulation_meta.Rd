@@ -8,7 +8,7 @@ run_simulation_meta(
   metasyst,
   parameters,
   nutrients_input = 0,
-  movement = "rand",
+  movement = "behav",
   max_i,
   min_per_i,
   burn_in = 0,

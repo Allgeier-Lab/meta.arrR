@@ -26,7 +26,7 @@
 #'
 #' @export
 summarize_meta <- function(result, biomass = TRUE, production = TRUE,
-                           fun = "sum", na.rm = TRUE, lag = c(FALSE, FALSE), return_df = TRUE) {
+                           fun = "sum", na.rm = TRUE, lag = c(FALSE, TRUE), return_df = TRUE) {
 
   # create input with parts
   parts <- list(biomass = ifelse(test = c(biomass, biomass),

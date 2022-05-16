@@ -8,6 +8,7 @@
 #include "rcpp_simulate_meta.h"
 #include "rcpp_list_to_matrix.h"
 #include "rcpp_move_meta.h"
+#include "rcpp_update_behavior.h"
 
 using namespace Rcpp;
 
@@ -18,7 +19,7 @@ using namespace Rcpp;
 //'
 //' @param seafloor,fishpop List with seafloor and fishpop data of metaecosystems.
 //' @param nutrients_input List with amount of nutrient input each timestep.
-//' @param fishpop_attr NumericMatrix with residence and reserves_thres values for each individual
+//' @param fishpop_attr NumericMatrix with reserves_thres and prob_move values for each individual.
 //' @param seafloor_probs NumericMatrix with local ecosystems probabilities.
 //' @param seafloor_track,fishpop_track List with entry for each saving timestep and metaecosystems.
 //' @param parameters List with parameters.
@@ -68,8 +69,9 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
   // init flag if fish are present
   bool flag_fish = fishpop_attr.nrow() > 0;
 
-  // init flag for movement across metasystem
-  bool flag_move = (as<double>(parameters["move_residence_mean"]) > 0.0) && flag_fish;
+  // MH: flag meta_move if sum(fishpop_attr$move_prop == 0)
+  bool flag_move_meta = (as<double>(parameters["move_meta_mean"]) != 0.0) ||
+    (as<double>(parameters["move_meta_sd"]) != 0.0);
 
   // flag if diffusion needs to be run
   bool flag_diffuse = (as<double>(parameters["nutrients_diffusion"]) > 0.0) ||
@@ -114,16 +116,27 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
   // init double for maximum movement distance
   double max_dist = 0.0;
 
+  Rcpp::NumericMatrix fishpop_behavior (fishpop_attr.nrow(), 2);
+
   // calculate maximum movement distance
   if (flag_fish) {
 
     max_dist = arrR::rcpp_get_max_dist(movement, parameters, 1000000);
 
+    // create matrix for fish behavior
+    if (flag_move_meta) {
+
+      fishpop_behavior(_, 0) = fishpop_attr(_, 0);
+
+      Rcpp::NumericVector behav_vec (fishpop_attr.nrow(), 3.0);
+
+      fishpop_behavior(_, 1) = behav_vec;
+
+    }
   }
 
   // get matrix with inital values
-  Rcpp::NumericMatrix fishpop_start = rcpp_list_to_matrix(fishpop, fishpop_attr.nrow(),
-                                                          false);
+  Rcpp::NumericMatrix fishpop_start = rcpp_list_to_matrix(fishpop, fishpop_attr.nrow(), false);
 
   // init various //
 
@@ -131,7 +144,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
   double time_frac = (min_per_i / 60.0) * seagrass_each;
 
   // save original data //
-  for(int i = 0; i < seafloor.length(); i++) {
+  for (int i = 0; i < seafloor.length(); i++) {
 
     as<Rcpp::List>(seafloor_track[i])[0] = Rcpp::clone(as<Rcpp::NumericMatrix>(seafloor[i]));
 
@@ -153,9 +166,10 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
     }
 
     // check if individuals move between meta systems
-    if (flag_move && (i > burn_in)) {
+    if (flag_fish && flag_move_meta && (i > burn_in)) {
 
-      fishpop = rcpp_move_meta(fishpop, seafloor_probs, fishpop_attr, extent);
+      fishpop = rcpp_move_meta(fishpop, fishpop_behavior, fishpop_attr,
+                               seafloor_probs, extent);
 
     }
 
@@ -181,7 +195,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
       }
 
       // simulate seagrass only each seagrass_each iterations
-      if ((i % seagrass_each) == 0) {
+      if (i % seagrass_each == 0) {
 
         // simulate seagrass growth
         arrR::rcpp_seagrass_growth(seafloor[j], parameters["bg_v_max"], parameters["bg_k_m"], parameters["bg_gamma"],
@@ -228,6 +242,16 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
 
           }
 
+          // get moved counter before possible reset
+          Rcpp::NumericVector moved_col = as<Rcpp::NumericMatrix>(fishpop[j])(_, 16);
+
+          // update behavior state
+          if (flag_move_meta) {
+
+            rcpp_update_behavior(fishpop[j], fishpop_behavior);
+
+          }
+
           // calculate new coordinates and activity
           arrR::rcpp_move_wrap(fishpop[j], fishpop_attr, movement,
                                parameters["move_mean"], parameters["move_sd"],
@@ -251,6 +275,9 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
           arrR::rcpp_mortality(fishpop[j], fishpop_start_temp, seafloor[j],
                                parameters["pop_linf"], parameters["pop_n_body"],
                                parameters["pop_reserves_max"], extent, dimensions);
+
+          // reset moved counter
+          as<Rcpp::NumericMatrix>(fishpop[j])(_, 16) = moved_col;
 
         }
       }

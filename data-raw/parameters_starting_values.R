@@ -17,7 +17,7 @@ default_parameters <- list(
   ag_gamma = 0.0144,
 
   # seagrass
-  seagrass_thres = 1/2,
+  seagrass_thres = -1/3,
   seagrass_slope = 2.0,
   seagrass_slough = 0.0001,
 
@@ -37,9 +37,9 @@ default_parameters <- list(
   move_sd = 5.0,
   move_border = 2.0,
   move_reef = 0.5,
-  move_return = 50.0,
-  move_residence_mean = 0.0,
-  move_residence_sd = 0.0,
+  move_return = 15.0,
+  move_meta_mean = 0.0,
+  move_meta_sd = 0.0,
   move_lambda = 0.0,
 
   # fishpop dimensions

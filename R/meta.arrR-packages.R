@@ -8,3 +8,6 @@
 #' @importFrom Rcpp sourceCpp
 #' @keywords internal
 "_PACKAGE"
+
+# global variables
+utils::globalVariables("..density..")

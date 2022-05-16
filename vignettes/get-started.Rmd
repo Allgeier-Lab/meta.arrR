@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(meta.arrR)
 library(dplyr)
+library(ggplot2)
 ```
 
 ### 1. Load parameters
@@ -33,39 +34,35 @@ starting_values <- meta.arrR::default_starting
 # get parameters
 parameters <- meta.arrR::default_parameters
 
+# change values
+parameters$move_meta_mean <- 0.0
+parameters$move_meta_sd <- 0.1
+
 # set time per iterations
 min_per_i <- 120
 
 # run the model for n years
-years <- 1
+years <- 5
 max_i <- (60 * 24 * 365 * years) / min_per_i
 
 # save results only every m days
-days <- 5 # which((max_i %% ((24 / (min_per_i / 60)) * 1:365)) == 0)
+days <- 25 # which((max_i %% ((24 / (min_per_i / 60)) * 1:365)) == 0)
 save_each <- (24 / (min_per_i / 60)) * days
 
 days <- 1
 seagrass_each <- (24 / (min_per_i / 60)) * days
-
-n <- 9
-
-days <- 1
-parameters$move_residence_mean <- (24 / (min_per_i / 60)) * days
-parameters$move_residence_sd <- 0.0
-parameters$move_lambda <- 0.0
 ```
 
 ### 2. Setup simulation enviroment
 
 ```{r setup_envirnment}
-# create 5 reef cells in center of seafloor
-reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), 
-                      ncol = 2, byrow = TRUE)
+n <- 5
 
 # setup extent
 dimensions <- c(50, 50)
 
-parameters$nutrients_loss <- 0.01
+# create 5 reef cells in center of seafloor
+reef_matrix <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0), ncol = 2, byrow = TRUE)
 
 stable_vals <- arrR::get_req_nutrients(bg_biomass = starting_values$bg_biomass,
                                        ag_biomass = starting_values$ag_biomass,
@@ -75,29 +72,24 @@ starting_values$nutrients_pool <- stable_vals$nutrients_pool
 
 starting_values$detritus_pool <- stable_vals$detritus_pool
 
-input_values <- stable_vals$nutrients_pool * parameters$nutrients_loss
-
-nutrients_input <- simulate_nutr_input(n = n, max_i = max_i, input_mn = input_values, 
-                                       frequency = 5)
-
-metasyst <- setup_meta(n = n, reef = reef_matrix, seafloor_xy = NULL, 
-                       dimensions = dimensions, max_i = max_i,
+metasyst <- setup_meta(n = n, reef = reef_matrix, dimensions = dimensions, max_i = max_i,
                        starting_values = starting_values, parameters = parameters)
 
-plot(metasyst)
-plot(nutrients_input)
+# plot_fish_attr(metasyst)
+# plot(metasyst)
+# plot(nutrients_input)
 ```
 
 ```{r run_model}
-result <- run_simulation_meta(metasyst = metasyst, nutrients_input = nutrients_input,
-                              parameters = parameters, movement = "behav",
+result <- run_simulation_meta(metasyst = metasyst, parameters = parameters, movement = "behav",
                               max_i = max_i, save_each = save_each, min_per_i = min_per_i)
 ```
 
 ### 3. Analyze results
 
-```{r analyze_results, eval = FALSE}
+```{r analyze_results}
 plot(result, what = "seafloor")
+plot(result, what = "seafloor", summarize = TRUE)
 
 plot_local_abund(result)
 
@@ -105,6 +97,11 @@ get_abundance(result) %>%
   dplyr::group_by(meta) %>% 
   dplyr::summarise(abundance = mean(abundance))
 
-# get_abundance(result) %>%
-#   tidyr::pivot_wider(values_from = abundance, names_from = meta, names_prefix = "meta")
+dplyr::bind_rows(result$fishpop, .id = "meta") %>% 
+  dplyr::filter(timestep == max_i) %>% 
+  dplyr::select(meta, id, moved) %>% 
+  dplyr::arrange(-moved) %>% 
+  dplyr::left_join(y = as.data.frame(metasyst$fishpop_attr), by = "id") %>%
+  ggplot2::ggplot(ggplot2::aes(x = move_prob, y = moved)) + 
+  ggplot2::geom_point() + ggplot2::geom_smooth() + ggplot2::theme_classic()
 ```
