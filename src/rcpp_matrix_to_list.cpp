@@ -1,9 +1,7 @@
 #include <Rcpp.h>
 
 #include "rcpp_matrix_to_list.h"
-
 #include "rcpp_get_table.h"
-#include "rcpp_matrix_to_list.h"
 
 using namespace Rcpp;
 
@@ -26,6 +24,12 @@ using namespace Rcpp;
 //' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
+
+  // get col names
+  Rcpp::CharacterVector col_names = Rcpp::colnames(fishpop);
+
+  // delete last one because meta id
+  col_names.erase(col_names.length() - 1);
 
   // create empty list to store results
   Rcpp::List result(n);
@@ -71,6 +75,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
 
         // increase row counter
         k++;
+
       }
     }
 
@@ -86,11 +91,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
     }
 
     // set col names
-    // MH: Set automatically using colnames(fishpop);
-    colnames(fishpop_temp) = Rcpp::CharacterVector::create("id", "age", "x", "y", "heading",
-             "length", "weight", "activity", "respiration", "reserves", "reserves_max",
-             "behavior", "consumption", "excretion", "died_consumption", "died_background",
-             "residence");
+    colnames(fishpop_temp) = col_names;
 
     // return result
     result[i] = fishpop_temp;

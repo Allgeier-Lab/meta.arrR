@@ -34,7 +34,7 @@ save_each <- (24 / (min_per_i / 60)) * days
 
 parameters$nutrients_loss <- 0.1
 
-parameters$move_residence_mean <- max_i / 10
+parameters$move_meta_mean <- max_i / 10
 
 stable_vals <- arrR::get_stable_values(bg_biomass = starting_values$bg_biomass,
                                        ag_biomass = starting_values$ag_biomass,

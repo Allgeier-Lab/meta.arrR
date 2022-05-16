@@ -11,7 +11,7 @@
 #' Printing method for metaecosystem created with \code{setup_meta}.
 #'
 #' @examples
-#' metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
+#' metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(50, 50), grain = 1,
 #' starting_values = default_starting, parameters = default_parameters)
 #' print(metasyst)
 #'
@@ -30,7 +30,7 @@ print.meta_syst <- function(x, digits = 3, ...) {
                             FUN.VALUE = numeric(1))),  collapse = ", ")
 
   # get extent
-  extent <- paste(as.vector(terra::ext(x = x$seafloor[[1]])), collapse = ", ")
+  extent <- paste(x$extent, collapse = " ")
 
   # print result
   cat(paste0("Metaecosystems    : ", x$n, "\n",

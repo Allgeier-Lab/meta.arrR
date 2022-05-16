@@ -131,7 +131,8 @@ filter_meta.meta_rn <- function(x, filter, reset = FALSE, verbose = TRUE) {
                        "ag_uptake", "bg_uptake", "consumption", "excretion")
 
     # create vector with fishpop cols
-    cols_fishpop <- c("id", "consumption", "excretion", "died_consumption", "died_background")
+    cols_fishpop <- c("id", "consumption", "excretion", "died_consumption", "died_background",
+                      "moved")
 
     # create vector with timesteps i
     timestep_full <- seq(from = 0, to = x$max_i, by = x$save_each)

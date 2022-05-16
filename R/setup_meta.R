@@ -22,18 +22,17 @@
 #'
 #' If \code{seafloor_xy = NULL}, coordinates are simulated random (range: 0-1).
 #'
-#'
 #' @return meta_syst
 #'
 #' @examples
-#' metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
+#' metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(50, 50), grain = 1,
 #' starting_values = default_starting, parameters = default_parameters)
 #'
 #' @aliases setup_meta
 #' @rdname setup_meta
 #'
 #' @export
-setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c(1, 1),
+setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = 1,
                        starting_values, parameters, max_i, random = 0.0,
                        use_log = TRUE, verbose = TRUE, ...) {
 
@@ -42,7 +41,7 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c
 
     message("> ...Creating ", n, " metaecosystems...")
 
-    message("> ...Creating seafloor with ", dimensions[1], " rows x ", dimensions[2], " cols...")
+    message("> ...Creating seafloor with ", dimensions[1] / grain, " rows x ", dimensions[2] / grain, " cols...")
 
   }
 
@@ -94,20 +93,22 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c
 
   }
 
-  if (verbose) {
+  # check length of grain argument
+  if (length(grain) != 1) {
 
-    message("> ...Creating ", paste(starting_values$pop_n, collapse = ", "), " individuals...")
+    stop("Please provide one 'grain' value.", call. = FALSE)
 
   }
 
-  # make sure grain is vector xy dimension
-  if (length(grain) == 1) {
+  if (any(dimensions <= 0) || length(dimensions) != 2 || any(dimensions %% 1 != 0)) {
 
-    grain <- rep(grain, times = 2)
+    stop("'dimensions must be a vector with two integer values.", call. = FALSE)
 
-  } else if (length(grain) > 2) {
+  }
 
-    stop("Please provide ony one or two 'grain' values.", call. = FALSE)
+  if (random < 0 || random > 1) {
+
+    stop("'random' must be 0 <= x <= 1", call. = FALSE)
 
   }
 
@@ -121,6 +122,12 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c
 
     starting_values$pop_n <- rep(x = starting_values$pop_n, times = n)
 
+    if (verbose) {
+
+      message("> ...Creating ", paste(starting_values$pop_n, collapse = ", "), " individuals...")
+
+    }
+
   } else {
 
     # check if length makes sense
@@ -129,7 +136,6 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c
       stop("Length of provided 'pop_n' not allowed.", call. = FALSE)
 
     }
-
   }
 
   # loop through all metaecosystems
@@ -144,7 +150,7 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c
     # create seafloor
     seafloor <- arrR::setup_seafloor(dimensions = dimensions, grain = grain, reef = reef[[i]],
                                      starting_values = starting_values_temp, random = random,
-                                     verbose = FALSE, ...)
+                                     verbose = FALSE)
 
     # save in final list
     seafloor_list[[i]] <- seafloor
@@ -159,8 +165,8 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c
 
       fishpop[1, ] <- NA
 
-      # add residence col
-      fishpop$residence <- NA
+      # add moved col
+      fishpop$moved <- NA
 
     } else {
 
@@ -171,7 +177,7 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c
       fishpop$id <- (i * 10 ^ no_digits) + fishpop$id
 
       # add initial residence column
-      fishpop$residence <- 0
+      fishpop$moved <- 0
 
     }
 
@@ -216,13 +222,13 @@ setup_meta <- function(n, reef = NULL, seafloor_xy = NULL, dimensions, grain = c
                                    max_i = max_i)
 
   # get extent
-  extent <- as.vector(terra::ext(x = seafloor_list[[1]]))
+  extent <- arrR::get_seafloor_dim(seafloor_list[[1]])$extent
 
   # combine everything to one list
   result_list <- list(n = n, seafloor = seafloor_list, fishpop = fishpop_list,
                       seafloor_xy = seafloor_xy, fishpop_attr = fishpop_attr,
                       starting_values = starting_values, parameters = parameters,
-                      reef = reef, extent = extent, grain = grain, dimensions = dimensions)
+                      reef = reef, dimensions = dimensions, extent = extent, grain = grain)
 
   # specify class of list
   class(result_list) <- "meta_syst"

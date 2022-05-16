@@ -1,6 +1,6 @@
 sample_input <- sample_variability(x = nutrients_input, itr = 5)
 
-sample_result <- sample_variability(x = result_rand, itr = 5)
+sample_result <- sample_variability(x = result_behav, itr = 5)
 
 test_that("sample_variability returns correct classes", {
 

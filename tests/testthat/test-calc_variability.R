@@ -1,6 +1,6 @@
 var_input <- calc_variability(nutrients_input)
 
-var_output <- calc_variability(result_rand)
+var_output <- calc_variability(result_behav)
 
 test_that("calc_variability returns correct objects", {
 

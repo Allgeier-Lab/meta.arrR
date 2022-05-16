@@ -57,7 +57,7 @@
 #' @rdname run_simulation_meta
 #'
 #' @export
-run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, movement = "rand",
+run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, movement = "behav",
                      max_i, min_per_i, burn_in = 0, seagrass_each = 1, save_each = 1,
                      return_burnin = TRUE, verbose = TRUE) {
 
@@ -106,11 +106,20 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
   }
 
+  # only behav movement supported because individuals switch across meta-ecosystems
+  # when they switch behaviors
+  if (movement != "behav") {
+
+    stop("Only 'movement=behav' supported currently.", call. = FALSE)
+
+  }
+
   # setup seafloor #
 
+  seafloor_dim <- arrR::get_seafloor_dim(metasyst$seafloor[[1]])
+
   # convert seafloor to matrix
-  seafloor_values <- lapply(metasyst$seafloor, function(i)
-    as.matrix(terra::as.data.frame(i, xy = TRUE, na.rm = FALSE)))
+  seafloor_values <- lapply(metasyst$seafloor, as.matrix)
 
   # create lists to store results for each timestep
   seafloor_track <- vector(mode = "list", length = metasyst$n)
@@ -143,35 +152,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
   # convert seafloor to matrix
   fishpop_values <- lapply(metasyst$fishpop, as.matrix)
 
-  # check if no fishpop is present but movement not rand
-  if ((sum(metasyst$starting_values$pop_n) == 0) && (movement %in% c("attr", "behav"))) {
-
-    movement <- "rand"
-
-    warning("No fishpop present. Setting 'movement' to 'rand'.", call. = FALSE)
-
-  }
-
-  # check if no reef is present but movement not rand
-  if ((sum(vapply(metasyst$reef, function(i) ifelse(test = is.null(i), yes = 0, no = nrow(i)),
-                  FUN.VALUE = numeric(1))) == 0) && movement %in% c("attr", "behav")) {
-
-    movement <- "rand"
-
-    warning("No reef cells present in any metaecosystem. Setting 'movement = rand'.", call. = FALSE)
-
-  }
-
-  # set behavior column to 3 for rand/attr movement
-  if ((sum(metasyst$starting_values$pop_n) > 0) && (movement %in% c("rand", "attr"))) {
-
-    for (i in 1:length(fishpop_values)) {
-
-      fishpop_values[[i]][, "behavior"] <- 3.0
-
-    }
-  }
-
+  # create lists to store results for each timestep
   fishpop_track <- vector(mode = "list", length = metasyst$n)
 
   fishpop_track <- lapply(seq_along(fishpop_track), function(i)
@@ -241,12 +222,9 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
 
     seafloor_track[[i]] <- data.frame(do.call(what = "rbind", args = seafloor_track[[i]]))
 
-    # MH: remove col names...not great
-    rownames(seafloor_track[[i]]) <- 1:nrow(seafloor_track[[i]])
-
     # add timestep to  seafloor/fishpop counter
     seafloor_track[[i]]$timestep <- rep(x = seq(from = 0, to = max_i, by = save_each),
-                                        each = terra::ncell(metasyst$seafloor[[i]]))
+                                        each = nrow(metasyst$seafloor[[i]]))
 
     # add burn_in col
     seafloor_track[[i]]$burn_in <- ifelse(test = seafloor_track[[i]]$timestep < burn_in,
@@ -261,22 +239,12 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
     # combine list to data.frame
     fishpop_track[[i]] <- data.frame(do.call(what = "rbind", args = fishpop_track[[i]]))
 
-    # MH: remove col names...not great
-    rownames(fishpop_track[[i]]) <- 1:nrow(fishpop_track[[i]])
-
     # add timestep values
     fishpop_track[[i]]$timestep <- timestep_temp
 
     # add burn in col
     fishpop_track[[i]]$burn_in <- ifelse(test = fishpop_track[[i]]$timestep < burn_in,
                                            yes = "yes", no = "no")
-
-    # individuals did not move across ecosystems
-    if (parameters$move_residence_mean == 0 && all(!is.na(fishpop_track[[i]][, -c(18, 19)]))) {
-
-      fishpop_track[[i]]$residence <- fishpop_track[[i]]$timestep
-
-    }
 
     # remove all burn_in values
     if (!return_burnin) {
@@ -297,7 +265,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
   result <- list(seafloor = seafloor_track, fishpop = fishpop_track, nutrients_input = nutrients_input,
                  n = metasyst$n, movement = movement, fishpop_attr = metasyst$fishpop_attr,
                  parameters = parameters, starting_values = metasyst$starting_values,
-                 extent = metasyst$extent, grain = terra::res(metasyst$seafloor[[1]]), dimensions = metasyst$dimensions,
+                 dimensions = seafloor_dim$dimensions, extent = seafloor_dim$extent, grain = seafloor_dim$grain,
                  max_i = max_i, min_per_i = min_per_i, burn_in = burn_in,
                  seagrass_each = seagrass_each, save_each = save_each)
 

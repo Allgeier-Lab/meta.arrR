@@ -1,7 +1,7 @@
 # create vector with names
 present_names <- c("n", "seafloor", "fishpop", "seafloor_xy", "fishpop_attr",
-                   "starting_values", "parameters", "reef", "extent",
-                   "grain", "dimensions")
+                   "starting_values", "parameters", "reef", "dimensions", "extent",
+                   "grain")
 
 test_that("setup_meta returns meta_syst", {
 
@@ -36,20 +36,20 @@ test_that("setup_meta returns correct information", {
 
   expect_equal(object = metasyst$n, expected = n)
 
-  expect_equal(object = terra::ext(metasyst$extent),
-               expected = terra::ext(dimensions / 2 * c(-1, 1, -1, 1)))
+  expect_equal(object = unname(metasyst$extent),
+               expected = metasyst$dimensions / 2 * c(-1, 1, -1, 1))
 
-  expect_equal(object = metasyst$grain, expected = c(grain, grain))
+  expect_equal(object = metasyst$grain, expected = grain)
 
-  expect_equal(object = metasyst$dimensions, expected = dimensions)
+  expect_equal(object = unname(metasyst$dimensions), expected = dimensions)
 
 
   expect_equal(object = metasyst_nr$n, expected = n)
 
-  expect_equal(object = terra::ext(metasyst_nr$extent),
-               expected = terra::ext(dimensions / 2 * c(-1, 1, -1, 1)))
+  expect_equal(object = unname(metasyst_nr$extent),
+               expected = metasyst_nr$dimensions / 2 * c(-1, 1, -1, 1))
 
-  expect_equal(object = metasyst_nr$grain, expected = c(grain, grain))
+  expect_equal(object = metasyst_nr$grain, expected = grain)
 
   expect_equal(object = metasyst_nr$dimensions, expected = dimensions)
 

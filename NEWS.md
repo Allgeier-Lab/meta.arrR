@@ -1,3 +1,6 @@
+# meta.arrR 0.6
+* Remove `terra` dependency
+
 # meta.arrR 0.5.1
 * Changes to `simulate_nutr_input()`
 * Changes to `rcpp_move_meta()`
