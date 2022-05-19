@@ -95,7 +95,7 @@ simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0, noise
       # first ald last full frequency are shifted based on phase; create id vector
       frequency_id <- rep(x = c(1:frequency, 1),
                           times = c(ceiling(frequency_full * (1 - phase_mod)),
-                                    frequency_full , frequency_full, frequency_full, frequency_full,
+                                    rep(x = frequency_full, times = frequency - 1),
                                     floor(frequency_full * phase_mod)))
 
       # split max_i into frequency chunks
