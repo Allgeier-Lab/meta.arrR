@@ -107,16 +107,17 @@ simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0, noise
         # get values of chunk
         values_chunk <- values_temp[chunks[[j]]]
 
-        # sample random noise modifier; this cant be x < 0 if amplitude_mn = 1
-        noise_rnd <- ifelse(test = amplitude_temp == input_mn,
-                            yes = stats::runif(n = 1, min = 0.0, max = noise_sd),
-                            no = stats::runif(n = 1, min = -noise_sd, max = noise_sd))
+        noise_max <- (1.0 - amplitude_mod) /  amplitude_mod
+
+        # sample random noise modifier
+        noise_rnd <- stats::runif(n = 1, min = -noise_sd, max = ifelse(test = noise_sd > noise_max,
+                                                                       yes = noise_max, no = noise_sd))
 
         # calculate curve factor (values_temp - input_mn) / (max(values_temp) - input_mn)
         noise_factor <- (values_chunk - input_mn) / (max(values_chunk) - input_mn)
 
         # change values of current chunk
-        values_temp[chunks[[j]]] <- values_chunk - (amplitude_temp * (noise_rnd * noise_factor))
+        values_temp[chunks[[j]]] <- values_chunk + (amplitude_temp * (noise_rnd * noise_factor))
 
       }
     }
