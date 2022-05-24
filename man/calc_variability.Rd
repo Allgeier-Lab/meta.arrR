@@ -47,9 +47,9 @@ in the metaecosystem.
 
 \deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
 
-\deqn{\alpha = sum(mean(x_{i}) / mean(x_{m}) * \alpha_{i})}
+\deqn{\alpha = sum(mean(x_{i}) / mean(x_{m}) * \alpha_{i}) ^ 2}
 
-\deqn{\gamma = sd(x_{m}) / mean(x_{m})}
+\deqn{\gamma = sd(x_{m}) / mean(x_{m}) ^ 2}
 
 \deqn{\beta = \alpha / \gamma}
 

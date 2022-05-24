@@ -16,9 +16,9 @@
 #'
 #' \deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
 #'
-#' \deqn{\alpha = sum(mean(x_{i}) / mean(x_{m}) * \alpha_{i})}
+#' \deqn{\alpha = sum(mean(x_{i}) / mean(x_{m}) * \alpha_{i}) ^ 2}
 #'
-#' \deqn{\gamma = sd(x_{m}) / mean(x_{m})}
+#' \deqn{\gamma = sd(x_{m}) / mean(x_{m}) ^ 2}
 #'
 #' \deqn{\beta = \alpha / \gamma}
 #'
@@ -142,18 +142,13 @@ calc_variability_internal <- function(values_i, values_m) {
 
   gamma_mean <- mean(values_m, na.rm = TRUE)
 
-  # alpha_mean_i <- apply(X = values_i, MARGIN = 2, mean)
-  #
-  # # calculate cv of local ecosystems i
-  # alpha_cv_i <- unname(alpha_sd_i / alpha_mean_i)
-
   # calculate weighted mean CV on alpha scale
-  alpha_cv <- sum(alpha_sd_i) / gamma_mean
+  alpha_cv <- (sum(alpha_sd_i) / gamma_mean) ^ 2
 
   # gamma scale #
 
   # calculate global gamma CV
-  gamma_cv <- stats::sd(values_m, na.rm = TRUE) / gamma_mean
+  gamma_cv <- (stats::sd(values_m, na.rm = TRUE) / gamma_mean) ^ 2
 
   # beta scale #
 
