@@ -70,8 +70,7 @@ calc_variability.nutr_input <- function(x, biomass = NULL, production = NULL, la
   values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
   # calc variability
-  result <- cbind(part = "input",
-                  calc_variability_internal(values_i = values_i, values_m = values_m))
+  result <- cbind(part = "input", calc_variability_internal(values_i = values_i, values_m = values_m))
 
   # return result list
   return(result)
@@ -109,9 +108,6 @@ calc_variability.meta_rn <- function(x, biomass = TRUE, production = TRUE, lag =
         values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
                                    direction = "wide")[, -1, drop = FALSE]
 
-        # use only 6 significant digits
-        values_i <- signif(values_i)
-
         # calculate sum of each timestep
         values_m <- apply(X = values_i, MARGIN = 1, FUN = sum, na.rm = FALSE)
 
@@ -140,29 +136,26 @@ calc_variability_internal <- function(values_i, values_m) {
   # calculate sd and mean of local ecosystems i
   alpha_sd_i <- apply(X = values_i, MARGIN = 2, stats::sd, na.rm = TRUE)
 
-  gamma_mean <- mean(values_m, na.rm = TRUE)
+  alpha_mn_i <- apply(X = values_i, MARGIN = 2, mean, na.rm = TRUE)
 
-  # calculate weighted mean CV on alpha scale
-  alpha_cv <- (sum(alpha_sd_i) / gamma_mean) ^ 2
+  # calculate cv of local ecosystems i
+  alpha_cv_i <- alpha_sd_i / alpha_mn_i
+
+  # calculate mean CV on alpha scale
+  alpha_cv <- mean(alpha_cv_i)
 
   # gamma scale #
 
   # calculate global gamma CV
-  gamma_cv <- (stats::sd(values_m, na.rm = TRUE) / gamma_mean) ^ 2
+  gamma_cv <- stats::sd(values_m, na.rm = TRUE) / mean(values_m, na.rm = TRUE)
 
   # beta scale #
 
   # calculate beta as ratio of alpha to gamma
   beta_cv <- alpha_cv / gamma_cv
 
-  # check if NaN because division by zero
-  beta_cv <- ifelse(test = is.finite(beta_cv), yes = beta_cv, no = 0)
-
   # synchrony #
   synchrony <- stats::var(values_m, na.rm = TRUE) / sum(alpha_sd_i) ^ 2
-
-  # check if NaN because division by zero
-  synchrony <- ifelse(test = is.finite(synchrony), yes = synchrony, no = 0)
 
   # final list #
 

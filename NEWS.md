@@ -1,3 +1,6 @@
+# meta.arrR 0.6.1
+* Use simplified cv calculations
+
 # meta.arrR 0.6
 * Remove `terra` dependency
 
