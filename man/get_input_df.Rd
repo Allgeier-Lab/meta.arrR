@@ -7,7 +7,7 @@
 get_input_df(x, gamma = TRUE, long = FALSE)
 }
 \arguments{
-\item{x}{\code{nutr_input} object simulated with \code{simulate_nutr_input}.}
+\item{x}{\code{nutr_input} object simulated with \code{simulate_nutrient_*}.}
 
 \item{gamma}{Logical if TRUE, the sum of gamma (regional) scale will be added.}
 
@@ -25,8 +25,8 @@ input per timestep.
 }
 \examples{
 \dontrun{
-nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
-amplitude_sd = 0.5)
+nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
+frequency = 3, amplitude_sd = 0.5)
 get_input_df(nutrients_input)
 }
 
