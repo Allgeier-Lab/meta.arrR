@@ -1,4 +1,4 @@
-#' simulate_nutr_input
+#' simulate_nutrient_sine
 #'
 #' @description
 #' Simulate nutrient input.
@@ -7,30 +7,33 @@
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param frequency Numeric frequency.
 #' @param input_mn Numeric with mean input amount and frequency.
-#' @param noise_sd Numeric with noise added to sine functions.
 #' @param amplitude_mn,phase_mn Numeric with mean amplitude and phase.
 #' @param amplitude_sd,phase_sd Numeric with sd amplitude and phase.
+#' @param noise_sd Numeric with noise added to sine functions.
 #' @param verbose If TRUE, progress reports are printed.
 #'
 #' @details
 #' Simulating nutrient input based on sine curves. The \code{frequency} argument quantifies
 #' how many complete cycles of the sine function are present for a given \code{max_i},
 #' i.e., how many "peaks" are present. The \code{input_mn} argument quantifies the
-#' mean input values. Ampliude and phase mean and sd can be controlled by the corresponding
+#' mean input values. Amplitude and phase mean and sd can be controlled by the corresponding
 #' arguments.
 #'
 #' @return nutr_input
 #'
 #' @examples
-#' nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, frequency = 5, input_mn = 1)
+#' nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, frequency = 5, input_mn = 1,
+#' amplitude_mn = 0.5)
+#' plot(nutrients_input)
 #'
-#' @aliases simulate_nutr_input
-#' @rdname simulate_nutr_input
+#' @aliases simulate_nutrient_sine
+#' @rdname simulate_nutrient_sine
 #'
 #' @export
-simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0, noise_sd = 0.0,
-                                amplitude_mn = 0.0, phase_mn = 0.0,
-                                amplitude_sd = 0.0, phase_sd = 0.0, verbose = TRUE) {
+simulate_nutrient_sine <- function(n, max_i, frequency = 0.0, input_mn = 0.0,
+                                   amplitude_mn = 0.0, phase_mn = 0.0,
+                                   amplitude_sd = 0.0, phase_sd = 0.0,
+                                   noise_sd = 0.0, verbose = TRUE) {
 
   # check amplitude argument
   if (amplitude_mn < 0.0 || amplitude_mn > 1.0) {
@@ -59,10 +62,6 @@ simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0, noise
   # init results
   values_input <- vector(mode = "list", length = n)
 
-  amplitude_i <- vector(mode = "numeric", length = n)
-
-  phase_i <- vector(mode = "numeric", length = n)
-
   # calculate period for number of input peaks (period = 2 * pi / b)
   period <- frequency / (max_i / (2 * pi))
 
@@ -78,10 +77,9 @@ simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0, noise
     # calculate values for sine curve
     amplitude_temp <- input_mn * amplitude_mod
 
-    phase_temp <- ((2 * pi) / period) * phase_mod
-
-    # set phase to 0 if NaN
-    phase_temp <- ifelse(test = is.finite(phase_temp), yes = phase_temp, no = 0)
+    # calculate phase
+    phase_temp <- ifelse(test = period == 0, yes = 0.0,
+                         no = ((2 * pi) / period) * phase_mod)
 
     # calculate sine curve; vertical shift to make sure x > 0
     # amplitude * sin(period * (x + phase)) + vertical
@@ -132,23 +130,13 @@ simulate_nutr_input <- function(n, max_i, frequency = 0.0, input_mn = 0.0, noise
     # save values for resulting object
     values_input[[i]] <- data.frame(timestep = timesteps, input = values_temp)
 
-    amplitude_i[i] <- amplitude_mod
-
-    phase_i[i] <- phase_mod
-
   }
 
   # set names
   names(values_input) <- paste0("meta_", 1:n)
 
-  names(amplitude_i) <- paste0("meta_", 1:n)
-
-  names(phase_i) <- paste0("meta_", 1:n)
-
   # store results in final list
-  result_list <- list(values = values_input, n = n, max_i = max_i,
-                      frequency = frequency, input_mn = input_mn, noise_sd = noise_sd,
-                      amplitude = amplitude_i, phase = phase_i)
+  result_list <- list(values = values_input, n = n, max_i = max_i)
 
   # specify class of list
   class(result_list) <- "nutr_input"

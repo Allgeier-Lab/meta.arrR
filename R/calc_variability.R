@@ -14,11 +14,9 @@
 #' refers to values on local scale and \emph{m} refers to the sum of all values
 #' in the metaecosystem.
 #'
-#' \deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
+#' \deqn{\alpha = sum(sd(x_{i})) / mean(x_{m})}
 #'
-#' \deqn{\alpha = sum(mean(x_{i}) / mean(x_{m}) * \alpha_{i}) ^ 2}
-#'
-#' \deqn{\gamma = sd(x_{m}) / mean(x_{m}) ^ 2}
+#' \deqn{\gamma = sd(x_{m}) / mean(x_{m})}
 #'
 #' \deqn{\beta = \alpha / \gamma}
 #'
@@ -34,8 +32,8 @@
 #' @return list
 #'
 #' @examples
-#' nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
-#' amplitude_sd = 0.5)
+#' nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
+#' frequency = 3, amplitude_sd = 0.5)
 #' calc_variability(nutrients_input)
 #'
 #' \dontrun{
@@ -78,7 +76,7 @@ calc_variability.nutr_input <- function(x, biomass = NULL, production = NULL, la
 
 #' @name calc_variability
 #' @export
-calc_variability.meta_rn <- function(x, biomass = TRUE, production = TRUE, lag = c(FALSE, FALSE),
+calc_variability.meta_rn <- function(x, biomass = TRUE, production = TRUE, lag = c(FALSE, TRUE),
                                      verbose = TRUE) {
 
   # get sum of total local ecosystems
@@ -133,16 +131,13 @@ calc_variability_internal <- function(values_i, values_m) {
 
   # alpha scale #
 
-  # calculate sd and mean of local ecosystems i
+  # calculate sd of local ecosystems i
   alpha_sd_i <- apply(X = values_i, MARGIN = 2, stats::sd, na.rm = TRUE)
 
-  alpha_mn_i <- apply(X = values_i, MARGIN = 2, mean, na.rm = TRUE)
+  # calculate mean of meta-ecosystem scale
+  gamma_mn <- mean(values_m, na.rm = TRUE)
 
-  # calculate cv of local ecosystems i
-  alpha_cv_i <- alpha_sd_i / alpha_mn_i
-
-  # calculate mean CV on alpha scale
-  alpha_cv <- mean(alpha_cv_i)
+  alpha_cv <- sum(alpha_sd_i) / gamma_mn
 
   # gamma scale #
 

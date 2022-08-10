@@ -3,7 +3,7 @@
 #' @description
 #' Printing method for nutr_input object.
 #'
-#' @param x \code{nutr_input} object simulated with \code{simulate_nutr_input_*}.
+#' @param x \code{nutr_input} object simulated with \code{simulate_nutrient_*}.
 #' @param digits Numeric of decimal places (passed on to \code{round}).
 #' @param ... Not used.
 #'
@@ -11,8 +11,8 @@
 #' Printing method for \code{nutr_input} created with \code{simulate_nutr_input_*}.
 #'
 #' @examples
-#' nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
-#' amplitude_sd = 0.5)
+#' nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
+#' frequency = 3, amplitude_sd = 0.5)
 #' print(nutrients_input)
 #'
 #' @aliases print.nutr_input
@@ -58,8 +58,6 @@ print.nutr_input <- function(x, digits = NULL, ...) {
   cat(paste0(
     "Total time     : ", paste0(c(min_time, x$max_i), collapse = "-"), " iterations [Freq: ", x$freq_mn, "]\n",
     "Metaecosystems : ", x$n, "\n",
-    "Amplitude      : ", paste(round(x$amplitude, digits = digits), collapse = ", "), "\n",
-    "Phase          : ", paste(round(x$phase, digits = digits), collapse = ", "), "\n",
     "\n",
     "Min input      : ", paste(min_input, collapse = ", "), "\n",
     "Mean input     : ", paste(mean_input, collapse = ", "), "\n",

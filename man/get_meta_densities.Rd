@@ -7,7 +7,7 @@
 get_meta_densities(result, normalize = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{result}{List with \code{meta_rn} objects simulated with \code{simulate_nutr_input_*}.}
+\item{result}{List with \code{meta_rn} objects simulated with \code{simulate_nutrient_*}.}
 
 \item{normalize}{Logical if TRUE count is divided by time steps.}
 

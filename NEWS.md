@@ -1,5 +1,7 @@
-# meta.arrR 0.6.1
+# meta.arrR 0.7
 * Use simplified cv calculations
+* Rename `simulate_nutr_input` to `simulate_nutrient_sine`
+* Adding `simulate_nutrient_noise`
 
 # meta.arrR 0.6
 * Remove `terra` dependency

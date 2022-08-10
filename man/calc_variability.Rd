@@ -20,7 +20,7 @@ calc_variability(x, biomass, production, lag, verbose)
   x,
   biomass = TRUE,
   production = TRUE,
-  lag = c(FALSE, FALSE),
+  lag = c(FALSE, TRUE),
   verbose = TRUE
 )
 }
@@ -45,19 +45,17 @@ Calculates coefficient of variation on alpha, beta and gamma scale, where \emph{
 refers to values on local scale and \emph{m} refers to the sum of all values
 in the metaecosystem.
 
-\deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
+\deqn{\alpha = sum(sd(x_{i})) / mean(x_{m})}
 
-\deqn{\alpha = sum(mean(x_{i}) / mean(x_{m}) * \alpha_{i}) ^ 2}
-
-\deqn{\gamma = sd(x_{m}) / mean(x_{m}) ^ 2}
+\deqn{\gamma = sd(x_{m}) / mean(x_{m})}
 
 \deqn{\beta = \alpha / \gamma}
 
 \deqn{synchrony = var(x_{m}) / (sum(\alpha_{i}) ^ 2)}
 }
 \examples{
-nutrients_input <- simulate_nutr_input(n = 3, max_i = 4380, input_mn = 1, frequency = 3,
-amplitude_sd = 0.5)
+nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
+frequency = 3, amplitude_sd = 0.5)
 calc_variability(nutrients_input)
 
 \dontrun{
