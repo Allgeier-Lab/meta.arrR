@@ -129,20 +129,26 @@ calc_variability.meta_rn <- function(x, biomass = TRUE, production = TRUE, lag =
 
 calc_variability_internal <- function(values_i, values_m) {
 
-  # alpha scale #
+  # gamma scale #
 
-  # calculate sd of local ecosystems i
-  alpha_sd_i <- apply(X = values_i, MARGIN = 2, stats::sd, na.rm = TRUE)
+  # calculate sd of meta-ecosystem scale
+  gamma_sd <- stats::sd(values_m, na.rm = TRUE)
 
   # calculate mean of meta-ecosystem scale
   gamma_mn <- mean(values_m, na.rm = TRUE)
 
-  alpha_cv <- sum(alpha_sd_i) / gamma_mn
-
-  # gamma scale #
-
   # calculate global gamma CV
-  gamma_cv <- stats::sd(values_m, na.rm = TRUE) / mean(values_m, na.rm = TRUE)
+  gamma_cv <- gamma_sd / gamma_mn
+
+  # alpha scale #
+
+  # calculate mean of local ecosystem i
+  alpha_mn <- apply(X = values_i, MARGIN = 2, mean, na.rm = TRUE)
+
+  # calculate sd of local ecosystems i
+  alpha_sd_i <- apply(X = values_i, MARGIN = 2, stats::sd, na.rm = TRUE)
+
+  alpha_cv <- sum(alpha_sd_i) / gamma_mn
 
   # beta scale #
 
@@ -156,7 +162,8 @@ calc_variability_internal <- function(values_i, values_m) {
 
   # combine to final result list
   result_df <- data.frame(measure = c("alpha", "beta", "gamma", "synchrony"),
-                          value = c(alpha_cv, beta_cv, gamma_cv, synchrony))
+                          value = c(alpha_cv, beta_cv, gamma_cv, synchrony),
+                          sd = c(mean(alpha_sd_i), NA, gamma_sd, NA), mean = c(mean(alpha_mn), NA, gamma_mn, NA))
 
   return(result_df)
 }
