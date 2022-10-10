@@ -2,11 +2,11 @@ Package: meta.arrR
 Type: Package
 Title: Metaecosystems of Artifical Reefs
 Version: 0.7
-Authors@R: c(person("Maximillian H.K.", "Hesselbarth", role = c("aut", "cre"),
+Authors@R: c(person("Maximilian H.K.", "Hesselbarth", role = c("aut", "cre"),
              email = "mhk.hesselbarth@gmail.com", comment = c(ORCID = "0000-0003-1125-9918")), 
              person("Jacob E.", "Allgeier", role = "rth", 
              email = "jeallg@umich.edu", comment = c(ORCID = "0000-0002-9005-6432")))
-Maintainer: Maximillian H.K. Hesselbarth <mhk.hesselbarth@gmail.com>
+Maintainer: Maximilian H.K. Hesselbarth <mhk.hesselbarth@gmail.com>
 Description: Simulate metaecosystems of local ecosystems using the arrR package <https://github.com/Allgeier-Lab/arrR>.
 License: GPL (>= 3)
 Encoding: UTF-8
