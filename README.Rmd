@@ -32,7 +32,7 @@ The goal of **meta.arrR** is to simulate a meta-ecosystem of artificial reefs.
 
 ## Installation
 
-You can install the development version from [GitHub](https://github.com/) with (you need a PAT for this at the moment):
+You can install the development version from [GitHub](https://github.com/) with (you need a *PAT* for this at the moment):
 
 ``` r
 # install.packages("devtools")
