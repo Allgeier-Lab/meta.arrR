@@ -43,6 +43,7 @@ jobs:
         run: |
           install.packages("remotes")
           remotes::install_github("Allgeier-Lab/arrR", rev = "development")
+        shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
