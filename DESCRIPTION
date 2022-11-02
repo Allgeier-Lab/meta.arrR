@@ -30,4 +30,4 @@ Remotes:
 LinkingTo: 
     Rcpp,
     RcppProgress,
-    arrR (<= 1.5)
+    arrR (>= 1.5)
