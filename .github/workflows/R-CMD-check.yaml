@@ -1,34 +1,35 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
+# Workflow derived from https://github.com/r-lib/actions/tree/v2-branch/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+
 on:
   push:
     branches: [main, development]
   pull_request:
-    branches: [main, development]
+    branches: [main]
+  workflow_dispatch:
 
-name: R-CMD-check
+name: r-cmd-check
 
 jobs:
   r-cmd-check:
     if: "!contains(github.event.commits[0].message, '[skip-ci]')"
     runs-on: ${{ matrix.config.os }}
-
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          # - {os: macOS-latest, r: 'release'}
+          - {os: macOS-latest, r: 'release'}
           - {os: windows-latest, r: 'release'}
-          # - {os: ubuntu-latest, r: 'release'}
+          - {os: ubuntu-latest, r: 'release'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -38,16 +39,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install arrR
-        run: Rscript -e 'remotes::install_github("Allgeier-Lab/arrR", rev = "development")'
-
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: |
-            Allgeier-Lab/arrR=?ignore
-            any::rcmdcheck
-            any::remotes
+          extra-packages: any::rcmdcheck, any::remotes, Allgeier-Lab/arrR=?ignore
           needs: check
+
+      - name: Install arrR
+        run: remotes::install_github("Allgeier-Lab/arrR", rev = "development")
+        shell: Rscript{0}
 
       - uses: r-lib/actions/check-r-package@v2
         with:
