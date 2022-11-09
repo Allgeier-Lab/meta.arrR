@@ -131,6 +131,7 @@ rcpp_sample <- function(x, probs) {
 #' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
 #' @param extent NumericVector with extent (xmin,xmax,ymin,ymax).
 #' @param dimensions IntegerVector with dimensions (nrow, ncol).
+#' @param torus_diffusion Logical if diffusion uses torus translation.
 #' @param max_i Integer with maximum number of simulation timesteps.
 #' @param min_per_i Integer to specify minutes per i.
 #' @param save_each Numeric how often data should be saved to return.
@@ -160,8 +161,8 @@ rcpp_sample <- function(x, probs) {
 #' @rdname rcpp_simulate_meta
 #'
 #' @keywords internal
-rcpp_simulate_meta <- function(seafloor, fishpop, nutrients_input, fishpop_attr, seafloor_probs, seafloor_track, fishpop_track, parameters, movement, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
-    invisible(.Call(`_meta_arrR_rcpp_simulate_meta`, seafloor, fishpop, nutrients_input, fishpop_attr, seafloor_probs, seafloor_track, fishpop_track, parameters, movement, extent, dimensions, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
+rcpp_simulate_meta <- function(seafloor, fishpop, nutrients_input, fishpop_attr, seafloor_probs, seafloor_track, fishpop_track, parameters, movement, extent, dimensions, torus_diffusion, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose) {
+    invisible(.Call(`_meta_arrR_rcpp_simulate_meta`, seafloor, fishpop, nutrients_input, fishpop_attr, seafloor_probs, seafloor_track, fishpop_track, parameters, movement, extent, dimensions, torus_diffusion, max_i, min_per_i, save_each, seagrass_each, burn_in, verbose))
 }
 
 #' rcpp_update_behavior

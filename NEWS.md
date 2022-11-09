@@ -1,3 +1,6 @@
+# meta.arrR 0.7.1
+* No diffusion torus option `arrR`
+
 # meta.arrR 0.7
 * Use simplified cv calculations
 * Rename `simulate_nutr_input` to `simulate_nutrient_sine`

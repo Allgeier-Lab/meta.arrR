@@ -7,6 +7,7 @@
 #' @param parameters List with all model parameters.
 #' @param nutrients_input \code{nutr_input} object or numeric with nutrient inputs.
 #' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
+#' @param torus_diffusion Logical if diffusion uses torus translation.
 #' @param max_i Integer with maximum number of simulation time steps.
 #' @param min_per_i Integer to specify minutes per i.
 #' @param burn_in Numeric with time steps used to burn in.
@@ -57,9 +58,9 @@
 #' @rdname run_simulation_meta
 #'
 #' @export
-run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, movement = "behav",
-                     max_i, min_per_i, burn_in = 0, seagrass_each = 1, save_each = 1,
-                     return_burnin = TRUE, verbose = TRUE) {
+run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, movement = "behav", torus_diffusion = TRUE,
+                                max_i, min_per_i, burn_in = 0, seagrass_each = 1, save_each = 1,
+                                return_burnin = TRUE, verbose = TRUE) {
 
   # get time at beginning for final print
   if (verbose) {
@@ -201,7 +202,7 @@ run_simulation_meta <- function(metasyst, parameters, nutrients_input = 0.0, mov
                      fishpop_attr = metasyst$fishpop_attr, seafloor_probs = seafloor_probs,
                      seafloor_track = seafloor_track, fishpop_track = fishpop_track,
                      parameters = parameters, movement = movement,
-                     extent = metasyst$extent, dimensions = metasyst$dimensions,
+                     extent = metasyst$extent, dimensions = metasyst$dimensions, torus_diffusion = torus_diffusion,
                      max_i = max_i, min_per_i = min_per_i, save_each = save_each,
                      seagrass_each = seagrass_each, burn_in = burn_in,
                      verbose = verbose)

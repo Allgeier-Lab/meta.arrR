@@ -10,7 +10,7 @@ Simulate metaecosystem of artifical reefs. For more information about how to
 use the model, please see \code{browseVignettes("meta.arrR")}.
 }
 \author{
-\strong{Maintainer}: Maximillian H.K. Hesselbarth \email{mhk.hesselbarth@gmail.com} (\href{https://orcid.org/0000-0003-1125-9918}{ORCID})
+\strong{Maintainer}: Maximilian H.K. Hesselbarth \email{mhk.hesselbarth@gmail.com} (\href{https://orcid.org/0000-0003-1125-9918}{ORCID})
 
 Other contributors:
 \itemize{

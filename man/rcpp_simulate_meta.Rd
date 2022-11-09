@@ -16,6 +16,7 @@ rcpp_simulate_meta(
   movement,
   extent,
   dimensions,
+  torus_diffusion,
   max_i,
   min_per_i,
   save_each,
@@ -42,6 +43,8 @@ rcpp_simulate_meta(
 \item{extent}{NumericVector with extent (xmin,xmax,ymin,ymax).}
 
 \item{dimensions}{IntegerVector with dimensions (nrow, ncol).}
+
+\item{torus_diffusion}{Logical if diffusion uses torus translation.}
 
 \item{max_i}{Integer with maximum number of simulation timesteps.}
 

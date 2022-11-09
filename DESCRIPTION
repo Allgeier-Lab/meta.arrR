@@ -1,7 +1,7 @@
 Package: meta.arrR
 Type: Package
 Title: Metaecosystems of Artifical Reefs
-Version: 0.7
+Version: 0.7.1
 Authors@R: c(person("Maximilian H.K.", "Hesselbarth", role = c("aut", "cre"),
              email = "mhk.hesselbarth@gmail.com", comment = c(ORCID = "0000-0003-1125-9918")), 
              person("Jacob E.", "Allgeier", role = "rth", 
@@ -15,7 +15,7 @@ RoxygenNote: 7.2.1
 VignetteBuilder: knitr
 Depends: R (>= 3.1)
 Imports:
-    arrR (>= 1.5),
+    arrR (>= 1.5.2),
     cowplot,
     ggplot2,
     Rcpp,
@@ -30,4 +30,4 @@ Remotes:
 LinkingTo: 
     Rcpp,
     RcppProgress,
-    arrR (>= 1.5)
+    arrR (>= 1.5.2)

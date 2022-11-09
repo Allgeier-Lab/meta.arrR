@@ -9,6 +9,7 @@ run_simulation_meta(
   parameters,
   nutrients_input = 0,
   movement = "behav",
+  torus_diffusion = TRUE,
   max_i,
   min_per_i,
   burn_in = 0,
@@ -26,6 +27,8 @@ run_simulation_meta(
 \item{nutrients_input}{\code{nutr_input} object or numeric with nutrient inputs.}
 
 \item{movement}{String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.}
+
+\item{torus_diffusion}{Logical if diffusion uses torus translation.}
 
 \item{max_i}{Integer with maximum number of simulation time steps.}
 

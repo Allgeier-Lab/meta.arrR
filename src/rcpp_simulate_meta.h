@@ -6,7 +6,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::NumericMa
                         Rcpp::List parameters, Rcpp::String movement, double max_dist,
                         int n, Rcpp::NumericVector pop_n, Rcpp::NumericMatrix fishpop_attributes,
                         Rcpp::List nutrients_input, Rcpp::List coords_reef, Rcpp::NumericMatrix cell_adj,
-                        Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions,
+                        Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions, bool torus_diffusion,
                         int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in,
                         bool verbose);
 

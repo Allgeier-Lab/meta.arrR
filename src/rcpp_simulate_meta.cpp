@@ -26,6 +26,7 @@ using namespace Rcpp;
 //' @param movement String specifying movement algorithm. Either 'rand', 'attr' or 'behav'.
 //' @param extent NumericVector with extent (xmin,xmax,ymin,ymax).
 //' @param dimensions IntegerVector with dimensions (nrow, ncol).
+//' @param torus_diffusion Logical if diffusion uses torus translation.
 //' @param max_i Integer with maximum number of simulation timesteps.
 //' @param min_per_i Integer to specify minutes per i.
 //' @param save_each Numeric how often data should be saved to return.
@@ -60,7 +61,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
                         Rcpp::NumericMatrix fishpop_attr, Rcpp::NumericMatrix seafloor_probs,
                         Rcpp::List seafloor_track, Rcpp::List fishpop_track,
                         Rcpp::List parameters, Rcpp::String movement,
-                        Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions,
+                        Rcpp::NumericVector extent, Rcpp::IntegerVector dimensions, bool torus_diffusion,
                         int max_i, int min_per_i, int save_each, int seagrass_each, int burn_in,
                         bool verbose) {
 
@@ -109,7 +110,7 @@ void rcpp_simulate_meta(Rcpp::List seafloor, Rcpp::List fishpop, Rcpp::List nutr
   }
 
   // get cell neighborhoods; identical for all ecosystems
-  Rcpp::IntegerMatrix cell_adj = arrR::rcpp_get_adjacencies(dimensions);
+  Rcpp::IntegerMatrix cell_adj = arrR::rcpp_get_adjacencies(dimensions, torus_diffusion);
 
   // init fishpop related objects //
 
