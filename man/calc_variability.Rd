@@ -6,14 +6,15 @@
 \alias{calc_variability.meta_rn}
 \title{calc_variability}
 \usage{
-calc_variability(x, biomass, production, lag, verbose)
+calc_variability(x, biomass, production, lag, verbose, ...)
 
 \method{calc_variability}{nutr_input}(
   x,
   biomass = NULL,
   production = NULL,
   lag = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  ...
 )
 
 \method{calc_variability}{meta_rn}(
@@ -21,7 +22,8 @@ calc_variability(x, biomass, production, lag, verbose)
   biomass = TRUE,
   production = TRUE,
   lag = c(FALSE, TRUE),
-  verbose = TRUE
+  verbose = TRUE,
+  ...
 )
 }
 \arguments{
@@ -33,6 +35,8 @@ calc_variability(x, biomass, production, lag, verbose)
 The first element refers to biomass, the second element to production.}
 
 \item{verbose}{Logical if TRUE progress reports are printed.}
+
+\item{...}{Arguments passed on to \code{\link{summarize_meta}}.}
 }
 \value{
 list

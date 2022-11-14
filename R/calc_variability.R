@@ -8,6 +8,7 @@
 #' @param lag Vector with logical. If TRUE, the difference to the previous timestep is returned.
 #' The first element refers to biomass, the second element to production.
 #' @param verbose Logical if TRUE progress reports are printed.
+#' @param ... Arguments passed on to \code{\link{summarize_meta}}.
 #'
 #' @details
 #' Calculates coefficient of variation on alpha, beta and gamma scale, where \emph{i}
@@ -44,12 +45,12 @@
 #' @rdname calc_variability
 #'
 #' @export
-calc_variability <- function(x, biomass, production, lag, verbose) UseMethod("calc_variability")
+calc_variability <- function(x, biomass, production, lag, verbose, ...) UseMethod("calc_variability")
 
 #' @name calc_variability
 #' @export
 calc_variability.nutr_input <- function(x, biomass = NULL, production = NULL, lag = NULL,
-                                        verbose = TRUE) {
+                                        verbose = TRUE, ...) {
 
   # warning for lag argument
   if ((!is.null(biomass) || !is.null(production) || !is.null(lag)) && verbose) {
@@ -77,11 +78,11 @@ calc_variability.nutr_input <- function(x, biomass = NULL, production = NULL, la
 #' @name calc_variability
 #' @export
 calc_variability.meta_rn <- function(x, biomass = TRUE, production = TRUE, lag = c(FALSE, TRUE),
-                                     verbose = TRUE) {
+                                     verbose = TRUE, ...) {
 
   # get sum of total local ecosystems
   result_sum <- summarize_meta(result = x, biomass = biomass, production = production,
-                               lag = lag)
+                               lag = lag, ...)
 
   # loop through bg, ag, ttl biomass/prod
   result <- lapply(result_sum, function(i) {
