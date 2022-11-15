@@ -19,7 +19,8 @@ Imports:
     cowplot,
     ggplot2,
     Rcpp,
-    rlang
+    rlang, 
+    scales
 Suggests:
     dplyr,
     knitr,

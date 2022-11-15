@@ -9,8 +9,7 @@ simulate_nutrient_noise(
   max_i,
   frequency = 0,
   input_mn = 0,
-  amplitude_mn = 0,
-  noise_sd = 0,
+  noise = 0,
   n_noise = 3,
   verbose = TRUE
 )
@@ -24,9 +23,7 @@ simulate_nutrient_noise(
 
 \item{input_mn}{Numeric with mean input amount and frequency.}
 
-\item{amplitude_mn}{Numeric with mean amplitude and phase.}
-
-\item{noise_sd}{Numeric with noise function sd.}
+\item{noise}{Numeric with noise function sd.}
 
 \item{n_noise}{Integer with number of noise functions}
 
@@ -42,8 +39,8 @@ Simulate nutrient input.
 Simulating nutrient input based on Perlin noise.
 }
 \examples{
-nutrients_input <- simulate_nutrient_noise(n = 3, max_i = 4380, frequency = 5, input_mn = 1,
-amplitude_mn = 0.5, noise_sd = 1.0)
+nutrients_input <- simulate_nutrient_noise(n = 3, max_i = 4380, frequency = 5,
+input_mn = 1, noise = 0.5)
 plot(nutrients_input)
 
 }

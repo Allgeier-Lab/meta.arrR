@@ -35,7 +35,7 @@ the model run not all timesteps are returned in resulting object.
 }
 \examples{
 nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
-frequency = 3, amplitude_sd = 0.5)
+frequency = 3, noise = 0.5)
 filter_meta(x = nutrients_input, filter = c(4380 / 2, 4380))
 
 \dontrun{

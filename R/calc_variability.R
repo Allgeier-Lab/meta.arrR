@@ -34,7 +34,7 @@
 #'
 #' @examples
 #' nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
-#' frequency = 3, amplitude_sd = 0.5)
+#' frequency = 3, noise = 0.5)
 #' calc_variability(nutrients_input)
 #'
 #' \dontrun{
@@ -154,10 +154,12 @@ calc_variability_internal <- function(values_i, values_m) {
   # beta scale #
 
   # calculate beta as ratio of alpha to gamma
-  beta_cv <- alpha_cv / gamma_cv
+  beta_cv <- ifelse(test = alpha_cv == 0 & alpha_cv == 0,
+                    yes = 1, no = alpha_cv / gamma_cv)
 
   # synchrony #
-  synchrony <- stats::var(values_m, na.rm = TRUE) / sum(alpha_sd_i) ^ 2
+  synchrony <- ifelse(test = alpha_cv == 0 & alpha_cv == 0,
+                       yes = 1, no = stats::var(values_m, na.rm = TRUE) / sum(alpha_sd_i) ^ 2)
 
   # final list #
 
