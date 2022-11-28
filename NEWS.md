@@ -1,5 +1,6 @@
 # meta.arrR 0.7.1
 * No diffusion torus option `arrR`
+* Updates to nutrient input simulations
 
 # meta.arrR 0.7
 * Use simplified cv calculations

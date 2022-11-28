@@ -34,7 +34,7 @@
 #'
 #' @examples
 #' nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
-#' frequency = 3, amplitude_sd = 0.5)
+#' frequency = 3, noise = 0.5)
 #' calc_variability(nutrients_input)
 #'
 #' \dontrun{
@@ -144,27 +144,36 @@ calc_variability_internal <- function(values_i, values_m) {
   # alpha scale #
 
   # calculate mean of local ecosystem i
-  alpha_mn <- apply(X = values_i, MARGIN = 2, mean, na.rm = TRUE)
+  alpha_mn_i <- apply(X = values_i, MARGIN = 2, mean, na.rm = TRUE)
 
   # calculate sd of local ecosystems i
   alpha_sd_i <- apply(X = values_i, MARGIN = 2, stats::sd, na.rm = TRUE)
 
+  # # calculate cv of each i
+  # alpha_cv_i <- alpha_sd_i / alpha_mn_i
+  #
+  # # calculate alpha scale CV
+  # alpha_cv <- sum((alpha_mn_i / gamma_mn) * alpha_cv_i)
+
+  # calculate alpha scale CV
   alpha_cv <- sum(alpha_sd_i) / gamma_mn
 
   # beta scale #
 
   # calculate beta as ratio of alpha to gamma
-  beta_cv <- alpha_cv / gamma_cv
+  beta_cv <- ifelse(test = alpha_cv == 0 & alpha_cv == 0,
+                    yes = 1, no = alpha_cv / gamma_cv)
 
   # synchrony #
-  synchrony <- stats::var(values_m, na.rm = TRUE) / sum(alpha_sd_i) ^ 2
+  synchrony <- ifelse(test = alpha_cv == 0 & alpha_cv == 0,
+                       yes = 1, no = stats::var(values_m, na.rm = TRUE) / sum(alpha_sd_i) ^ 2)
 
   # final list #
 
   # combine to final result list
   result_df <- data.frame(measure = c("alpha", "beta", "gamma", "synchrony"),
                           value = c(alpha_cv, beta_cv, gamma_cv, synchrony),
-                          sd = c(mean(alpha_sd_i), NA, gamma_sd, NA), mean = c(mean(alpha_mn), NA, gamma_mn, NA))
+                          sd = c(mean(alpha_sd_i), NA, gamma_sd, NA), mean = c(mean(alpha_mn_i), NA, gamma_mn, NA))
 
   return(result_df)
 }
