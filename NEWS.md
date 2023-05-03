@@ -1,3 +1,6 @@
+# meta.arrR 0.8.0
+* Sub-packages `arrR`
+
 # meta.arrR 0.7.1
 * No diffusion torus option `arrR`
 * Updates to nutrient input simulations

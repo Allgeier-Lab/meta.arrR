@@ -229,7 +229,7 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       # get reef matrix
       coords_reef <- lapply(X = x$seafloor, FUN = function(i) {
 
-        arrR:::rcpp_get_reef(as.matrix(i[i$timestep == 0, -18]))
+        arrR.seagrass:::rcpp_get_reef(as.matrix(i[i$timestep == 0, -18]))
 
       })
 

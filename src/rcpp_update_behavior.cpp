@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+
 #include <arrR.h>
 
 #include "rcpp_update_behavior.h"
