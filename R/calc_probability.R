@@ -14,7 +14,7 @@
 #' using a negative exponential function I = exp(-d*lambda). If \code{lambda=0},
 #' movement across metaecosystems is random.
 #'
-#' If code{dist=TRUE}, a list with the probabilities and the distance between local
+#' If \code{dist=TRUE}, a list with the probabilities and the distance between local
 #' ecosystems is returned.
 #'
 #' @references

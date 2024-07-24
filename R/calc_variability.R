@@ -161,7 +161,7 @@ calc_variability_internal <- function(values_i, values_m) {
   # synchrony #
 
   # calculate covariance among local ecosystems i,j
-  cov_mat <- cov(values_i[complete.cases(values_i), , drop = FALSE])
+  cov_mat <- stats::cov(values_i[stats::complete.cases(values_i), , drop = FALSE])
 
   # variance of each local ecosystem
   var_vec <- alpha_sd_i ^ 2
