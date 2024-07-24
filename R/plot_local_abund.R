@@ -40,12 +40,10 @@ plot_local_abund <- function(result) {
   gg_input <- ggplot2::ggplot(data = abundance) +
     ggplot2::geom_hline(yintercept = 0, linetype = 2, color = "grey") +
     ggplot2::geom_hline(yintercept = abundance_mean, linetype = 2, color = "grey") +
-    # ggplot2::geom_hline(yintercept = sum(result$starting_values$pop_n), linetype = 2, color = "grey") +
     ggplot2::geom_point(ggplot2::aes(x = .data$timestep, y = .data$abundance, col = factor(.data$meta))) +
     ggplot2::geom_path(ggplot2::aes(x = .data$timestep, y = .data$abundance, col = factor(.data$meta)),
                        alpha = 1/3) +
     ggplot2::scale_color_viridis_d(name = "Metaecosystem", option = "A") +
-    ggplot2::scale_linetype_manual(name = "", values = c("Min" = 2, "Max" = 2, "Mean" = 1)) +
     ggplot2::labs(x = "Timestep", y = "Local abundance", title = title) +
     ggplot2::theme_classic() +
     ggplot2::theme(legend.position = "bottom")

@@ -1,5 +1,6 @@
 # meta.arrR 0.8.1
 * Synchrony calculations follow Wang and Loreau (2014) closer but are mathematically identical
+* Minor export bug fixes
 
 # meta.arrR 0.8.0
 * Sub-packages `arrR`

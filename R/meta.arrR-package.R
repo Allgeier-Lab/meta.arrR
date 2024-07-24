@@ -4,10 +4,13 @@
 #'
 #' @name meta.arrR
 #' @docType package
+#'
 #' @useDynLib meta.arrR, .registration = TRUE
-#' @exportPattern ˆ[[:alpha:]]+
+#'
 #' @importFrom Rcpp evalCpp
 #' @importFrom rlang .data
+#'
+#' @keywords internal
 "_PACKAGE"
 
 # global variables
