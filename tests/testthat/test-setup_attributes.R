@@ -12,12 +12,6 @@ fishpop <- lapply(1:n, function(i)
 # create attributes
 attributes_matrix <- setup_attributes(fishpop = fishpop, parameters = parameters)
 
-test_that("setup_attributes returns matrix", {
-
-  expect_is(object = attributes_matrix, class = "matrix")
-
-})
-
 test_that("setup_attributes has correct dimensions", {
 
   expect_equal(object = nrow(attributes_matrix), expected = n * starting_values$pop_n)

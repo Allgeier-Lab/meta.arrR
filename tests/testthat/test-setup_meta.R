@@ -5,9 +5,9 @@ present_names <- c("n", "seafloor", "fishpop", "seafloor_xy", "fishpop_attr",
 
 test_that("setup_meta returns meta_syst", {
 
-  expect_is(object = metasyst, class = "meta_syst")
+  expect_s3_class(object = metasyst, class = "meta_syst")
 
-  expect_is(object = metasyst_nr, class = "meta_syst")
+  expect_s3_class(object = metasyst_nr, class = "meta_syst")
 
 })
 

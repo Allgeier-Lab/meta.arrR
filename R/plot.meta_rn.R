@@ -120,7 +120,6 @@ plot.meta_rn <- function(x, what = "seafloor", summarize = FALSE, fill = "ag_bio
       ggplot2::geom_line(ggplot2::aes(x = .data$timestep, y = .data$top_left,
                                       col = factor(.data$meta))) +
       ggplot2::scale_color_viridis_d(name = "", option = "A") +
-      ggplot2::scale_linetype_manual(name = "Scale", values = c("Local" = 2, "Regional" = 1)) +
       ggplot2::labs(x = "Timestep", y = y_labels[1]) +
       ggplot2::theme_classic() +
       ggplot2::theme(legend.position = "bottom")

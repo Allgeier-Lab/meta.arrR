@@ -2,8 +2,8 @@
 % Please edit documentation in R/meta.arrR-packages.R
 \docType{package}
 \name{meta.arrR}
-\alias{meta.arrR}
 \alias{meta.arrR-package}
+\alias{meta.arrR}
 \title{meta.arrR: Metaecosystems of Artifical Reefs}
 \description{
 Simulate metaecosystem of artifical reefs. For more information about how to

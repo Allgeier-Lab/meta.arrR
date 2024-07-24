@@ -3,7 +3,7 @@ values <- vapply(nutrients_input$values, FUN = nrow, FUN.VALUE = numeric(1))
 
 test_that("simulate_nutr_input returns meta_rn", {
 
-  expect_is(object = nutrients_input, class = "nutr_input")
+  expect_s3_class(object = nutrients_input, class = "nutr_input")
 
 })
 
