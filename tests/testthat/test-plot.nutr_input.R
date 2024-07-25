@@ -1,5 +1,5 @@
 # create plot
-nutr_gg <- plot(nutr_input)
+nutr_gg <- plot(nutrients_input)
 
 test_that("plot.nutr_input returns ggplot", {
 

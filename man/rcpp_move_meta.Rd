@@ -4,28 +4,18 @@
 \alias{rcpp_move_meta}
 \title{rcpp_move_meta}
 \usage{
-rcpp_move_meta(
-  fishpop,
-  residence_values,
-  n,
-  pop_n_sum,
-  id_attr,
-  id_meta,
-  extent
-)
+rcpp_move_meta(fishpop, fishpop_behavior, fishpop_attr, seafloor_probs, extent)
 }
 \arguments{
 \item{fishpop}{List with fish population.}
 
-\item{residence_values}{Vector with residence values.}
+\item{fishpop_behavior}{NumericMatrix with behavior state.}
 
-\item{n, pop_n_sum}{Integer with total number of local metaecosystems and individuals.}
+\item{fishpop_attr}{NumericMatrix with reserves_thres and prob_move values for each individual.}
 
-\item{id_attr}{Vector with unique id of fishpop attributes matrix.}
+\item{seafloor_probs}{NumericMatrix with local ecosystems probabilities.}
 
-\item{id_meta}{Vector with metaecosystem ids.}
-
-\item{extent}{Spatial extent of the seafloor raster.}
+\item{extent}{NumericVector with spatial extent of the seafloor raster.}
 }
 \value{
 list
@@ -34,9 +24,8 @@ list
 Rcpp move meta.
 }
 \details{
-Simulate movement across local metaecosystem. Individuals move to a new local
-metaecosystem with a certain probability each timestep. The probability increases
-depending on the residence value and how long individuals already stayed on local
-metaecosystem. To avoid this movement set \code{parameters$move_residence = 0}.
+Simulate movement across local metaecosystem. Individuals move if their residence
+counter equals the maximum residence time specified for each individual in the
+attributes table. To avoid this movement set \code{move_meta_mean = 0} & \code{move_meta_sd = 0}.
 }
-\keyword{export}
+\keyword{internal}

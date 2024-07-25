@@ -21,8 +21,8 @@ Printing method for meta_syst object.
 Printing method for metaecosystem created with \code{setup_meta}.
 }
 \examples{
-metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(100, 100), grain = c(1, 1),
-starting_values = meta.arrR_starting_values, parameters = meta.arrR_parameters)
+metasyst <- setup_meta(n = 3, max_i = 4380, dimensions = c(50, 50), grain = 1,
+starting_values = default_starting, parameters = default_parameters)
 print(metasyst)
 
 }

@@ -1,5 +1,5 @@
 # get abundance
-abundance <- get_abundance(result_rand)
+abundance <- get_abundance(result_behav)
 
 test_that("get_abundance returns data.frame", {
 

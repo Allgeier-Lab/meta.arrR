@@ -3,17 +3,17 @@
 #' @description
 #' Printing method for nutr_input object.
 #'
-#' @param x \code{nutr_input} object simulated with \code{sim_nutr_input_*}.
+#' @param x \code{nutr_input} object simulated with \code{simulate_nutrient_*}.
 #' @param digits Numeric of decimal places (passed on to \code{round}).
 #' @param ... Not used.
 #'
 #' @details
-#' Printing method for \code{nutr_input} created with \code{sim_nutr_input_*}.
+#' Printing method for \code{nutr_input} created with \code{simulate_nutr_input_*}.
 #'
 #' @examples
-#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-#' variability = 0.5)
-#' print(nutr_input)
+#' nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
+#' frequency = 3, noise = 0.5)
+#' print(nutrients_input)
 #'
 #' @aliases print.nutr_input
 #' @rdname print.nutr_input
@@ -50,10 +50,15 @@ print.nutr_input <- function(x, digits = NULL, ...) {
 
   }
 
+  # get minimum timestep
+  min_time <- unique(vapply(X = x$values, function(i) min(i$timestep),
+                            FUN.VALUE = numeric(1)))
+
   # print message
   cat(paste0(
+    "Total time     : ", paste0(c(min_time, x$max_i), collapse = "-"), " iterations [Freq: ", x$freq_mn, "]\n",
     "Metaecosystems : ", x$n, "\n",
-    "Max timesteps  : ", x$max_i, " [Freq: ", x$freq_mn, "]\n",
+    "\n",
     "Min input      : ", paste(min_input, collapse = ", "), "\n",
     "Mean input     : ", paste(mean_input, collapse = ", "), "\n",
     "Max input      : ", paste(max_input, collapse = ", "), "\n"))

@@ -3,12 +3,12 @@
 #' @description
 #' Printing method for meta_rn object.
 #'
-#' @param x \code{meta_rn} object simulated with \code{run_meta}.
+#' @param x \code{meta_rn} object simulated with \code{run_simulation_meta}.
 #' @param digits Numeric of decimal places (passed on to \code{round}).
 #' @param ... Not used.
 #'
 #' @details
-#' Printing method for metaecosystem model run created with \code{run_meta}.
+#' Printing method for metaecosystem model run created with \code{run_simulation_meta}.
 #' Returns the mean values for several seafloor and fish population values.
 #'
 #' @examples
@@ -37,15 +37,8 @@ print.meta_rn <- function(x, digits = 3, ...) {
   })
 
   # get number of reefs
-  no_reefs <- vapply(x$seafloor, function(seafloor_temp) {
-
-    # filter max_i timestep
-    seafloor_maxi <- seafloor_temp[seafloor_temp$timestep == x$max_i, ]
-
-    # get number of rows in which reef = 1
-    nrow(seafloor_maxi[seafloor_maxi$reef == 1, ])
-
-  }, FUN.VALUE = numeric(1))
+  no_reefs <- vapply(x$seafloor, function(i) nrow(i[i$timestep == 0 & i$reef == 1, ]),
+                     FUN.VALUE = numeric(1))
 
   # collapse to charachter string
   no_reefs <- paste(c(no_reefs), collapse = ", ")
@@ -53,16 +46,16 @@ print.meta_rn <- function(x, digits = 3, ...) {
   # calculate number of fish
   fish <- lapply(x$fishpop, function(fish_temp) {
 
+    # filter max_i timestep
+    fishpop_maxi <- fish_temp[fish_temp$timestep == x$max_i, ]
+
     # no individual present, set to 0 and NA
-    if (all(is.na(fish_temp[1, -c(18, 19)]))) {
+    if (all(is.na(fishpop_maxi[1, -c(18, 19)]))) {
 
       c(no = 0, length = NA, mort = NA)
 
     # calculate number of fish, mean length and mortality
     } else {
-
-      # filter max_i timestep
-      fishpop_maxi <- fish_temp[fish_temp$timestep == x$max_i, ]
 
       c(no = length(fishpop_maxi$id),
         length = round(mean(fishpop_maxi$length), digits = digits),
@@ -82,10 +75,11 @@ print.meta_rn <- function(x, digits = 3, ...) {
   # calculate save_each timesteps
   save_time <- round(x$save_each * x$min_per_i / 60 / 24, digits = 2)
 
-  cat(paste0("Total time : ", paste0(c(min_time, x$max_i), collapse = "-"), " iterations (", total_time, " days) [Burn-in: ", x$burn_in, " iter.]\n",
-             "Saved each : ", x$save_each, " iterations (", save_time, " days)\n",
-             "Seafloor   : ", x$extent, "\n",
-             "ARs        : ", no_reefs, " cells (movement: ", x$movement, ")\n\n"))
+  cat(paste0("Total time     : ", paste0(c(min_time, x$max_i), collapse = "-"), " iterations (", total_time, " days) [Burn-in: ", x$burn_in, " iter.]\n",
+             "Saved each     : ", x$save_each, " iterations (", save_time, " days)\n",
+             "Metaecosystems : ", x$n, "\n",
+             "Environment    : ", paste(x$extent, collapse = ", "), " (xmin, xmax, ymin, ymax)\n",
+             "ARs            : ", no_reefs, " cell(s) [movement: ", x$movement, "]\n\n"))
 
   cat("Local metaecosystems:\n")
   cat(paste0("ID\tBG\tAG\tNutr\tDetr\tFish\tLength\tMort\n"))

@@ -6,20 +6,37 @@
 \alias{calc_variability.meta_rn}
 \title{calc_variability}
 \usage{
-calc_variability(x, what, lag, verbose)
+calc_variability(x, biomass, production, lag, verbose, ...)
 
-\method{calc_variability}{nutr_input}(x, what = NULL, lag = NULL, verbose = TRUE)
+\method{calc_variability}{nutr_input}(
+  x,
+  biomass = NULL,
+  production = NULL,
+  lag = NULL,
+  verbose = TRUE,
+  ...
+)
 
-\method{calc_variability}{meta_rn}(x, what = "biomass", lag = TRUE, verbose = TRUE)
+\method{calc_variability}{meta_rn}(
+  x,
+  biomass = TRUE,
+  production = TRUE,
+  lag = c(FALSE, TRUE),
+  verbose = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
-\item{what}{String specifying which measure to use to calculate variability.}
+\item{biomass, production}{Logical to specifiy if biomass and/or production is summarize.d}
 
-\item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
+\item{lag}{Vector with logical. If TRUE, the difference to the previous timestep is returned.
+The first element refers to biomass, the second element to production.}
 
 \item{verbose}{Logical if TRUE progress reports are printed.}
+
+\item{...}{Arguments passed on to \code{\link{summarize_meta}}.}
 }
 \value{
 list
@@ -32,11 +49,7 @@ Calculates coefficient of variation on alpha, beta and gamma scale, where \emph{
 refers to values on local scale and \emph{m} refers to the sum of all values
 in the metaecosystem.
 
-The 'what' argument can be either 'biomass', 'production' or 'turnover'.
-
-\deqn{\alpha_{i} = sd(x_{i}) / mean(x_{i})}
-
-\deqn{\alpha = sum(mean(x_{i}) / mean(x_{m}) * \alpha_{i})}
+\deqn{\alpha = sum(sd(x_{i})) / mean(x_{m})}
 
 \deqn{\gamma = sd(x_{m}) / mean(x_{m})}
 
@@ -45,9 +58,9 @@ The 'what' argument can be either 'biomass', 'production' or 'turnover'.
 \deqn{synchrony = var(x_{m}) / (sum(\alpha_{i}) ^ 2)}
 }
 \examples{
-nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-variability = 0.5)
-calc_variability(nutr_input)
+nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
+frequency = 3, noise = 0.5)
+calc_variability(nutrients_input)
 
 \dontrun{
 calc_variability(result)

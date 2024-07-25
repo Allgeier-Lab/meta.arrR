@@ -6,20 +6,35 @@
 \alias{sample_variability.meta_rn}
 \title{sample_variability}
 \usage{
-sample_variability(x, what, itr, lag, verbose)
+sample_variability(x, itr, biomass, production, lag, verbose)
 
-\method{sample_variability}{nutr_input}(x, what = NULL, itr = 1, lag = NULL, verbose = TRUE)
+\method{sample_variability}{nutr_input}(
+  x,
+  itr = 1,
+  biomass = NULL,
+  production = NULL,
+  lag = NULL,
+  verbose = TRUE
+)
 
-\method{sample_variability}{meta_rn}(x, what = "biomass", itr = 1, lag = TRUE, verbose = TRUE)
+\method{sample_variability}{meta_rn}(
+  x,
+  itr = 1,
+  biomass = TRUE,
+  production = TRUE,
+  lag = c(FALSE, FALSE),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{\code{nutr_input} or \code{meta_rn} object.}
 
-\item{what}{String specifying which column us used for \code{meta_rn} object.}
-
 \item{itr}{Integer with number of sample iterations.}
 
-\item{lag}{Logical if TRUE, the difference to the previous timestep is returned.}
+\item{biomass, production}{Logical to specifiy if biomass and/or production is summarize.d}
+
+\item{lag}{Vector with logical. If TRUE, the difference to the previous timestep is returned.
+The first element refers to biomass, the second element to production.}
 
 \item{verbose}{Logical if TRUE, progress reports are printed.}
 }
@@ -36,9 +51,9 @@ resample the data n times to capture differences based on different orders in wh
 the metaecosystems are sampled.
 }
 \examples{
-nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-variability = 0.5)
-sample_variability(nutr_input)
+nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
+frequency = 3, noise = 0.5)
+sample_variability(nutrients_input)
 
 \dontrun{
 sample_variability(result)

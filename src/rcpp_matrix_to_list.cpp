@@ -1,7 +1,7 @@
 #include <Rcpp.h>
+
 #include "rcpp_matrix_to_list.h"
 #include "rcpp_get_table.h"
-#include "rcpp_matrix_to_list.h"
 
 using namespace Rcpp;
 
@@ -14,7 +14,7 @@ using namespace Rcpp;
 //' @param n Integer with number of total metaecosystems.
 //'
 //' @details
-//' Converts individual matrix to a list split by metaecosystems.
+//' Converts fish population matrix to a list split by metaecosystems.
 //'
 //' @return list
 //'
@@ -24,6 +24,12 @@ using namespace Rcpp;
 //' @keywords internal
 // [[Rcpp::export]]
 Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
+
+  // get col names
+  Rcpp::CharacterVector col_names = Rcpp::colnames(fishpop);
+
+  // delete last one because meta id
+  col_names.erase(col_names.length() - 1);
 
   // create empty list to store results
   Rcpp::List result(n);
@@ -38,7 +44,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
     int k = 0;
 
     // get number of individuals in metaecosystem
-    int nrow_temp = id_table[i];
+    int nrow_temp = id_table(i);
 
     // still need one row for NA if no individual is present
     if (nrow_temp == 0) nrow_temp = 1;
@@ -47,7 +53,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
     Rcpp::NumericMatrix fishpop_temp(nrow_temp, 17);
 
     // individuals present in current metaecosystem
-    if (id_table[i] > 0) {
+    if (id_table(i) > 0) {
 
       // loop through all individuals
       for (int j = 0; j < fishpop.nrow(); j++) {
@@ -69,6 +75,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
 
         // increase row counter
         k++;
+
       }
     }
 
@@ -84,11 +91,7 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
     }
 
     // set col names
-    // MH: Set automaticall using colnames(fishpop);
-    colnames(fishpop_temp) = Rcpp::CharacterVector::create("id", "age", "x", "y", "heading",
-             "length", "weight", "activity", "respiration", "reserves", "reserves_max",
-             "behavior", "consumption", "excretion", "died_consumption", "died_background",
-             "residence");
+    colnames(fishpop_temp) = col_names;
 
     // return result
     result[i] = fishpop_temp;
@@ -100,11 +103,8 @@ Rcpp::List rcpp_matrix_to_list(Rcpp::NumericMatrix fishpop, int n) {
 
 /*** R
 fishpop <- lapply(metasyst$fishpop, function(i) as.matrix(i, xy = TRUE))
-
 mat <- rcpp_list_to_matrix(fishpop = fishpop,
                            pop_n_sum = sum(metasyst$starting_values$pop_n), id = TRUE)
-
 mat[5, 18] <- 1
-
 rcpp_matrix_to_list(fishpop = mat, n = metasyst$n)
 */

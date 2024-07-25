@@ -1,12 +1,11 @@
 library(arrR)
 library(dplyr)
-library(raster)
 
 # get parameters
-parameters <- meta.arrR_parameters
+parameters <- meta.arrR::default_parameters
 
 # get starting values
-starting_values <- meta.arrR_starting_values
+starting_values <- meta.arrR::default_starting
 
 # change starting values
 starting_values$pop_n <- c(2, 4, 8)
@@ -15,8 +14,8 @@ starting_values$pop_n <- c(2, 4, 8)
 n <- 3
 
 # create 5 reef cells in center of seafloor
-reefs <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0),
-                ncol = 2, byrow = TRUE)
+reef <- matrix(data = c(-1, 0, 0, 1, 1, 0, 0, -1, 0, 0),
+               ncol = 2, byrow = TRUE)
 
 # setup extent and grain
 dimensions <- c(100, 100)
@@ -36,30 +35,20 @@ seagrass_each <- 12
 save_each <- 2
 
 # simulate nutrient input
-nutr_input <- sim_nutr_input(n = n, max_i = max_i, input_mn = 1, freq_mn = 3,
-                             variability = 0.5)
+nutrients_input <- meta.arrR::simulate_nutrient_sine(n = n, max_i = max_i, input_mn = 1, frequency = 3,
+                                                     noise = 0.5)
 
 # setup metaecosystems
-metasyst <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = reefs,
-                       starting_values = starting_values, parameters = parameters,
-                       verbose = FALSE)
+metasyst <- meta.arrR::setup_meta(n = n, dimensions = dimensions, grain = grain, reef = reef,
+                                  starting_values = starting_values, parameters = parameters,
+                                  verbose = FALSE)
 
-# setup metaecosystems
-metasyst_nr <- setup_meta(n = n, dimensions = dimensions, grain = grain, reefs = NULL,
-                          starting_values = starting_values, parameters = parameters,
-                          verbose = FALSE)
+# setup metaecosystems w/o reef
+metasyst_nr <- meta.arrR::setup_meta(n = n, dimensions = dimensions, grain = grain, reef = NULL,
+                                     starting_values = starting_values, parameters = parameters,
+                                     verbose = FALSE)
 
-result_rand <- run_meta(metasyst = metasyst, parameters = parameters,
-                        movement = "rand",  max_i = max_i, min_per_i = min_per_i,
-                        save_each = save_each, seagrass_each = seagrass_each,
-                        verbose = FALSE)
-
-result_rand_nr <- run_meta(metasyst = metasyst_nr, parameters = parameters,
-                           movement = "rand",  max_i = max_i, min_per_i = min_per_i,
-                           save_each = save_each, seagrass_each = seagrass_each,
-                           verbose = FALSE)
-
-result_attr <- run_meta(metasyst = metasyst, parameters = parameters,
-                        movement = "attr",  max_i = max_i, min_per_i = min_per_i,
-                        save_each = save_each, seagrass_each = seagrass_each,
-                        verbose = FALSE)
+# run model
+result_behav <- meta.arrR::run_simulation_meta(metasyst = metasyst, parameters = parameters,
+                                               movement = "behav",  max_i = max_i, save_each = save_each,
+                                               min_per_i = min_per_i)

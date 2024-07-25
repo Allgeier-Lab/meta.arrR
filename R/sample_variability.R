@@ -4,9 +4,10 @@
 #' Sample variability
 #'
 #' @param x \code{nutr_input} or \code{meta_rn} object.
-#' @param what String specifying which column us used for \code{meta_rn} object.
 #' @param itr Integer with number of sample iterations.
-#' @param lag Logical if TRUE, the difference to the previous timestep is returned.
+#' @param biomass,production Logical to specifiy if biomass and/or production is summarize.d
+#' @param lag Vector with logical. If TRUE, the difference to the previous timestep is returned.
+#' The first element refers to biomass, the second element to production.
 #' @param verbose Logical if TRUE, progress reports are printed.
 #'
 #' @details
@@ -18,9 +19,9 @@
 #' @return data.frame
 #'
 #' @examples
-#' nutr_input <- sim_nutr_input(n = 3, max_i = 4380, input_mn = 1, freq_mn = 3,
-#' variability = 0.5)
-#' sample_variability(nutr_input)
+#' nutrients_input <- simulate_nutrient_sine(n = 3, max_i = 4380, input_mn = 1,
+#' frequency = 3, noise = 0.5)
+#' sample_variability(nutrients_input)
 #'
 #' \dontrun{
 #' sample_variability(result)
@@ -30,19 +31,20 @@
 #' @rdname sample_variability
 #'
 #' @export
-sample_variability <- function(x, what, itr, lag, verbose) UseMethod("sample_variability")
+sample_variability <- function(x, itr, biomass, production, lag, verbose) UseMethod("sample_variability")
 
 #' @name sample_variability
 #' @export
-sample_variability.nutr_input <- function(x, what = NULL, itr = 1, lag = NULL, verbose = TRUE) {
+sample_variability.nutr_input <- function(x, itr = 1, biomass = NULL, production = NULL,
+                                          lag = NULL, verbose = TRUE) {
 
   # warning for lag argument
-  if (!is.null(lag) && verbose) {
+  if ((!is.null(biomass) || !is.null(production) || !is.null(lag)) && verbose) {
 
-    warning("'lag' is used for 'meta_rn' objects only.", call. = FALSE)
+    warning("'biomass', 'production' or 'lag' are used for 'meta_rn' objects only.",
+            call. = FALSE)
 
   }
-
   # convert to matrix
   values_i <- get_input_df(x = x, gamma = FALSE)[, -1, drop = FALSE]
 
@@ -101,113 +103,48 @@ sample_variability.nutr_input <- function(x, what = NULL, itr = 1, lag = NULL, v
 
 #' @name sample_variability
 #' @export
-sample_variability.meta_rn <- function(x, what = "biomass", itr = 1, lag = TRUE, verbose = TRUE) {
+sample_variability.meta_rn <- function(x, itr = 1, biomass = TRUE, production = TRUE,
+                                       lag = c(FALSE, FALSE), verbose = TRUE) {
 
-  # sample CV for biomass
-  if (what == "biomass") {
+  # get sum of total local ecosystems
+  result_sum <- summarize_meta(result = x, biomass = biomass, production = production,
+                               lag = lag)
 
-    # check lag argument
-    if (lag && verbose) {
+  # calculate variability for what parts
+  result <- lapply(result_sum, function(i) {
 
-      warning("'lag' is not used for biomass calculations due to negative numbers.",
-              call. = FALSE)
+    # check if summarized is null
+    if (is.null(i)) {
 
-    }
+      return(NULL)
 
-    # calculate variability for what parts
-    result <- lapply(c("bg_biomass", "ag_biomass"), function(i) {
+      # calc variability
+    } else {
 
-      # summarize values of each timestep
-      seafloor_sum <- lapply(X = x$seafloor, FUN = function(j) {
+      # get names of summarized parts
+      names_parts <- names(i[, -c(1:2)])
 
-        # get all values until timestep and selected column
-        seafloor_temp <- subset(x = j, select = c("timestep", i))
+      result_temp <- lapply(names_parts, function(j) {
 
-        # sum for each timestep
-        seafloor_temp <- stats::aggregate(x = seafloor_temp[, i],
-                                          by = list(timestep = seafloor_temp$timestep),
-                                          FUN = "sum")
+        # get only needed cols
+        values_i <- i[, c("meta", "timestep", j)]
 
-        # timestep column is not needed
-        seafloor_temp[, -1]
+        # reshape to wide for internal cv fun
+        values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
+                                   direction = "wide")[, -1, drop = FALSE]
 
+        itr_sample_var_internal(values_i = values_i, part = j, n = x$n, itr = itr,
+                                verbose = verbose)
       })
 
-      # combine to matrix with local values
-      values_i <- do.call("cbind", seafloor_sum)
+      # combine to one data.frame
+      result_temp <- do.call(what = "rbind", args = result_temp)
 
-      itr_sample_var_internal(values_i = values_i, part = i, n = x$n, itr = itr,
-                              verbose = verbose)
+      # make sure bg comes first
+      result_temp[order(result_temp$part, result_temp$stat, result_temp$n), ]
 
-    })
-
-  # sample CV for production
-  } else if (what == "production") {
-
-    # calc turnover
-    production <- get_meta_production(result = x, lag = lag, turnover = FALSE)
-
-    # split into list using parts
-    production <- split(production, production$part)
-
-    # loop through list
-    result <- lapply(production, function(i){
-
-      # get only needed columns
-      values_i <- i[, c("meta", "timestep", "value")]
-
-      # reshape to wide for internal cv fun
-      values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                                 direction = "wide")[, -1, drop = FALSE]
-
-      itr_sample_var_internal(values_i = values_i, part = unique(i$part),
-                              n = x$n, itr = itr, verbose = verbose)
-
-    })
-
-  # sample CV for turnover
-  } else if ( what == "turnover") {
-
-    # calc turnover
-    turnover <- get_meta_production(result = x, lag = lag, turnover = TRUE)
-
-    # replace Inf values (no production) with NA
-    turnover[is.infinite(turnover$value), "value"] <- NA
-
-    # split into list using parts
-    turnover <- split(turnover, turnover$part)
-
-    # loop through list
-    result <- lapply(turnover, function(i){
-
-      # get only needed columns
-      values_i <- i[, c("meta", "timestep", "value")]
-
-      # reshape to wide for internal cv fun
-      values_i <- stats::reshape(values_i, idvar = "timestep", timevar = "meta",
-                                 direction = "wide")[, -1, drop = FALSE]
-
-      itr_sample_var_internal(values_i = values_i, part = unique(i$part),
-                              n = x$n, itr = itr, verbose = verbose)
-
-    })
-
-  # return error message
-  } else {
-
-    stop("Please select either 'biomass', 'production', or 'turnover' as 'what' argument.",
-         call. = FALSE)
-
-  }
-
-  # combine to one data.frame
-  result <- do.call(what = "rbind", args = result)
-
-  # make sure bg comes first
-  result <- result[order(result$part, result$stat, result$n), ]
-
-  # remove rownames
-  row.names(result) <- 1:nrow(result)
+    }
+  })
 
   # return result list
   return(result)
@@ -256,7 +193,7 @@ sample_variability_internal <- function(values_i, n_total) {
   result_df <- data.frame(n = numeric(n), alpha = numeric(n), beta = numeric(n),
                           gamma = numeric(n), synchrony = numeric(n))
 
-  # loop through 1...n meteecosystems
+  # loop through 1...n metaecosystems
   for (i in 1:n) {
 
     # get increasing number of metaecosystems
@@ -278,6 +215,9 @@ sample_variability_internal <- function(values_i, n_total) {
 }
 
 reshape_sample_interal <- function(result) {
+
+  # init itr to avoid R CMD check note
+  itr <- NULL
 
   # combine to one data.frame
   result <- do.call(what = "rbind", args = result)
